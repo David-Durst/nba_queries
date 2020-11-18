@@ -7,7 +7,7 @@ project (nba_queries VERSION "0.1")
 
 include_directories(${PROJECT_BINARY_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/include)
-file(GLOB NBA_SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp")
+file(GLOB NBA_SOURCES "${PROJECT_SOURCE_DIR}/src/cpp/*.cpp")
 list(FILTER NBA_SOURCES EXCLUDE REGEX "\.#.*")
 
 
