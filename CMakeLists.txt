@@ -7,10 +7,12 @@ project (nba_queries VERSION "0.1")
 
 include_directories(${PROJECT_BINARY_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/include)
-file(GLOB NBA_SOURCES "${PROJECT_SOURCE_DIR}/src/cpp/*.cpp")
+file(GLOB_RECURSE NBA_SOURCES ${PROJECT_SOURCE_DIR}/src/cpp *.cpp)
 list(FILTER NBA_SOURCES EXCLUDE REGEX "\.#.*")
 file(GLOB NBA_TESTS "${PROJECT_SOURCE_DIR}/test/cpp/*.cpp")
 list(FILTER NBA_TESTS EXCLUDE REGEX "\.#.*")
+file(GLOB_RECURSE NBA_TESTS_SOURCES ${PROJECT_SOURCE_DIR}/src/cpp/lib *.cpp)
+list(FILTER NBA_TESTS_SOURCES EXCLUDE REGEX "\.#.*")
 
 
 # from OpenCV via https://medium.com/@onur.dundar1/cmake-tutorial-585dd180109b
@@ -32,15 +34,15 @@ install (TARGETS nba_queries DESTINATION bin)
 
 # ADDING TESTS
 # add executable
-add_executable(tests ${NBA_SOURCES} ${NBA_TESTS})
+add_executable(tests ${NBA_TESTS_SOURCES} ${NBA_TESTS})
 
-# add dependencies
+# add catch2 library to tests and tell build to run all tests
 include(FetchContent)
 
 FetchContent_Declare(
   Catch2
   GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-  GIT_TAG        v2.13.1)
+  GIT_TAG        v2.12.4)
 
 FetchContent_MakeAvailable(Catch2)
 
@@ -52,15 +54,8 @@ if(NOT catch2_POPULATED)   # name is lowercased
   add_subdirectory(${catch2_SOURCE_DIR} ${catch2_BINARY_DIR}) # name is lowercased
 endif()
 
-# link dependencies
 target_link_libraries(tests Catch2::Catch2)
-#include_directories(${catch2_INCLUDE_DIRS})
-#list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/cmake)
 list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/contrib)
-#set(Catch2_DIR ${catch2_SOURCE_DIR}/CMake)
-#set(Catch2_DIR ${catch2_SOURCE_DIR}/contrib)
-#message(${Catch2_DIR})
-#find_package(Catch2 REQUIRED)
 include(CTest)
 include(Catch)
 catch_discover_tests(tests)
