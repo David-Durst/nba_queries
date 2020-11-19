@@ -1,4 +1,3 @@
-#define CATCH_CONFIG_RUNNER
 #include "catch.hpp"
 #include "factorial.h"
 
@@ -15,12 +14,4 @@ TEST_CASE( "verifying factorial", "[factorial]" ) {
     SECTION( "testing factorial 3" ) {
         REQUIRE( factorial(3) == 6);
     }
-}
-
-int main(int argc, char* argv[])
-{
-
-    int result = Catch::Session().run(argc, argv);
-
-    return result;
 }
