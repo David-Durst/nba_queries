@@ -9,6 +9,8 @@ include_directories(${PROJECT_BINARY_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 file(GLOB NBA_SOURCES "${PROJECT_SOURCE_DIR}/src/cpp/*.cpp")
 list(FILTER NBA_SOURCES EXCLUDE REGEX "\.#.*")
+file(GLOB NBA_TESTS "${PROJECT_SOURCE_DIR}/test/cpp/*.cpp")
+list(FILTER NBA_TESTS EXCLUDE REGEX "\.#.*")
 
 
 # from OpenCV via https://medium.com/@onur.dundar1/cmake-tutorial-585dd180109b
@@ -28,4 +30,21 @@ add_executable(nba_queries ${NBA_SOURCES})
 # add the install targets
 install (TARGETS nba_queries DESTINATION bin)
 
-#include(Tests.cmake)<Paste>
+# ADDING TESTS
+# add executable
+add_executable(tests ${NBA_SOURCES} ${NBA_TESTS})
+
+# add dependencies
+include(cmake/CPM.cmake)
+
+CPMAddPackage(
+  NAME Catch2
+  GITHUB_REPOSITORY catchorg/Catch2
+  VERSION 2.13.3
+  )
+
+# link dependencies
+target_link_libraries(tests Catch2)
+include(CTest)
+include(Catch)
+catch_discover_tests(tests)
