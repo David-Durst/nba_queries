@@ -143,3 +143,61 @@ void load_event_row(string& row, event& e) {
     std::getline(ss, e.player3_team_nickname, ',');
     std::getline(ss, e.player3_team_abbreviation, ',');
 }
+
+void load_shot_rows(istream& rows, vector<shot>& shs) {
+    string row;
+    std::getline(rows, row);
+    while(std::getline(rows, row)) {
+        shot sh;
+        load_shot_row(row, sh);
+        shs.push_back(sh);
+    }
+}
+
+void load_shot_row(string& row, shot& sh) {
+    string col;
+    stringstream ss(row);
+
+    std::getline(ss, sh.action_type, ',');
+    std::getline(ss, col, ',');
+    sh.event_time = stoi(col);
+    std::getline(ss, sh.event_type, ',');
+    std::getline(ss, sh.game_date, ',');
+    std::getline(ss, col, ',');
+    sh.game_event_id = stol(col);
+    std::getline(ss, col, ',');
+    sh.game_id = stol(col);
+    std::getline(ss, sh.grid_type, ',');
+    std::getline(ss, sh.htm, ',');
+    std::getline(ss, col, ',');
+    sh.loc_x = stof(col);
+    std::getline(ss, col, ',');
+    sh.loc_y = stof(col);
+    std::getline(ss, col, ',');
+    sh.minutes_remaining = stoi(col);
+    std::getline(ss, col, ',');
+    sh.period = stoi(col);
+    std::getline(ss, col, ',');
+    sh.player_id = stoi(col);
+    std::getline(ss, sh.player_name, ',');
+    std::getline(ss, col, ',');
+    sh.quarter = stof(col);
+    std::getline(ss, col, ',');
+    sh.seconds_remaining = stoi(col);
+    std::getline(ss, col, ',');
+    sh.shot_attempted_flag = stoi(col);
+    std::getline(ss, col, ',');
+    sh.shot_distance = stoi(col);
+    std::getline(ss, col, ',');
+    sh.shot_made_flag = stoi(col);
+    std::getline(ss, col, ',');
+    sh.shot_time = stof(col);
+    std::getline(ss, sh.shot_type, ',');
+    std::getline(ss, sh.shot_zone_area, ',');
+    std::getline(ss, sh.shot_zone_basic, ',');
+    std::getline(ss, sh.shot_zone_range, ',');
+    std::getline(ss, col, ',');
+    sh.team_id = stof(col);
+    std::getline(ss, sh.team_name, ',');
+    std::getline(ss, sh.team_vtm, ',');
+}

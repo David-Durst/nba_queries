@@ -105,3 +105,31 @@ Jump Shot,518,Made Shot,20151223,164,0021500435,Shot Chart Detail,LAL,-5.4122,17
 )";
 
 string one_shot = "Jump Shot,215,Missed Shot,20151223,93,0021500435,Shot Chart Detail,LAL,-23.9825,157.0968,3,1,101138,Brandon Bass,1.0,35,1,15,0,218.5,2PT Field Goal,Center(C),Mid-Range,8-16 ft.,1610612747,Los Angeles Lakers,OKC";
+
+TEST_CASE( "one row of load_shot_row", "[load_shot_row, loading]" ) {
+    shot sh;
+    load_shot_row(one_shot, sh);
+    SECTION( "game_id" ) {
+        REQUIRE( sh.action_type.compare("Jump Shot") == 0);
+    }
+    SECTION( "shot_made_flag" ) {
+        REQUIRE( sh.shot_made_flag == false);
+    }
+    SECTION( "vtm" ) {
+        REQUIRE( sh.team_vtm.compare("OKC") == 0);
+    }
+}
+
+TEST_CASE( "many rows of load_shot_rows", "[load_shot_rows, loading]" ) {
+    vector<shot> sh;
+    stringstream ss(test_shots);
+    load_shot_rows(ss, sh);
+    SECTION( "size" ) {
+        REQUIRE( sh.size() == 3 );
+    }
+    SECTION( "shot_made_flag" ) {
+        REQUIRE( sh.at(0).shot_made_flag == false);
+        REQUIRE( sh.at(1).shot_made_flag == true);
+        REQUIRE( sh.at(2).shot_made_flag == true);
+    }
+}
