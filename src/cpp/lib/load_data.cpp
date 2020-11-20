@@ -11,6 +11,7 @@ using std::stringstream;
 
 void load_moment_rows(istream& rows, vector<moment>& ms) {
     string row;
+    std::getline(rows, row);
     while(std::getline(rows, row)) {
         moment m;
         load_moment_row(row, m);
