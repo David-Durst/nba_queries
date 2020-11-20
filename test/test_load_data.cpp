@@ -66,6 +66,38 @@ string test_events = R"(GAME_ID,EVENTNUM,EVENTMSGTYPE,EVENTMSGACTIONTYPE,PERIOD,
 
 string one_event = "0021500116,1,10,0,1,7:41 PM,12:00,Jump Ball Johnson vs. Mahinmi: Tip to Miles,,,,,4,101161,Amir Johnson,1610612738.0,Boston,Celtics,BOS,5,101133,Ian Mahinmi,1610612754.0,Indiana,Pacers,IND,5,101139,CJ Miles,1610612754.0,Indiana,Pacers,IND";
 
+
+TEST_CASE( "one row of load_event_row", "[load_event_row, loading]" ) {
+    event e;
+    load_event_row(one_event, e);
+    SECTION( "game_id" ) {
+        REQUIRE( e.game_id == 21500116l);
+    }
+    SECTION( "period" ) {
+        REQUIRE( e.period == 1);
+    }
+    SECTION( "wc_timestring" ) {
+        REQUIRE( e.wc_timestring.compare("7:41 PM") == 0);
+    }
+    SECTION( "player3_team_abbreviation" ) {
+        REQUIRE( e.player3_team_abbreviation.compare("IND") == 0);
+    }
+}
+
+TEST_CASE( "many rows of load_event_rows", "[load_event_rows, loading]" ) {
+    vector<event> es;
+    stringstream ss(test_events);
+    load_event_rows(ss, es);
+    SECTION( "size" ) {
+        REQUIRE( es.size() == 3 );
+    }
+    SECTION( "player3_team_abbreviation" ) {
+        REQUIRE( es.at(0).player3_team_abbreviation.compare("") == 0);
+        REQUIRE( es.at(1).player3_team_abbreviation.compare("IND") == 0);
+        REQUIRE( es.at(2).player3_team_abbreviation.compare("IND") == 0);
+    }
+}
+
 string test_shots = R"(ACTION_TYPE,EVENTTIME,EVENT_TYPE,GAME_DATE,GAME_EVENT_ID,GAME_ID,GRID_TYPE,HTM,LOC_X,LOC_Y,MINUTES_REMAINING,PERIOD,PLAYER_ID,PLAYER_NAME,QUARTER,SECONDS_REMAINING,SHOT_ATTEMPTED_FLAG,SHOT_DISTANCE,SHOT_MADE_FLAG,SHOT_TIME,SHOT_TYPE,SHOT_ZONE_AREA,SHOT_ZONE_BASIC,SHOT_ZONE_RANGE,TEAM_ID,TEAM_NAME,VTM
 Jump Shot,215,Missed Shot,20151223,93,0021500435,Shot Chart Detail,LAL,-23.9825,157.0968,3,1,101138,Brandon Bass,1.0,35,1,15,0,218.5,2PT Field Goal,Center(C),Mid-Range,8-16 ft.,1610612747,Los Angeles Lakers,OKC
 Dunk Shot,191,Made Shot,20151223,97,0021500435,Shot Chart Detail,LAL,224.3221,24.9662,3,1,101138,Brandon Bass,1.0,11,1,0,1,204.83,2PT Field Goal,Center(C),Restricted Area,Less Than 8 ft.,1610612747,Los Angeles Lakers,OKC

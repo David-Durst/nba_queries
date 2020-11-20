@@ -46,3 +46,73 @@ void load_moment_row(string& row, moment& m) {
     std::getline(ss, col, ',');
     m.moment_in_event = stoi(col);
 }
+
+
+void load_event_rows(istream& rows, vector<event>& es) {
+    string row;
+    std::getline(rows, row);
+    while(std::getline(rows, row)) {
+        event e;
+        load_event_row(row, e);
+        es.push_back(e);
+    }
+}
+
+void load_event_row(string& row, event& e) {
+    string col;
+    stringstream ss(row);
+
+    std::getline(ss, col, ',');
+    e.game_id = stol(col);
+    std::getline(ss, col, ',');
+    e.event_num = stol(col);
+    std::getline(ss, col, ',');
+    e.event_msg_type = stoi(col);
+    std::getline(ss, col, ',');
+    e.event_msg_action_type = stoi(col);
+    std::getline(ss, col, ',');
+    e.period = stoi(col);
+    std::getline(ss, e.wc_timestring, ',');
+    std::getline(ss, e.pc_timestring, ',');
+    std::getline(ss, e.home_description, ',');
+    std::getline(ss, e.neutral_description, ',');
+    std::getline(ss, e.visitor_description, ',');
+    std::getline(ss, e.score, ',');
+    std::getline(ss, e.score_margin, ',');
+
+    // load player 1 data
+    std::getline(ss, col, ',');
+    e.person1_type = stoi(col);
+    std::getline(ss, col, ',');
+    e.player1_id = stoi(col);
+    std::getline(ss, e.player1_name, ',');
+    std::getline(ss, col, ',');
+    e.player1_team_id = stof(col);
+    std::getline(ss, e.player1_team_city, ',');
+    std::getline(ss, e.player1_team_nickname, ',');
+    std::getline(ss, e.player1_team_abbreviation, ',');
+
+    // load player 2 data
+    std::getline(ss, col, ',');
+    e.person2_type = stoi(col);
+    std::getline(ss, col, ',');
+    e.player2_id = stoi(col);
+    std::getline(ss, e.player2_name, ',');
+    std::getline(ss, col, ',');
+    e.player2_team_id = stof(col);
+    std::getline(ss, e.player2_team_city, ',');
+    std::getline(ss, e.player2_team_nickname, ',');
+    std::getline(ss, e.player2_team_abbreviation, ',');
+
+    // load player 3 data
+    std::getline(ss, col, ',');
+    e.person3_type = stoi(col);
+    std::getline(ss, col, ',');
+    e.player3_id = stoi(col);
+    std::getline(ss, e.player3_name, ',');
+    std::getline(ss, col, ',');
+    e.player3_team_id = stof(col);
+    std::getline(ss, e.player3_team_city, ',');
+    std::getline(ss, e.player3_team_nickname, ',');
+    std::getline(ss, e.player3_team_abbreviation, ',');
+}
