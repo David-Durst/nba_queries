@@ -9,6 +9,33 @@ using std::string;
 using std::istream;
 using std::stringstream;
 
+int stoi_with_default(string& s) {
+    if (s.size() == 0) {
+        return -1.0;
+    }
+    else {
+        return stoi(s);
+    }
+}
+
+long int stol_with_default(string& s) {
+    if (s.size() == 0) {
+        return -1l;
+    }
+    else {
+        return stol(s);
+    }
+}
+
+float stof_with_default(string& s) {
+    if (s.size() == 0) {
+        return -1.0f;
+    }
+    else {
+        return stof(s);
+    }
+}
+
 void load_moment_rows(istream& rows, vector<moment>& ms) {
     string row;
     std::getline(rows, row);
@@ -87,7 +114,7 @@ void load_event_row(string& row, event& e) {
     e.player1_id = stoi(col);
     std::getline(ss, e.player1_name, ',');
     std::getline(ss, col, ',');
-    e.player1_team_id = stof(col);
+    e.player1_team_id = stof_with_default(col);
     std::getline(ss, e.player1_team_city, ',');
     std::getline(ss, e.player1_team_nickname, ',');
     std::getline(ss, e.player1_team_abbreviation, ',');
@@ -99,7 +126,7 @@ void load_event_row(string& row, event& e) {
     e.player2_id = stoi(col);
     std::getline(ss, e.player2_name, ',');
     std::getline(ss, col, ',');
-    e.player2_team_id = stof(col);
+    e.player2_team_id = stof_with_default(col);
     std::getline(ss, e.player2_team_city, ',');
     std::getline(ss, e.player2_team_nickname, ',');
     std::getline(ss, e.player2_team_abbreviation, ',');
@@ -111,7 +138,7 @@ void load_event_row(string& row, event& e) {
     e.player3_id = stoi(col);
     std::getline(ss, e.player3_name, ',');
     std::getline(ss, col, ',');
-    e.player3_team_id = stof(col);
+    e.player3_team_id = stof_with_default(col);
     std::getline(ss, e.player3_team_city, ',');
     std::getline(ss, e.player3_team_nickname, ',');
     std::getline(ss, e.player3_team_abbreviation, ',');

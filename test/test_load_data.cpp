@@ -94,7 +94,7 @@ TEST_CASE( "many rows of load_event_rows", "[load_event_rows, loading]" ) {
     SECTION( "player3_team_abbreviation" ) {
         REQUIRE( es.at(0).player3_team_abbreviation.compare("") == 0);
         REQUIRE( es.at(1).player3_team_abbreviation.compare("IND") == 0);
-        REQUIRE( es.at(2).player3_team_abbreviation.compare("IND") == 0);
+        REQUIRE( es.at(2).player3_team_abbreviation.compare("") == 0);
     }
 }
 
