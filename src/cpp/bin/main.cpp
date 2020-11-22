@@ -4,6 +4,7 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#include "check_distances.h"
 #include "main.h"
 #include "load_data.h"
 #include "query_structs.h"
@@ -27,9 +28,15 @@ int main(int argc, char * argv[]) {
     load_shot_rows(shots_file, shots);
     shots_file.close();
     std::cout << "shots size: " << shots.size() << std::endl;
-    while (true) {
-        std::this_thread::sleep_for(std::chrono::seconds(10));
+    find_nearest_defender_at_each_shot(moments, shots, shots_and_players)
+    int cur_moment_idx = 0;
+    int cur_shot_idx = 0;
+    while (cur_moment_idx < (int) moments.size() && cur_shot_idx < (int) shots.size()) {
+        shot cur_shot = shots.at(cur_shot_idx);
+        if (cur_shot.game_clock == )
+        cut_shot_idx++;
     }
+    
 
     return 0;
 }
