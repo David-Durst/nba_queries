@@ -26,8 +26,9 @@ struct shot_and_player_data {
 /* For a list of shots (from possibly more than one game) and a list of moments
    from one game, find all the shots for that game and the player data. */
 void find_nearest_defender_at_each_shot(vector<moment>& moments,
-                                        vector<shot> shots,
-                                        vector<shot_and_player_data> shots_and_players);
+                                        vector<shot>& shots,
+                                        vector<shot_and_player_data>& shots_and_players,
+                                        float time_delta = 2.0);
 /* For a shot, find the shooter */
 moment get_shooter_team(vector<moment>& moments, int cur_moment_idx,
                         shot cur_shot);

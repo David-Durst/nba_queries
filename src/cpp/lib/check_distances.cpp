@@ -13,8 +13,9 @@ using std::string;
 /* For a list of shots (from possibly more than one game) and a list of moments
    from one game, find all the shots for that game and the player data. */
 void find_nearest_defender_at_each_shot(vector<moment>& moments,
-                                        vector<shot> shots,
-                                        vector<shot_and_player_data> shots_and_players) {
+                                        vector<shot>& shots,
+                                        vector<shot_and_player_data>& shots_and_players,
+                                        float time_delta) {
     int cur_moment_idx = 0;
     int cur_shot_idx = 0;
     shot cur_shot;
@@ -30,9 +31,9 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
             cur_moment.player_id == -1) {
             moment shooter_moment = get_shooter_team(moments, cur_moment_idx, cur_shot);
             moment nearest_forwards = get_nearest_defender(moments, cur_moment_idx,
-                                                           shooter_moment, 2.0, true);
+                                                           shooter_moment, time_delta, true);
             moment nearest_backwards = get_nearest_defender(moments, cur_moment_idx,
-                                                            shooter_moment, 2.0, false);
+                                                            shooter_moment, time_delta, false);
             float forwards_distance = compute_distance(cur_moment, nearest_forwards);
             float backwards_distance = compute_distance(cur_moment, nearest_backwards);
             moment nearest_defender = (forwards_distance <= backwards_distance) ?
@@ -40,10 +41,10 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
             float nearest_distance = (forwards_distance <= backwards_distance) ?
                 forwards_distance : backwards_distance;
             shot_and_player_data result;
-            result.offense_team_id = cur_moment.team_id;
-            result.offense_player_id = cur_moment.player_id;
-            result.offense_x_loc = cur_moment.x_loc;
-            result.offense_y_loc = cur_moment.y_loc;
+            result.offense_team_id = shooter_moment.team_id;
+            result.offense_player_id = shooter_moment.player_id;
+            result.offense_x_loc = shooter_moment.x_loc;
+            result.offense_y_loc = shooter_moment.y_loc;
             result.defense_team_id = nearest_defender.team_id;
             result.defense_player_id = nearest_defender.player_id;
             result.defense_x_loc = nearest_defender.x_loc;
