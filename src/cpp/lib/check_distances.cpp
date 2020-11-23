@@ -65,14 +65,12 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
             if (cur_moment.game_id != cur_shot.game_id) {
                 do {
                     cur_shot_idx++;
-                } while (cur_moment.game_id != cur_shot.game_id
-                         && cur_shot_idx < (int) shots.size());
+                } while (cur_shot_idx < (int) shots.size() && cur_moment.game_id != cur_shot.game_id);
             }
             else {
                 do {
                     cur_moment_idx++;
-                } while (moments.at(cur_moment_idx).player_id != -1
-                         && cur_moment_idx < (int) moments.size());
+                } while (cur_moment_idx < (int) moments.size() && moments.at(cur_moment_idx).player_id != -1);
             }
         }
     }
