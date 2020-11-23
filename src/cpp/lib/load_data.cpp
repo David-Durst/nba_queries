@@ -1,6 +1,5 @@
 #include <string>
 #include <vector>
-
 #include <istream>
 #include <sstream>
 #include <iostream>
@@ -44,9 +43,6 @@ void load_moment_rows(istream& rows, vector<moment>& ms) {
     std::getline(rows, row);
     int row_num = 0;
     while(std::getline(rows, row)) {
-        if (row_num % 1000000 == 0) {
-            std::cout << "at row: " << row_num << std::endl;
-        }
         moment m;
         load_moment_row(row, m);
         ms.push_back(m);
