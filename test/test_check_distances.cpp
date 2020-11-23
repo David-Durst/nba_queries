@@ -56,11 +56,11 @@ TEST_CASE( "find_nearest_defender_at_each_shot", "[find_nearest_defender_at_each
         vector<moment> result_vector = {test_moments.at(3), test_moments.at(6), test_moments.at(4)};
         find_nearest_defender_at_each_shot(test_moments, test_shots, shots_and_players, 100.0f);
         REQUIRE( shots_and_players.at(0).defense_player_id  == result_vector.at(0).player_id );
-        REQUIRE( shots_and_players.at(0).game_clock  == result_vector.at(0).game_clock );
+        REQUIRE( shots_and_players.at(0).game_clock  == test_shots.at(0).shot_time );
         REQUIRE( shots_and_players.at(1).defense_player_id  == result_vector.at(1).player_id );
-        REQUIRE( shots_and_players.at(1).game_clock  == result_vector.at(1).game_clock );
+        REQUIRE( shots_and_players.at(1).game_clock  == test_shots.at(1).shot_time );
         REQUIRE( shots_and_players.at(2).defense_player_id  == result_vector.at(2).player_id );
-        REQUIRE( shots_and_players.at(2).game_clock  == result_vector.at(2).game_clock );
+        REQUIRE( shots_and_players.at(2).game_clock  == test_shots.at(2).shot_time );
     }
 }
 

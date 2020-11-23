@@ -34,8 +34,8 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
                                                            shooter_moment, time_delta, true);
             moment nearest_backwards = get_nearest_defender(moments, cur_moment_idx,
                                                             shooter_moment, time_delta, false);
-            float forwards_distance = compute_distance(cur_moment, nearest_forwards);
-            float backwards_distance = compute_distance(cur_moment, nearest_backwards);
+            float forwards_distance = compute_distance(shooter_moment, nearest_forwards);
+            float backwards_distance = compute_distance(shooter_moment, nearest_backwards);
             moment nearest_defender = (forwards_distance <= backwards_distance) ?
                 nearest_forwards : nearest_backwards;
             float nearest_distance = (forwards_distance <= backwards_distance) ?
@@ -50,12 +50,12 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
             result.defense_x_loc = nearest_defender.x_loc;
             result.defense_y_loc = nearest_defender.y_loc;
             result.defender_distance = nearest_distance;
-            result.game_clock = cur_moment.game_clock;
-            result.shot_clock = cur_moment.shot_clock;
-            result.quarter = cur_moment.quarter;
-            result.game_id = cur_moment.game_id;
-            result.event_id = cur_moment.event_id;
-            result.moment_in_event = cur_moment.moment_in_event;
+            result.game_clock = shooter_moment.game_clock;
+            result.shot_clock = shooter_moment.shot_clock;
+            result.quarter = shooter_moment.quarter;
+            result.game_id = shooter_moment.game_id;
+            result.event_id = shooter_moment.event_id;
+            result.moment_in_event = shooter_moment.moment_in_event;
             shots_and_players.push_back(result);
             cur_shot_idx++;
         }
