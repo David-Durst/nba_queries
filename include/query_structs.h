@@ -18,6 +18,7 @@ struct moment {
 } ;
 
 bool operator==(moment const & lhs, moment const & rhs);
+std::ostream& operator<<(std::ostream& os, moment const& value);
 
 struct event {
     long int game_id;
