@@ -101,10 +101,11 @@ moment get_nearest_defender(vector<moment>& moments, int ball_moment_at_shot_idx
     int cur_moment_idx = ball_moment_at_shot_idx;
     closest_defender.player_id = -1;
     for (moment cur_moment = moments.at(cur_moment_idx);
-         std::abs(moments.at(cur_moment_idx).game_clock - shooter_moment.game_clock) <= time_delta &&
+         std::abs(cur_moment.game_clock - shooter_moment.game_clock) <= time_delta &&
              // stop 1 early so don't run off end of array,
              // just return last if no matches
-             cur_moment_idx < (int) moments.size() - 1;
+             // need to check differently for backwards and forwards
+             (forward_in_time ? cur_moment_idx < (int) moments.size() - 1 : cur_moment_idx > 0);
          forward_in_time ? cur_moment_idx++ : cur_moment_idx--,
          cur_moment = moments.at(cur_moment_idx)) {
         // get the nearest non-ball and defender

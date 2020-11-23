@@ -81,7 +81,7 @@ TEST_CASE( "get_nearest_defender", "[get_nearest_defender, nearest_defender_quer
         int ball_moment_idx = 10;
         moment shooter_moment = test_moments.at(11);
         REQUIRE( get_nearest_defender(test_moments, ball_moment_idx,
-                                      shooter_moment, 0.f, false) ==
+                                      shooter_moment, 100.f, false) ==
                  test_moments.at(4) );
     }
 }
