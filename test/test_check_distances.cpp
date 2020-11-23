@@ -48,6 +48,20 @@ vector<shot> test_shots = {
          "Above the Break 3","24+ ft.",1610612738.0,"Boston Celtics","IND"}
 };
 
+TEST_CASE( "get_shooter_team", "[get_shooter_team, nearest_defender_query]" ) {
+    SECTION( "basic shooter request" ) {
+        shot s = test_shots.at(0);
+        moment m = test_moments.at(1);
+        REQUIRE( get_shooter_team(test_moments, 0, s) == m.team_id );
+    }
+    SECTION( "on bad shooter request, return last moment" ) {
+        shot s = test_shots.at(0);
+        s.player_id = 23;
+        moment m = test_moments.at(test_moments.size() - 1);
+        REQUIRE( get_shooter_team(test_moments, 0, s) == m.team_id );
+    }
+}
+
 TEST_CASE( "compute_distance", "[compute_distance, nearest_defender_query]" ) {
     SECTION( "basic distance test" ) {
         moment m0 = test_moments.at(0);
