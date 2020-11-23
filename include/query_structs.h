@@ -17,6 +17,8 @@ struct moment {
     int moment_in_event;
 } ;
 
+bool operator==(moment const & lhs, moment const & rhs);
+
 struct event {
     long int game_id;
     long int event_num;

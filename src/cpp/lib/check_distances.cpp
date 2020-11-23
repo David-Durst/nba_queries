@@ -27,15 +27,11 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
             cur_moment.game_clock == cur_shot.shot_time &&
             cur_moment.quarter == cur_shot.period &&
             cur_moment.player_id == -1) {
-            long int shooter_team_idx = get_shooter_team(moments, cur_moment_idx, cur_shot);
-            moment nearest_forwards = get_nearest_defender(moments,
-                                                           cur_moment_idx,
-                                                           shooter_team_idx,
-                                                           cur_moment, 2.0, true);
-            moment nearest_backwards = get_nearest_defender(moments,
-                                                            cur_moment_idx,
-                                                            shooter_team_idx,
-                                                            cur_moment, 2.0, true);
+            moment shooter_moment = get_shooter_team(moments, cur_moment_idx, cur_shot);
+            moment nearest_forwards = get_nearest_defender(moments, cur_moment_idx,
+                                                           shooter_moment, 2.0, true);
+            moment nearest_backwards = get_nearest_defender(moments, cur_moment_idx,
+                                                            shooter_moment, 2.0, true);
             float forwards_distance = compute_distance(cur_moment, nearest_forwards);
             float backwards_distance = compute_distance(cur_moment, nearest_backwards);
             moment nearest_defender = (forwards_distance <= backwards_distance) ?
@@ -82,37 +78,38 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
 }
 
 
-/* For a shot, find the team id of the shooter */
-long int get_shooter_team(vector<moment>& moments, int cur_moment_idx,
-                          shot cur_shot) {
+/* For a shot, find the shooter */
+moment get_shooter_team(vector<moment>& moments, int cur_moment_idx,
+                        shot cur_shot) {
     for (; moments.at(cur_moment_idx).player_id != cur_shot.player_id &&
              // stop 1 early so don't run off end of array,
              // just return last if no matches
              cur_moment_idx < (int) moments.size() - 1;
          cur_moment_idx++) ;
-    return moments.at(cur_moment_idx).team_id;
+    return moments.at(cur_moment_idx);
 }
 
 /* For a shot, find the nearest defender within time_delta seconds.
    forward_in_time if to search forwards (aka +time_delta) if true or
    backwards (aka -time_delta)
 */
-moment get_nearest_defender(vector<moment>& moments, int cur_moment_idx,
-                              long int shooter_team_idx, moment ball_moment_at_shot,
-                              float time_delta, bool forward_in_time) {
+moment get_nearest_defender(vector<moment>& moments, int ball_moment_at_shot_idx,
+                            moment shooter_moment, float time_delta,
+                            bool forward_in_time) {
     moment closest_defender;
     float closest_distance;
+    int cur_moment_idx = ball_moment_at_shot_idx;
     closest_defender.player_id = -1;
     for (moment cur_moment = moments.at(cur_moment_idx);
-         std::abs(moments.at(cur_moment_idx).game_clock - ball_moment_at_shot.game_clock) < time_delta &&
+         std::abs(moments.at(cur_moment_idx).game_clock - shooter_moment.game_clock) < time_delta &&
              // stop 1 early so don't run off end of array,
              // just return last if no matches
              cur_moment_idx < (int) moments.size() - 1;
          forward_in_time ? cur_moment_idx++ : cur_moment_idx--,
          cur_moment = moments.at(cur_moment_idx)) {
         // get the nearest non-ball and defender
-        if (cur_moment.player_id != -1 && cur_moment.team_id != shooter_team_idx) {
-            float new_distance = compute_distance(cur_moment, ball_moment_at_shot);
+        if (cur_moment.player_id != -1 && cur_moment.team_id != shooter_moment.team_id) {
+            float new_distance = compute_distance(cur_moment, shooter_moment);
             // take first defender if closest defender has not been set
             // otherwise take closest defender
             if (closest_defender.player_id == -1 ||

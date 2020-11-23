@@ -15,12 +15,12 @@ vector<moment> test_moments = {
     moment{-1,-1,5.92671,10.85064,3.26341,655.590,22.930,1,21500116,7,289},
     moment{1610612738,101161,3.84763,26.61320,0.00000,655.590,22.930,1,21500116,7,289},
     moment{1610612738,202323,6.76628,41.32569,0.00000,655.590,22.930,1,21500116,7,289},
-    moment{1610612754,201588,16.92816,13.07469,0.00000,655.590,22.930,1,21500116,7,289},
-    moment{1610612754,101133,21.94442,32.85319,0.00000,655.590,22.930,1,21500116,7,289},
+    moment{1610612754,201588,3.92816,29.07469,0.00000,655.590,22.930,1,21500116,7,289},
+    moment{1610612754,101133,83.94442,25.85319,0.00000,655.590,22.930,1,21500116,7,289},
 
     // second shot
     moment{-1,-1,20.24824,10.47883,7.32415,635.420,13.910,1,21500116,10,214},
-    moment{1610612738,101161,14.27648,17.50508,0.00000,635.420,13.910,1,21500116,10,214},
+    moment{1610612738,101161,5.27648,48.50508,0.00000,635.420,13.910,1,21500116,10,214},
     moment{1610612738,202323,7.47053,34.31218,0.00000,635.420,13.910,1,21500116,10,214},
     moment{1610612754,201588,5.61198,48.11867,0.00000,635.420,13.910,1,21500116,10,214},
     moment{1610612754,101133,17.35359,33.95396,0.00000,635.420,13.910,1,21500116,10,214},
@@ -28,7 +28,7 @@ vector<moment> test_moments = {
     // third shot
     moment{-1,-1,82.08825,24.55751,4.23344,570.130,11.540,1,21500116,26,269},
     moment{1610612738,101161,83.38536,23.88928,0.00000,570.130,11.540,1,21500116,26,269},
-    moment{1610612738,202323,57.46266,24.60095,0.00000,570.130,11.540,1,21500116,26,269},
+    moment{1610612738,202323,84.46266,24.60095,0.00000,570.130,11.540,1,21500116,26,269},
     moment{1610612754,201588,76.95525,18.10954,0.00000,570.130,11.540,1,21500116,26,269},
     moment{1610612754,101133,84.71030,27.48419,0.00000,570.130,11.540,1,21500116,26,269}
 };
@@ -52,13 +52,37 @@ TEST_CASE( "get_shooter_team", "[get_shooter_team, nearest_defender_query]" ) {
     SECTION( "basic shooter request" ) {
         shot s = test_shots.at(0);
         moment m = test_moments.at(1);
-        REQUIRE( get_shooter_team(test_moments, 0, s) == m.team_id );
+        REQUIRE( get_shooter_team(test_moments, 0, s) == m );
     }
     SECTION( "on bad shooter request, return last moment" ) {
         shot s = test_shots.at(0);
         s.player_id = 23;
         moment m = test_moments.at(test_moments.size() - 1);
-        REQUIRE( get_shooter_team(test_moments, 0, s) == m.team_id );
+        REQUIRE( get_shooter_team(test_moments, 0, s) == m );
+    }
+}
+
+TEST_CASE( "get_nearest_defender", "[get_nearest_defender, nearest_defender_query]" ) {
+    SECTION( "forwards nearest defender, first shot, same time step" ) {
+        int ball_moment_idx = 0;
+        moment shooter_moment = test_moments.at(1);
+        REQUIRE( get_nearest_defender(test_moments, ball_moment_idx,
+                                      shooter_moment, 0.f, true) ==
+                 test_moments.at(3) );
+    }
+    SECTION( "forwards nearest defender, second shot, same time step" ) {
+        int ball_moment_idx = 5;
+        moment shooter_moment = test_moments.at(8);
+        REQUIRE( get_nearest_defender(test_moments, ball_moment_idx,
+                                      shooter_moment, 0.f, true) ==
+                 test_moments.at(6) );
+    }
+    SECTION( "backwards nearest defender, third shot, different time step" ) {
+        int ball_moment_idx = 10;
+        moment shooter_moment = test_moments.at(11);
+        REQUIRE( get_nearest_defender(test_moments, ball_moment_idx,
+                                      shooter_moment, 0.f, true) ==
+                 test_moments.at(4) );
     }
 }
 
