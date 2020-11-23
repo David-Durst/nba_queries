@@ -34,19 +34,35 @@ vector<moment> test_moments = {
 };
 
 vector<shot> test_shots = {
-    shot{"Turnaround Hook Shot",567,"Made Shot","2015-11-11",26,21500116,
+    shot{"Turnaround Hook Shot",567,"Made Shot","2015-11-11",7,21500116,
          "Shot Chart Detail","BOS",-4.42490,71.61750,9,1,101161,"Amir Johnson",
-         1.00,27,1,4,1,570.130,"2PT Field Goal","Center(C)","In The Paint (Non-RA)",
+         1.00,27,1,4,1,655.590,"2PT Field Goal","Center(C)","In The Paint (Non-RA)",
          "Less Than 8 ft.",1610612738.0,"Boston Celtics","IND"},
-    shot{"Jump Shot",548,"Missed Shot","2015-11-11",27,21500116,
+    shot{"Jump Shot",548,"Missed Shot","2015-11-11",10,21500116,
          "Shot Chart Detail","BOS",-147.81380,74.91590,9,1,201588,"George Hill",
-         1.00,8,1,17,0,551.580,"2PT Field Goal","Left Side(L)","Mid-Range",
+         1.00,8,1,17,0,635.420,"2PT Field Goal","Left Side(L)","Mid-Range",
          "16-24 ft.",1610612754.0,"Indiana Pacers","IND"},
-    shot{"Jump Shot",535,"Missed Shot","2015-11-11",29,21500116,
+    shot{"Jump Shot",535,"Missed Shot","2015-11-11",26,21500116,
          "Shot Chart Detail","BOS",191.23700,153.33700,8,1,101161,"Amir Johnson",
-         1.00,55,true,25,false,537.490,"3PT Field Goal","Right Side Center(RC)",
+         1.00,55,true,25,false,570.130,"3PT Field Goal","Right Side Center(RC)",
          "Above the Break 3","24+ ft.",1610612738.0,"Boston Celtics","IND"}
 };
+
+TEST_CASE( "find_nearest_defender_at_each_shot", "[find_nearest_defender_at_each_shot, nearest_defender_query]" ) {
+    vector<shot_and_player_data> shots_and_players;
+    SECTION( "nearest defender for entire test set" ) {
+        shot s = test_shots.at(0);
+        moment m = test_moments.at(1);
+        vector<moment> result_vector = {test_moments.at(3), test_moments.at(6), test_moments.at(4)};
+        find_nearest_defender_at_each_shot(test_moments, test_shots, shots_and_players);
+        REQUIRE( shots_and_players.at(0).defense_player_id  == result_vector.at(0).player_id );
+        REQUIRE( shots_and_players.at(0).game_clock  == result_vector.at(0).game_clock );
+        REQUIRE( shots_and_players.at(1).defense_player_id  == result_vector.at(1).player_id );
+        REQUIRE( shots_and_players.at(1).game_clock  == result_vector.at(1).game_clock );
+        REQUIRE( shots_and_players.at(2).defense_player_id  == result_vector.at(2).player_id );
+        REQUIRE( shots_and_players.at(2).game_clock  == result_vector.at(2).game_clock );
+    }
+}
 
 TEST_CASE( "get_shooter_team", "[get_shooter_team, nearest_defender_query]" ) {
     SECTION( "basic shooter request" ) {

@@ -23,7 +23,8 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
         cur_shot = shots.at(cur_shot_idx);
         cur_moment = moments.at(cur_moment_idx);
         // enter this case if shot matches the ball's entry at time of shot
-        if (cur_moment.event_id == cur_shot.game_event_id &&
+        if (cur_moment.game_id == cur_shot.game_id &&
+            cur_moment.event_id == cur_shot.game_event_id &&
             cur_moment.game_clock == cur_shot.shot_time &&
             cur_moment.quarter == cur_shot.period &&
             cur_moment.player_id == -1) {
@@ -31,7 +32,7 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
             moment nearest_forwards = get_nearest_defender(moments, cur_moment_idx,
                                                            shooter_moment, 2.0, true);
             moment nearest_backwards = get_nearest_defender(moments, cur_moment_idx,
-                                                            shooter_moment, 2.0, true);
+                                                            shooter_moment, 2.0, false);
             float forwards_distance = compute_distance(cur_moment, nearest_forwards);
             float backwards_distance = compute_distance(cur_moment, nearest_backwards);
             moment nearest_defender = (forwards_distance <= backwards_distance) ?
