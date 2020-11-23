@@ -1,9 +1,5 @@
 #include <cmath>
-#include <string>
 #include <vector>
-#include <istream>
-#include <sstream>
-#include <iostream>
 #include "query_structs.h"
 #include "check_distances.h"
 using std::vector;
