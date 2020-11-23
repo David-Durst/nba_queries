@@ -97,6 +97,9 @@ moment get_nearest_defender(vector<moment>& moments, int ball_moment_at_shot_idx
                             moment shooter_moment, float time_delta,
                             bool forward_in_time) {
     moment closest_defender;
+    // initialize x_loc to bad values so always far if no matches
+    closest_defender.x_loc = -10000;
+    closest_defender.y_loc = -10000;
     float closest_distance;
     int cur_moment_idx = ball_moment_at_shot_idx;
     closest_defender.player_id = -1;

@@ -51,8 +51,6 @@ vector<shot> test_shots = {
 TEST_CASE( "find_nearest_defender_at_each_shot", "[find_nearest_defender_at_each_shot, nearest_defender_query]" ) {
     vector<shot_and_player_data> shots_and_players;
     SECTION( "nearest defender for entire test set" ) {
-        shot s = test_shots.at(0);
-        moment m = test_moments.at(1);
         vector<moment> result_vector = {test_moments.at(3), test_moments.at(6), test_moments.at(4)};
         find_nearest_defender_at_each_shot(test_moments, test_shots, shots_and_players, 100.0f);
         REQUIRE( shots_and_players.at(0).defense_player_id  == result_vector.at(0).player_id );
