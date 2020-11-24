@@ -64,32 +64,32 @@ bool operator==(shot const &lhs, shot const &rhs) {
 
 std::ostream &operator<<(std::ostream &os, const shot &value) {
     os << "team_id: " << value.team_id
-       << ", action_type" << value.action_type
-       << ", event_time" << value.event_time
-       << ", event_type" << value.event_type
-       << ", game_date" << value.game_date
-       << ", game_event_id" << value.game_event_id
-       << ", game_id" << value.game_id
-       << ", grid_type" << value.grid_type
-       << ", htm" << value.htm
-       << ", loc_x" << value.loc_x
-       << ", loc_y" << value.loc_y
-       << ", minutes_remaining" << value.minutes_remaining
-       << ", period" << value.period
-       << ", player_id" << value.player_id
-       << ", player_name" << value.player_name
-       << ", quarter" << value.quarter
-       << ", seconds_remaining" << value.seconds_remaining
-       << ", shot_attempted_flag" << value.shot_attempted_flag
-       << ", shot_distance" << value.shot_distance
-       << ", shot_made_flag" << value.shot_made_flag
-       << ", shot_time" << value.shot_time
-       << ", shot_type" << value.shot_type
-       << ", shot_zone_area" << value.shot_zone_area
-       << ", shot_zone_basic" << value.shot_zone_basic
-       << ", shot_zone_range" << value.shot_zone_range
-       << ", team_id" << value.team_id
-       << ", team_name" << value.team_name
-       << ", team_vtm" << value.team_vtm;
+       << ", action_type: " << value.action_type
+       << ", event_time: " << value.event_time
+       << ", event_type: " << value.event_type
+       << ", game_date: " << value.game_date
+       << ", game_event_id: " << value.game_event_id
+       << ", game_id: " << value.game_id
+       << ", grid_type: " << value.grid_type
+       << ", htm: " << value.htm
+       << ", loc_x: " << value.loc_x
+       << ", loc_y: " << value.loc_y
+       << ", minutes_remaining: " << value.minutes_remaining
+       << ", period: " << value.period
+       << ", player_id: " << value.player_id
+       << ", player_name: " << value.player_name
+       << ", quarter: " << value.quarter
+       << ", seconds_remaining: " << value.seconds_remaining
+       << ", shot_attempted_flag: " << value.shot_attempted_flag
+       << ", shot_distance: " << value.shot_distance
+       << ", shot_made_flag: " << value.shot_made_flag
+       << ", shot_time: " << value.shot_time
+       << ", shot_type: " << value.shot_type
+       << ", shot_zone_area: " << value.shot_zone_area
+       << ", shot_zone_basic: " << value.shot_zone_basic
+       << ", shot_zone_range: " << value.shot_zone_range
+       << ", team_id: " << value.team_id
+       << ", team_name: " << value.team_name
+       << ", team_vtm: " << value.team_vtm;
     return os;
 }
