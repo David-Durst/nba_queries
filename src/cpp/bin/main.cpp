@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -29,6 +30,22 @@ int main(int argc, char * argv[]) {
     load_shot_rows(shots_file, shots);
     shots_file.close();
     std::cout << "shots size: " << shots.size() << std::endl;
+    // filter shots, sort by quarter than gametime
+    long int target_game_id = moments.at(0).game_id;
+    std::cout << "filtering shots: " << std::endl;
+    shots.erase(std::remove_if(shots.begin(), shots.end(), [target_game_id](shot s){
+        return s.game_id != target_game_id;
+    }), shots.end());
+    std::cout << "new shots size: " << shots.size() << ", sorting shots" << std::endl;
+    std::sort(shots.begin(), shots.end(), [](shot s0, shot s1) {
+        return (s0.period < s1.period || (s0.period == s1.period && s0.shot_time <= s1.shot_time));
+    });
+    std::cout << "sorting moments: " << std::endl;
+    std::sort(moments.begin(), moments.end(), [](moment m0, moment m1) {
+        return (m0.quarter < m1.quarter || (m0.quarter == m1.quarter && m0.game_clock <= m1.game_clock));
+    });
+
+
     auto start_compute = std::chrono::high_resolution_clock::now();
     find_nearest_defender_at_each_shot(moments, shots, shots_and_players);
     auto end_compute = std::chrono::high_resolution_clock::now();
