@@ -42,7 +42,7 @@ int main(int argc, char * argv[]) {
     });
     std::cout << "sorting moments: " << std::endl;
     std::sort(moments.begin(), moments.end(), [](moment m0, moment m1) {
-        return (m0.quarter < m1.quarter || (m0.quarter == m1.quarter && m0.game_clock <= m1.game_clock));
+        return (m0.quarter < m1.quarter || (m0.quarter == m1.quarter && m0.game_clock < m1.game_clock));
     });
 
 
@@ -51,6 +51,6 @@ int main(int argc, char * argv[]) {
     auto end_compute = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration<double, std::milli>( end_compute - start_compute );
     std::cout << "shot_and_players size: " << shots_and_players.size() << std::endl;
-    std::cout << "compute time: " << duration.count() << "s" << std::endl;
+    std::cout << "compute time: " << duration.count() << "ms" << std::endl;
     return 0;
 }
