@@ -85,4 +85,7 @@ struct shot {
     string team_name;
     string team_vtm;
 } ;
+
+bool operator==(shot const & lhs, shot const & rhs);
+std::ostream& operator<<(std::ostream& os, shot const& value);
 #endif

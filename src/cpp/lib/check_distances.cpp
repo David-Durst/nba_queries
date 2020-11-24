@@ -1,4 +1,5 @@
 #include <cmath>
+#include <iostream>
 #include <vector>
 #include "query_structs.h"
 #include "check_distances.h"
@@ -60,9 +61,14 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
         // (b) cur_moment to the ball's next location
         else {
             if (cur_moment.game_id != cur_shot.game_id) {
+                std::cout << "wrong game_id at shot " << cur_shot_idx << std::endl;
+                std::cout << "cur game_id " << cur_shot.game_id << std::endl;
+                std::cout << "looking for game_id " << cur_moment.game_id << std::endl;
                 do {
                     cur_shot_idx++;
-                } while (cur_shot_idx < (int) shots.size() && cur_moment.game_id != cur_shot.game_id);
+                } while (cur_shot_idx < (int) shots.size() && cur_moment.game_id != shots.at(cur_shot_idx).game_id);
+                std::cout << "found game id at shot " << cur_shot_idx << std::endl;
+                std::cout << "found shot: " << shots.at(cur_shot_idx) << std::endl;
             }
             else {
                 do {

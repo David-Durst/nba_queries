@@ -29,6 +29,11 @@ int main(int argc, char * argv[]) {
     load_shot_rows(shots_file, shots);
     shots_file.close();
     std::cout << "shots size: " << shots.size() << std::endl;
+    auto start_compute = std::chrono::high_resolution_clock::now();
     find_nearest_defender_at_each_shot(moments, shots, shots_and_players);
+    auto end_compute = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration<double, std::milli>( end_compute - start_compute );
+    std::cout << "shot_and_players size: " << shots_and_players.size() << std::endl;
+    std::cout << "compute time: " << duration.count() << "s" << std::endl;
     return 0;
 }
