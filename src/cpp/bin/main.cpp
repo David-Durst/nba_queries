@@ -40,6 +40,9 @@ int main(int argc, char * argv[]) {
     std::sort(shots.begin(), shots.end(), [](shot s0, shot s1) {
         return (s0.period < s1.period || (s0.period == s1.period && s0.shot_time > s1.shot_time));
     });
+    for (int i = 0; i < 5; i++) {
+        std::cout << "shot " << i << ": " << shots.at(i) << std::endl;
+    }
     std::cout << "sorting moments: " << std::endl;
     std::sort(moments.begin(), moments.end(), [](moment m0, moment m1) {
         return (m0.quarter < m1.quarter || (m0.quarter == m1.quarter && m0.game_clock > m1.game_clock));
@@ -49,8 +52,8 @@ int main(int argc, char * argv[]) {
     auto start_compute = std::chrono::high_resolution_clock::now();
     find_nearest_defender_at_each_shot(moments, shots, shots_and_players);
     auto end_compute = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration<double, std::milli>( end_compute - start_compute );
+    std::chrono::duration<double> duration = end_compute - start_compute;
     std::cout << "shot_and_players size: " << shots_and_players.size() << std::endl;
-    std::cout << "compute time: " << duration.count() << "ms" << std::endl;
+    std::cout << "compute time: " << duration.count() << "s" << std::endl;
     return 0;
 }
