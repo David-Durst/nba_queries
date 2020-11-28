@@ -31,6 +31,20 @@ std::ostream& operator<<(std::ostream& os, const moment& value) {
     return os;
 }
 
+void print_moment_csv(std::ostream& os, const moment& value) {
+    os << value.team_id
+       << "," << value.player_id
+       << "," << value.x_loc
+       << "," << value.y_loc
+       << "," << value.radius
+       << "," << value.game_clock
+       << "," << value.shot_clock
+       << "," << value.quarter
+       << "," << value.game_id
+       << "," << value.event_id
+       << "," << value.moment_in_event;
+}
+
 bool operator==(shot const &lhs, shot const &rhs) {
     return
             lhs.action_type == rhs.action_type &&
@@ -92,4 +106,34 @@ std::ostream &operator<<(std::ostream &os, const shot &value) {
        << ", team_name: " << value.team_name
        << ", team_vtm: " << value.team_vtm;
     return os;
+}
+void print_shot_csv(std::ostream& os, const shot& value) {
+    os << value.team_id
+       << "," << value.action_type
+       << "," << value.event_time
+       << "," << value.event_type
+       << "," << value.game_date
+       << "," << value.game_event_id
+       << "," << value.game_id
+       << "," << value.grid_type
+       << "," << value.htm
+       << "," << value.loc_x
+       << "," << value.loc_y
+       << "," << value.minutes_remaining
+       << "," << value.period
+       << "," << value.player_id
+       << "," << value.player_name
+       << "," << value.quarter
+       << "," << value.seconds_remaining
+       << "," << value.shot_attempted_flag
+       << "," << value.shot_distance
+       << "," << value.shot_made_flag
+       << "," << value.shot_time
+       << "," << value.shot_type
+       << "," << value.shot_zone_area
+       << "," << value.shot_zone_basic
+       << "," << value.shot_zone_range
+       << "," << value.team_id
+       << "," << value.team_name
+       << "," << value.team_vtm;
 }

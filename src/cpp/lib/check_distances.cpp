@@ -1,6 +1,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include "query_structs.h"
 #include "check_distances.h"
 using std::vector;
@@ -17,6 +18,7 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
     int cur_shot_idx = 0;
     shot cur_shot;
     moment cur_moment;
+    float last_shot_time = 900.0f;
     while (cur_moment_idx < (int) moments.size() && cur_shot_idx < (int) shots.size()) {
         cur_shot = shots.at(cur_shot_idx);
         cur_moment = moments.at(cur_moment_idx);
@@ -55,6 +57,11 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
             result.moment_in_event = shooter_moment.moment_in_event;
             shots_and_players.push_back(result);
             cur_shot_idx++;
+            last_shot_time = cur_shot.shot_time;
+        }
+        // skip bugged, repeated shots
+        else if (last_shot_time == cur_shot.shot_time) {
+            cur_shot_idx++;
         }
         // if not a match, increment either
         // (a) shot until it matches current game_id
@@ -69,11 +76,27 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
                 } while (cur_shot_idx < (int) shots.size() && cur_moment.game_id != shots.at(cur_shot_idx).game_id);
                 std::cout << "found game id at shot " << cur_shot_idx << std::endl;
                 std::cout << "found shot: " << shots.at(cur_shot_idx) << std::endl;
+                last_shot_time = cur_shot.shot_time;
+            }
+            else if (cur_moment.game_clock < cur_shot.shot_time) {
+                std::cout << "speeding forward from shot " << cur_shot_idx << std::endl;
+                do {
+                    cur_shot_idx++;
+                } while (cur_shot_idx < (int) shots.size() && cur_moment.game_clock < cur_shot.shot_time);
+                std::cout << "found shot: " << shots.at(cur_shot_idx) << std::endl;
+                last_shot_time = cur_shot.shot_time;
             }
             else {
+                std::cout << "wrong moment " << cur_moment_idx << std::endl;
+                std::cout << "cur moment " << cur_moment << std::endl;
+                std::cout << "looking for shot_time " << cur_shot.shot_time << std::endl;
                 do {
                     cur_moment_idx++;
-                } while (cur_moment_idx < (int) moments.size() && moments.at(cur_moment_idx).player_id != -1);
+                } while (cur_moment_idx < (int) moments.size()
+                    && (moments.at(cur_moment_idx).player_id != -1 || moments.at(cur_moment_idx).event_id != cur_shot.game_event_id)
+                    && moments.at(cur_moment_idx).game_clock > cur_shot.shot_time);
+                std::cout << "found moment id " << cur_moment_idx << std::endl;
+                std::cout << "it's moment " << moments.at(std::min(cur_moment_idx, (int) moments.size()-1)) << std::endl << std::endl;
             }
         }
     }

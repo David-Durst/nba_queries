@@ -38,14 +38,16 @@ int main(int argc, char * argv[]) {
     }), shots.end());
     std::cout << "new shots size: " << shots.size() << ", sorting shots" << std::endl;
     std::sort(shots.begin(), shots.end(), [](shot s0, shot s1) {
-        return (s0.period < s1.period || (s0.period == s1.period && s0.shot_time > s1.shot_time));
+        return (s0.period < s1.period || (s0.period == s1.period && s0.shot_time > s1.shot_time) ||
+                (s0.period == s1.period && s0.shot_time == s1.shot_time && s0.game_event_id < s1.game_event_id));
     });
     for (int i = 0; i < 5; i++) {
         std::cout << "shot " << i << ": " << shots.at(i) << std::endl;
     }
     std::cout << "sorting moments: " << std::endl;
     std::sort(moments.begin(), moments.end(), [](moment m0, moment m1) {
-        return (m0.quarter < m1.quarter || (m0.quarter == m1.quarter && m0.game_clock > m1.game_clock));
+        return (m0.quarter < m1.quarter || (m0.quarter == m1.quarter && m0.game_clock > m1.game_clock) ||
+                (m0.quarter == m1.quarter && m0.game_clock == m1.game_clock && m0.event_id < m1.event_id));
     });
 
 

@@ -19,6 +19,7 @@ struct moment {
 
 bool operator==(moment const & lhs, moment const & rhs);
 std::ostream& operator<<(std::ostream& os, moment const& value);
+void print_moment_csv(std::ostream& os, const moment& value);
 
 struct event {
     long int game_id;
@@ -88,4 +89,5 @@ struct shot {
 
 bool operator==(shot const & lhs, shot const & rhs);
 std::ostream& operator<<(std::ostream& os, shot const& value);
+void print_shot_csv(std::ostream& os, const shot& value);
 #endif
