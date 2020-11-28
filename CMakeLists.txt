@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.14)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)
 
 project (nba_queries VERSION "0.1")
 
@@ -26,8 +26,9 @@ FATAL: In-source builds are not allowed.
 ")
 endif()
 
-
 add_executable(nba_queries ${NBA_SOURCES})
+# add this to enable debug printing statements
+# target_compile_definitions(nba_queries DEBUG)
 
 # add the install targets
 install (TARGETS nba_queries DESTINATION bin)
