@@ -2,6 +2,10 @@ cmake_minimum_required (VERSION 3.14)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Release)
+#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
+#SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
+#SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
 
 project (nba_queries VERSION "0.1")
 
@@ -38,3 +42,4 @@ install (TARGETS nba_queries DESTINATION bin)
 add_executable(tests ${NBA_TESTS_SOURCES} ${NBA_TESTS})
 target_include_directories(tests PUBLIC ${PROJECT_SOURCE_DIR}/catch)
 target_include_directories(tests PUBLIC ${PROJECT_BINARY_DIR}/catch)
+

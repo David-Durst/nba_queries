@@ -9,12 +9,14 @@
 #include "main.h"
 #include "load_data.h"
 #include "query_structs.h"
+#include <valgrind/callgrind.h>
 using std::string;
 
 int main(int argc, char * argv[]) {
     vector<moment> moments;
     vector<shot> shots;
     vector<shot_and_player_data> shots_and_players;
+    shots_and_players.reserve(200);
     string moments_file_path = argv[1], shots_file_path = argv[2];
     std::fstream moments_file, shots_file;
 
@@ -52,7 +54,11 @@ int main(int argc, char * argv[]) {
 
 
     auto start_compute = std::chrono::high_resolution_clock::now();
+    CALLGRIND_START_INSTRUMENTATION;
+    CALLGRIND_TOGGLE_COLLECT;
     find_nearest_defender_at_each_shot(moments, shots, shots_and_players);
+    CALLGRIND_TOGGLE_COLLECT;
+    CALLGRIND_STOP_INSTRUMENTATION;
     auto end_compute = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end_compute - start_compute;
     std::cout << "shot_and_players size: " << shots_and_players.size() << std::endl;

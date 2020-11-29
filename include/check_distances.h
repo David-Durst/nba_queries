@@ -32,13 +32,13 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
                                         vector<shot_and_player_data>& shots_and_players,
                                         float time_delta = 2.0);
 /* For a shot, find the shooter */
-moment get_shooter_team(vector<moment>& moments, int cur_moment_idx,
+const moment & get_shooter_team(vector<moment>& moments, int cur_moment_idx,
                         shot cur_shot);
 /* For a shot, find the nearest defender within time_delta seconds.
    forward_in_time if to search forwards (aka +time_delta) if true or
    backwards (aka -time_delta)
  */
-moment get_nearest_defender(vector<moment>& moments, int ball_moment_at_shot_idx,
+const moment & get_nearest_defender(vector<moment>& moments, int ball_moment_at_shot_idx,
                             moment shooter_moment, float time_delta,
                             bool forward_in_time);
 /*  Compute the euclidean distance between two moments. */
