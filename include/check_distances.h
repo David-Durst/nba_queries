@@ -21,6 +21,8 @@ struct shot_and_player_data {
     long int game_id;
     long int event_id;
     int moment_in_event;
+    bool shot_attempted;
+    bool shot_made;
 } ;
 
 /* For a list of shots (from possibly more than one game) and a list of moments
@@ -41,4 +43,16 @@ moment get_nearest_defender(vector<moment>& moments, int ball_moment_at_shot_idx
                             bool forward_in_time);
 /*  Compute the euclidean distance between two moments. */
 float compute_distance(moment m1, moment m2);
+
+struct shot_distance_bucket {
+    int distance;
+    int num_shot_attempts;
+    int num_shot_made;
+};
+bool operator==(shot const & lhs, shot const & rhs);
+std::ostream& operator<<(std::ostream& os, shot const& value);
+void print_shot_distance_bucket_csv(std::ostream& os, const shot_distance_bucket& value);
+
+/* bucket shot_and_player_data by distance, bucket size is 1 foot*/
+vector<shot_distance_bucket> bucket_shots_by_distance(vector<shot_and_player_data>& shots_and_players);
 #endif

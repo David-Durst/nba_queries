@@ -55,6 +55,8 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
             result.game_id = shooter_moment.game_id;
             result.event_id = shooter_moment.event_id;
             result.moment_in_event = shooter_moment.moment_in_event;
+            result.shot_attempted = cur_shot.shot_attempted_flag;
+            result.shot_made = cur_shot.shot_made_flag;
             shots_and_players.push_back(result);
             cur_shot_idx++;
             last_shot_time = cur_shot.shot_time;
@@ -166,4 +168,67 @@ moment get_nearest_defender(vector<moment>& moments, int ball_moment_at_shot_idx
 /*  Compute the euclidean distance between two moments. */
 float compute_distance(moment m1, moment m2) {
     return std::hypot(m1.x_loc-m2.x_loc, m1.y_loc-m2.y_loc);
+}
+
+bool operator==(shot_distance_bucket const& lhs, shot_distance_bucket const& rhs) {
+    return
+            lhs.distance == rhs.distance &&
+            lhs.num_shot_made == rhs.num_shot_made &&
+            lhs.num_shot_attempts == lhs.num_shot_attempts;
+}
+
+std::ostream& operator<<(std::ostream& os, const shot_distance_bucket& value) {
+    os << "distance: " << value.distance
+       << "num_shot_made: " << value.num_shot_made
+       << ", num_shot_attempt: " << value.num_shot_attempts;
+    return os;
+}
+
+void print_shot_distance_bucket_csv(std::ostream& os, const shot_distance_bucket& value) {
+    os << value.distance
+       << "," << value.num_shot_made
+       << "," << value.num_shot_attempts;
+    // adding percent as a helper in csv
+    if (value.num_shot_attempts == 0) {
+        os << ",0";
+    }
+    else {
+        os << "," << ((float) value.num_shot_made) / value.num_shot_attempts;
+    }
+}
+
+/* bucket shot_and_player_data by distance, bucket size is 1 foot*/
+vector<shot_distance_bucket> bucket_shots_by_distance(vector<shot_and_player_data>& shots_and_players) {
+    int max_distance = 0;
+    vector<shot_distance_bucket> buckets;
+    // always starting with bucket at 0, create buckets for rest of feet out to max distance
+    // bucket i is for shots with defender distance (inclusive) (i-1) to i (exclusive). The exception is last bucket,
+    // which is include for both sides. This means need buckets from 0 to max_distance-1
+    for (const shot_and_player_data & d : shots_and_players) {
+        int cur_distance = (int) ceil(d.defender_distance);
+        if (cur_distance > max_distance) {
+            max_distance = cur_distance;
+        }
+    }
+
+    // create the buckets
+    for (int i = 0; i < max_distance; i++) {
+        buckets.push_back(shot_distance_bucket{i, 0, 0});
+    }
+
+
+    // fill out the buckets
+    for (const shot_and_player_data & d : shots_and_players) {
+        // if max_distance, put in bucket max_distance - 1
+        int cur_distance = std::min((int) floor(d.defender_distance), max_distance-1);
+        shot_distance_bucket & b = buckets.at(cur_distance);
+        if (d.shot_attempted) {
+            b.num_shot_attempts++;
+        }
+        if (d.shot_made) {
+            b.num_shot_made++;
+        }
+    }
+
+    return buckets;
 }
