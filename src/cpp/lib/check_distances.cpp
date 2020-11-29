@@ -82,15 +82,15 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
 #endif
                 last_shot_time = cur_shot.shot_time;
             }
-            else if (cur_moment.game_clock < cur_shot.shot_time) {
+            else if (shot_before_moment(cur_shot, cur_moment)) {
 #ifdef DEBUG
                 std::cout << "speeding forward from shot " << cur_shot_idx << std::endl;
 #endif
                 do {
                     cur_shot_idx++;
-                } while (cur_shot_idx < (int) shots.size() && cur_moment.game_clock < cur_shot.shot_time);
+                } while (cur_shot_idx < (int) shots.size() && shot_before_moment(shots.at(cur_shot_idx), cur_moment));
 #ifdef DEBUG
-                std::cout << "found shot " << cur_shot_idx << ": " shots.at(std::min(cur_shot_idx, (int) shots.size()-1)) << std::endl;
+                std::cout << "found shot " << cur_shot_idx << ": " << shots.at(std::min(cur_shot_idx, (int) shots.size()-1)) << std::endl;
 #endif
                 last_shot_time = cur_shot.shot_time;
             }
@@ -104,7 +104,7 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
                     cur_moment_idx++;
                 } while (cur_moment_idx < (int) moments.size()
                     && (moments.at(cur_moment_idx).player_id != -1)// || moments.at(cur_moment_idx).event_id != cur_shot.game_event_id)
-                    && moments.at(cur_moment_idx).game_clock > cur_shot.shot_time);
+                    && moment_before_shot(moments.at(cur_moment_idx), cur_shot));
 #ifdef DEBUG2
                 std::cout << "found moment id " << cur_moment_idx << std::endl;
                 std::cout << "it's moment " << moments.at(std::min(cur_moment_idx, (int) moments.size()-1)) << std::endl << std::endl;

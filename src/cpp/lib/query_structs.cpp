@@ -137,3 +137,11 @@ void print_shot_csv(std::ostream& os, const shot& value) {
        << "," << value.team_name
        << "," << value.team_vtm;
 }
+
+bool shot_before_moment(const shot & s, const moment & m){
+    return s.period < m.quarter || (s.period == m.quarter && s.shot_time > m.game_clock);
+}
+
+bool moment_before_shot(const moment & m, const shot & s) {
+    return m.quarter < s.period || (m.quarter == s.period && m.game_clock > s.shot_time);
+}

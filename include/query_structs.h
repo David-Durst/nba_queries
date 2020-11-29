@@ -90,4 +90,7 @@ struct shot {
 bool operator==(shot const & lhs, shot const & rhs);
 std::ostream& operator<<(std::ostream& os, shot const& value);
 void print_shot_csv(std::ostream& os, const shot& value);
+
+bool shot_before_moment(const shot & s, const moment & m);
+bool moment_before_shot(const moment & m, const shot & s);
 #endif
