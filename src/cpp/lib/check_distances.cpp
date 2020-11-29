@@ -68,7 +68,7 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
         // (b) cur_moment to the ball's next location
         else {
             if (cur_moment.game_id != cur_shot.game_id) {
-#ifdef DEBUG
+#ifdef DEBUG2
                 std::cout << "wrong game_id at shot " << cur_shot_idx << std::endl;
                 std::cout << "cur game_id " << cur_shot.game_id << std::endl;
                 std::cout << "looking for game_id " << cur_moment.game_id << std::endl;
@@ -76,7 +76,7 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
                 do {
                     cur_shot_idx++;
                 } while (cur_shot_idx < (int) shots.size() && cur_moment.game_id != shots.at(cur_shot_idx).game_id);
-#ifdef DEBUG
+#ifdef DEBUG2
                 std::cout << "found game id at shot " << cur_shot_idx << std::endl;
                 std::cout << "found shot: " << shots.at(cur_shot_idx) << std::endl;
 #endif
@@ -90,12 +90,12 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
                     cur_shot_idx++;
                 } while (cur_shot_idx < (int) shots.size() && cur_moment.game_clock < cur_shot.shot_time);
 #ifdef DEBUG
-                std::cout << "found shot: " << shots.at(std::min(cur_shot_idx, (int) shots.size()-1)) << std::endl;
+                std::cout << "found shot " << cur_shot_idx << ": " shots.at(std::min(cur_shot_idx, (int) shots.size()-1)) << std::endl;
 #endif
                 last_shot_time = cur_shot.shot_time;
             }
             else {
-#ifdef DEBUG
+#ifdef DEBUG2
                 std::cout << "wrong moment " << cur_moment_idx << std::endl;
                 std::cout << "cur moment " << cur_moment << std::endl;
                 std::cout << "looking for shot_time " << cur_shot.shot_time << std::endl;
@@ -105,7 +105,7 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
                 } while (cur_moment_idx < (int) moments.size()
                     && (moments.at(cur_moment_idx).player_id != -1)// || moments.at(cur_moment_idx).event_id != cur_shot.game_event_id)
                     && moments.at(cur_moment_idx).game_clock > cur_shot.shot_time);
-#ifdef DEBUG
+#ifdef DEBUG2
                 std::cout << "found moment id " << cur_moment_idx << std::endl;
                 std::cout << "it's moment " << moments.at(std::min(cur_moment_idx, (int) moments.size()-1)) << std::endl << std::endl;
 #endif
