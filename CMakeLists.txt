@@ -32,7 +32,8 @@ endif()
 
 add_executable(nba_queries ${NBA_SOURCES})
 # add this to enable debug printing statements
-target_compile_definitions(nba_queries PRIVATE DEBUG)
+#target_compile_definitions(nba_queries PRIVATE DEBUG)
+#target_compile_definitions(nba_queries PRIVATE CALLGRIND)
 
 # add the install targets
 install (TARGETS nba_queries DESTINATION bin)

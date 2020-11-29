@@ -9,7 +9,9 @@
 #include "main.h"
 #include "load_data.h"
 #include "query_structs.h"
+#ifdef CALLGRIND
 #include <valgrind/callgrind.h>
+#endif
 using std::string;
 
 int main(int argc, char * argv[]) {
@@ -21,6 +23,7 @@ int main(int argc, char * argv[]) {
     std::fstream moments_file, shots_file;
 
     // load the moments
+    std::cout << "moment size: " << sizeof(moment) << std::endl;
     std::cout << "loading moments file: " << moments_file_path << std::endl;
     moments_file.open(moments_file_path);
     load_moment_rows(moments_file, moments);
@@ -54,11 +57,15 @@ int main(int argc, char * argv[]) {
 
 
     auto start_compute = std::chrono::high_resolution_clock::now();
+#ifdef CALLGRIND
     CALLGRIND_START_INSTRUMENTATION;
     CALLGRIND_TOGGLE_COLLECT;
+#endif
     find_nearest_defender_at_each_shot(moments, shots, shots_and_players);
+#ifdef CALLGRIND
     CALLGRIND_TOGGLE_COLLECT;
     CALLGRIND_STOP_INSTRUMENTATION;
+#endif
     auto end_compute = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end_compute - start_compute;
     std::cout << "shot_and_players size: " << shots_and_players.size() << std::endl;
