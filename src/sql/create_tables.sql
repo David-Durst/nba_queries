@@ -24,6 +24,10 @@ FROM '/home/durst/big_dev/nba-movement-data/data/csv/default_game.csv'
 DELIMITER ','
 CSV HEADER;
 
+CREATE INDEX timing_idx_moments ON default_moments (game_id ASC, quarter ASC, game_clock DESC, player_id ASC, event_id ASC);
+DROP INDEX timing_idx_moments;
+CLUSTER default_moments using timing_idx_moments;
+
 CREATE TABLE default_events
 (
     game_id                   BIGINT,
@@ -112,3 +116,7 @@ COPY shots_fixed
     CSV HEADER;
 
 select count(*) from shots_fixed;
+
+CREATE INDEX timing_idx_shots ON shots_fixed (game_id ASC, period ASC, shot_time DESC, player_id ASC, game_event_id ASC);
+
+CLUSTER shots_fixed using timing_idx_shots;
