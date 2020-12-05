@@ -36,6 +36,12 @@ update time: merge_times[quarter;game_clock] from `moments
 / queries are much slower
 `time xasc `moments
 
+get_shooter:{[query_time; query_shooter_id] first select from moments where time within (query_time-0.02;query_time+0.02),player_id=query_shooter_id}
+compute_distance:{[x1;y1;x2;y2] sqrt ((x1 - x2) xexp 2) + ((y1-y2) xexp 2)}
+get_nearest:{[shooter] first select dist:min compute_distance[x_loc;y_loc; shooter[`x_loc]; shooter[`y_loc]] from moments where time within (shooter[`time]-2.0;shooter[`time]+2.0),team_id<>first_shooter[`team_id],team_id<>-1}
+distances: get_nearest each shots_one_game[`time] get_shooter'shots_one_game[`PLAYER_ID] / add ]\t to get times
+count select from distances where dist<>0
+
 \t select from moments where time within (4700-2; 4700+2)
 
 moments2: update time2: time,player_id2:player_id from moments
@@ -50,7 +56,7 @@ compute_distance:{[x1;y1;x2;y2] sqrt ((x1 - x2) xexp 2) + ((y1-y2) xexp 2)}
 get_nearest_old:{[shooter] first select dist:min sqrt((((x_loc - shooter[`x_loc]) xexp 2) + ((y_loc - shooter[`y_loc]) xexp 2))) from moments where time within (shooter[`time]-2;shooter[`time]+2) }
 get_nearest:{[shooter] first select dist:min compute_distance[x_loc;y_loc; shooter[`x_loc]; shooter[`y_loc]] from moments where time within (shooter[`time]-2.0;shooter[`time]+2.0),team_id<>first_shooter[`team_id],team_id<>-1}
 
-update nearest_defender: get_nearest[get_shooter[time; PLAYER_ID]][`dist] from shots_one_game / this doesn't /it works when i replace equals or within with ~ / that's only because ~ drops too much
+update nearest_defender: get_nearest[get_shooter[time; PLAYER_ID]][`dist] from shots_one_game / this doesn't /it works when i replace equals or within with ~ / that's only because ~ drops too much / when using actual data, doesn't work
 count get_nearest each shots_one_game[`time] get_shooter'shots_one_game[`PLAYER_ID] / this works for some of the values
 
 update nearest_defender: time+PLAYER_ID from shots_one_game / this works
