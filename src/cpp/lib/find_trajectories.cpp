@@ -12,7 +12,6 @@ void find_trajectories_no_fixed_origin(vector<moment>& moments, vector<trajector
     float space_delta = 0.1;
     int cur_moment_idx = 0;
     int future_moment_idx = 0;
-    int num_misses = 0;
     while (cur_moment_idx < (int) moments.size() && future_moment_idx < (int) moments.size()) {
         const moment& cur_moment = moments.at(cur_moment_idx);
         const moment& future_moment = moments.at(future_moment_idx);
@@ -28,9 +27,6 @@ void find_trajectories_no_fixed_origin(vector<moment>& moments, vector<trajector
                 if (trajectories.size() == 0 || trajectories.at(trajectories.size()-1).start_game_clock != result.start_game_clock) {
                     trajectories.push_back(result);
                 }
-            }
-            else {
-                num_misses++;
             }
             cur_moment_idx++;
             future_moment_idx++;
@@ -54,7 +50,6 @@ void find_trajectories_no_fixed_origin(vector<moment>& moments, vector<trajector
             future_moment_idx++;
         }
     }
-    std::cout << "num_misses:" << num_misses << std::endl;
 }
 
 std::ostream& operator<<(std::ostream& os, trajectory_data const& value) {

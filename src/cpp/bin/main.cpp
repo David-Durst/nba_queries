@@ -7,6 +7,7 @@
 #include <chrono>
 #include "check_distances.h"
 #include "find_trajectories.h"
+#include "benchmark.h"
 #include "main.h"
 #include "load_data.h"
 #include "query_structs.h"
@@ -68,24 +69,32 @@ int main(int argc, char * argv[]) {
     });
 
 
-    auto start_compute = std::chrono::high_resolution_clock::now();
+    //auto start_compute = std::chrono::high_resolution_clock::now();
+    double min_time;
 #ifdef CALLGRIND
     CALLGRIND_START_INSTRUMENTATION;
     CALLGRIND_TOGGLE_COLLECT;
 #endif
     if (query.compare("1") == 0) {
-        find_nearest_defender_at_each_shot(moments, shots, shots_and_players);
+        min_time = Halide::Tools::benchmark(10, 10, [&]() {
+            shots_and_players.clear();
+            find_nearest_defender_at_each_shot(moments, shots, shots_and_players);
+        });
+
     }
     else if (query.compare("2a") == 0) {
-        find_trajectories_no_fixed_origin(moments, trajectories);
+        min_time = Halide::Tools::benchmark(10, 10, [&]() {
+            trajectories.clear();
+            find_trajectories_no_fixed_origin(moments, trajectories);
+        });
     }
 #ifdef CALLGRIND
     CALLGRIND_TOGGLE_COLLECT;
     CALLGRIND_STOP_INSTRUMENTATION;
 #endif
-    auto end_compute = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> duration = end_compute - start_compute;
-    std::cout << "compute time: " << duration.count() << "s" << std::endl;
+    //auto end_compute = std::chrono::high_resolution_clock::now();
+    //std::chrono::duration<double> duration = end_compute - start_compute;
+    printf("compute time: %gms\n", min_time * 1e3);
     if (query.compare("1") == 0) {
         std::cout << "shot_and_players size: " << shots_and_players.size() << std::endl;
         vector<shot_distance_bucket> buckets = bucket_shots_by_distance(shots_and_players);
