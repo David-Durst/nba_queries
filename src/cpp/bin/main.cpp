@@ -52,7 +52,10 @@ int main(int argc, char * argv[]) {
     std::cout << "sorting moments: " << std::endl;
     std::sort(moments.begin(), moments.end(), [](moment m0, moment m1) {
         return (m0.quarter < m1.quarter || (m0.quarter == m1.quarter && m0.game_clock > m1.game_clock) ||
-                (m0.quarter == m1.quarter && m0.game_clock == m1.game_clock && m0.event_id < m1.event_id));
+                (m0.quarter == m1.quarter && m0.game_clock == m1.game_clock && m0.event_id < m1.event_id) ||
+                (m0.quarter == m1.quarter && m0.game_clock == m1.game_clock && m0.event_id == m1.event_id && m0.moment_in_event < m1.moment_in_event) ||
+                (m0.quarter == m1.quarter && m0.game_clock == m1.game_clock && m0.event_id == m1.event_id &&
+                    m0.moment_in_event == m1.moment_in_event && m0.player_id < m1.player_id));
     });
 
 
