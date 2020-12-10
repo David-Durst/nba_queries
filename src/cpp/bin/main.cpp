@@ -85,10 +85,10 @@ int main(int argc, char * argv[]) {
 #endif
     auto end_compute = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end_compute - start_compute;
-    std::cout << "shot_and_players size: " << shots_and_players.size() << std::endl;
-    vector<shot_distance_bucket> buckets = bucket_shots_by_distance(shots_and_players);
     std::cout << "compute time: " << duration.count() << "s" << std::endl;
     if (query.compare("1") == 0) {
+        std::cout << "shot_and_players size: " << shots_and_players.size() << std::endl;
+        vector<shot_distance_bucket> buckets = bucket_shots_by_distance(shots_and_players);
         std::cout << "distance,num_shot_made,num_shot_attempt,percent_made" << std::endl;
         for (const auto & b : buckets) {
             print_shot_distance_bucket_csv(std::cout, b);

@@ -9,9 +9,10 @@ void find_trajectories_no_fixed_origin(vector<moment>& moments, vector<trajector
                                        float x_offset, float y_offset, float t_offset) {
     // since using abs, this is really 0.04
     float time_delta = 0.02;
-    float space_delta = 0.01;
+    float space_delta = 0.1;
     int cur_moment_idx = 0;
     int future_moment_idx = 0;
+    int num_misses = 0;
     while (cur_moment_idx < (int) moments.size() && future_moment_idx < (int) moments.size()) {
         const moment& cur_moment = moments.at(cur_moment_idx);
         const moment& future_moment = moments.at(future_moment_idx);
@@ -23,7 +24,13 @@ void find_trajectories_no_fixed_origin(vector<moment>& moments, vector<trajector
                 trajectory_data result = {cur_moment.team_id, cur_moment.player_id, cur_moment.x_loc, cur_moment.y_loc,
                                           cur_moment.game_clock, future_moment.x_loc, future_moment.y_loc, future_moment.game_clock,
                                           cur_moment.quarter};
-                trajectories.push_back(result);
+                // filter out repeated entries due to multiple events at same time step
+                if (trajectories.size() == 0 || trajectories.at(trajectories.size()-1).start_game_clock != result.start_game_clock) {
+                    trajectories.push_back(result);
+                }
+            }
+            else {
+                num_misses++;
             }
             cur_moment_idx++;
             future_moment_idx++;
@@ -47,6 +54,7 @@ void find_trajectories_no_fixed_origin(vector<moment>& moments, vector<trajector
             future_moment_idx++;
         }
     }
+    std::cout << "num_misses:" << num_misses << std::endl;
 }
 
 std::ostream& operator<<(std::ostream& os, trajectory_data const& value) {
