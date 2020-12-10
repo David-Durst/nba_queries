@@ -18,6 +18,9 @@ struct trajectory_data {
 } ;
 
 /* For a list of moments from one game, find all the trajectories that are over the specified distances in x,y,t. */
-void find_trajectories_no_fixed_origin(vector<moment>& moments, vector<trajectory_data>& shots_and_players,
-        float x_offset=10, float y_offset=10, float z_offset=10);
+void find_trajectories_no_fixed_origin(vector<moment>& moments, vector<trajectory_data>& trajectories,
+        float x_offset=10, float y_offset=10, float t_offset=10);
+
+std::ostream& operator<<(std::ostream& os, trajectory_data const& value);
+void print_trajectory_csv(std::ostream& os, const trajectory_data& value);
 #endif
