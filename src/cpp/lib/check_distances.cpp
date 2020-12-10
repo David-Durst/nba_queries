@@ -102,6 +102,8 @@ const moment & get_shooter_team(vector<moment>& moments, int cur_moment_idx,
     return moments.at(cur_moment_idx);
 }
 
+// default if no defenders before the current player
+moment really_far_player = {-2, -2, 1000000, 100000, 100000, 0, 0, 0, 0, 0, 0};
 /* For a shot, find the nearest defender within time_delta seconds.
    forward_in_time if to search forwards (aka +time_delta) if true or
    backwards (aka -time_delta)
@@ -130,7 +132,12 @@ const moment & get_nearest_defender(vector<moment>& moments, int ball_moment_at_
             }
         }
     }
-    return moments.at(closest_defender_idx);
+    if (closest_defender_idx == -1) {
+        return really_far_player;
+    }
+    else {
+        return moments.at(closest_defender_idx);
+    }
 }
 
 /*  Compute the euclidean distance between two moments. */
