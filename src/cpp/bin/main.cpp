@@ -6,6 +6,7 @@
 #include <thread>
 #include <chrono>
 #include "check_distances.h"
+#include "find_trajectories.h"
 #include "main.h"
 #include "load_data.h"
 #include "query_structs.h"
@@ -19,7 +20,15 @@ int main(int argc, char * argv[]) {
     vector<shot> shots;
     vector<shot_and_player_data> shots_and_players;
     shots_and_players.reserve(200);
-    string moments_file_path = argv[1], shots_file_path = argv[2];
+    vector<trajectory_data> trajectories;
+    if (argc != 4) {
+        std::cout << "please call this code with 3 arguments: " << std::endl;
+        std::cout << "1. path/to/moments_file.csv " << std::endl;
+        std::cout << "2. path/to/shots_file.csv " << std::endl;
+        std::cout << "3. query to run: \"1\" for nearest defender within 2 seconds of each shot, ";
+        std::cout << "\"2a\" for trajectories from (x,y,t) to (x+10,y+10,t+5)" << std::endl;
+    }
+    string moments_file_path = argv[1], shots_file_path = argv[2], query = argv[3];
     std::fstream moments_file, shots_file;
 
     // load the moments
@@ -64,7 +73,12 @@ int main(int argc, char * argv[]) {
     CALLGRIND_START_INSTRUMENTATION;
     CALLGRIND_TOGGLE_COLLECT;
 #endif
-    find_nearest_defender_at_each_shot(moments, shots, shots_and_players);
+    if (query.compare("1") == 0) {
+        find_nearest_defender_at_each_shot(moments, shots, shots_and_players);
+    }
+    else if (query.compare("2a") == 0) {
+        find_trajectories_no_fixed_origin(moments, trajectories);
+    }
 #ifdef CALLGRIND
     CALLGRIND_TOGGLE_COLLECT;
     CALLGRIND_STOP_INSTRUMENTATION;
