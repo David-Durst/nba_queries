@@ -56,6 +56,15 @@ TEST_CASE( "create_moment_index", "[create_moment_index, trajectories_at_fixed_o
     SECTION( "create moment index" ) {
         index.cur_range = compute_initial_range(test_moments_trajectories);
         create_moment_index(index, test_moments_trajectories, moments_in_region);
-        int x = 1;
+        for (int i = 0; i < (int) index.children.size(); i++) {
+            for (const auto & j : index.children.at(i).values) {
+                REQUIRE( test_moments_trajectories.at(j).x_loc >= index.children.at(i).cur_range.start.x );
+                REQUIRE( test_moments_trajectories.at(j).y_loc >= index.children.at(i).cur_range.start.y );
+                REQUIRE( test_moments_trajectories.at(j).game_clock >= index.children.at(i).cur_range.start.game_clock );
+                REQUIRE( test_moments_trajectories.at(j).x_loc <= index.children.at(i).cur_range.end.x );
+                REQUIRE( test_moments_trajectories.at(j).y_loc <= index.children.at(i).cur_range.end.y );
+                REQUIRE( test_moments_trajectories.at(j).game_clock <= index.children.at(i).cur_range.end.game_clock );
+            }
+        }
     }
 }

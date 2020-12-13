@@ -127,7 +127,7 @@ void create_moment_index(st_index& index, vector<moment>& moments,
 
         coordinate_range child_range;
         // x is largest bit
-        if (c & 4 == 4) {
+        if ((c & 4) == 4) {
             child_range.start.x = x_median;
             child_range.end.x = index.cur_range.end.x;
         } else {
@@ -135,7 +135,7 @@ void create_moment_index(st_index& index, vector<moment>& moments,
             child_range.end.x = x_median;
         }
         // y is middle bit
-        if (c & 2 == 2) {
+        if ((c & 2) == 2) {
             child_range.start.y = y_median;
             child_range.end.y = index.cur_range.end.y;
         } else {
@@ -143,7 +143,7 @@ void create_moment_index(st_index& index, vector<moment>& moments,
             child_range.end.y = y_median;
         }
         // x is largest bit
-        if (c & 1 == 1) {
+        if ((c & 1) == 1) {
             child_range.start.game_clock = clock_median;
             child_range.end.game_clock = index.cur_range.end.game_clock;
         } else {
