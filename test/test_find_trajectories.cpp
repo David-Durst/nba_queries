@@ -77,11 +77,15 @@ TEST_CASE( "find_trajectories_fixed_origin", "[find_trajectories_fixed_origin, t
     SECTION( "create moment index" ) {
         index.cur_range = compute_initial_range(test_moments_trajectories);
         create_moment_index(index, test_moments_trajectories, moments_in_region);
-        coordinate_range origin{{3.8,26.0,655.0}, {3.95,26.9, 655.5}};
-        coordinate_range destination{{5.2,48.0,635.0}, {5.9,48.9, 636.5}};
-        find_trajectories_fixed_origin(test_moments_trajectories, trajectories, origin, destination, 20.0, 2.0);
+        coordinate_range origin{{3.8,26.0,655.5}, {3.95,26.9, 0}};
+        coordinate_range destination{{5.2,48.0,635.5}, {5.9,48.9, 0}};
+        find_trajectories_fixed_origin(test_moments_trajectories, trajectories, index, origin, destination, 20.0, 2.0);
         REQUIRE( trajectories.at(0).player_id == test_moments_trajectories.at(1).player_id );
+        REQUIRE( trajectories.at(0).start_game_clock == test_moments_trajectories.at(1).game_clock );
+        REQUIRE( trajectories.at(0).end_game_clock == test_moments_trajectories.at(6).game_clock );
         REQUIRE( trajectories.at(1).player_id == test_moments_trajectories.at(3).player_id );
+        REQUIRE( trajectories.at(1).start_game_clock == test_moments_trajectories.at(3).game_clock );
+        REQUIRE( trajectories.at(1).end_game_clock == test_moments_trajectories.at(8).game_clock );
     }
 }
 

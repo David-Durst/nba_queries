@@ -1,8 +1,10 @@
 #include <iostream>
 #include <vector>
+#include <deque>
 #include "query_structs.h"
 #include "find_trajectories.h"
 using std::vector;
+using std::deque;
 using std::string;
 
 void find_trajectories_no_fixed_origin(vector<moment>& moments, vector<trajectory_data>& trajectories,
@@ -169,12 +171,68 @@ bool range_intersect(coordinate_range r0, coordinate_range r1, bool consider_x, 
             (r0.end.x >= r1.start.x && r0.end.x <= r1.end.x);
     bool y_intersects = !consider_y || (r0.start.y >= r1.start.y && r0.start.y <= r1.end.y) ||
                         (r0.end.y >= r1.start.y && r0.end.y <= r1.end.y);
-    bool t_intersects = !consider_t || (r0.start.game_clock >= r1.start.game_clock && r0.start.game_clock <= r1.end.game_clock) ||
-                        (r0.end.game_clock >= r1.start.game_clock && r0.end.game_clock <= r1.end.game_clock);
+    bool t_intersects = !consider_t || (r0.start.game_clock <= r1.start.game_clock && r0.start.game_clock >= r1.end.game_clock) ||
+                        (r0.end.game_clock <= r1.start.game_clock && r0.end.game_clock >= r1.end.game_clock);
     return x_intersects && y_intersects && t_intersects;
 }
 
-void find_trajectories_fixed_origin(vector<moment>& moments, vector<trajectory_data>& trajectories,
-                                    coordinate_range origin, coordinate_range destination, float t_offset, float t_delta) {
+bool point_intersect(coordinate_range r, coordinate c, bool consider_x, bool consider_y, bool consider_t) {
+    bool x_intersects = !consider_x || (c.x >= r.start.x && c.x <= r.end.x);
+    bool y_intersects = !consider_y || (c.y >= r.start.y && c.y <= r.end.y);
+    bool t_intersects = !consider_t || (c.game_clock <= r.start.game_clock && c.game_clock >= r.end.game_clock);
+    return x_intersects && y_intersects && t_intersects;
+}
 
+void traverse_index_for_points_in_range(vector<moment> &moments, coordinate_range &search_range,
+                                        st_index& index, vector<int> &values_in_range, bool consider_t) {
+    deque<reference_wrapper<st_index>> origin_frontier = {index};
+    while (!origin_frontier.empty()) {
+        st_index& cur_index = origin_frontier.front();
+        origin_frontier.pop_front();
+        // if this st_index has no children, it's a leaf so check all values if in search_range
+        if (cur_index.children.empty()) {
+            for (const auto & i : cur_index.values) {
+                moment& cur_moment = moments.at(i);
+                if (point_intersect(search_range, {cur_moment.x_loc, cur_moment.y_loc, cur_moment.game_clock},
+                                    true, true, consider_t)) {
+                    values_in_range.push_back(i);
+                }
+            }
+        }
+        // otherwise, look at all children that intersect search_range
+        else {
+            for (int c = 0; c < cur_index.children_ranges.size(); c++) {
+                if (range_intersect(search_range, cur_index.children_ranges.at(c), true, true, consider_t)) {
+                    origin_frontier.push_back(cur_index.children.at(c));
+                }
+            }
+        }
+    }
+}
+
+void find_trajectories_fixed_origin(vector<moment>& moments, vector<trajectory_data>& trajectories, st_index& index,
+                                    coordinate_range origin, coordinate_range destination, float t_offset, float t_delta) {
+    // find valid starting points for trajectories
+    vector<int> trajectory_starts;
+    traverse_index_for_points_in_range(moments, origin, index, trajectory_starts, false);
+
+    // for each possible trajectory starting point, if you can find at least one ending point, then add it to trajectories
+    for (const auto & trajectory_start : trajectory_starts) {
+        vector<int> trajectory_ends;
+        coordinate_range destination_with_time_set = destination;
+        destination_with_time_set.start.game_clock = moments.at(trajectory_start).game_clock - t_offset + t_delta;
+        destination_with_time_set.end.game_clock = moments.at(trajectory_start).game_clock - t_offset - t_delta;
+        traverse_index_for_points_in_range(moments, destination_with_time_set, index, trajectory_ends, true);
+        // if one trajectory end has same player id and quarter as start, then add this trajectory to list and move on to next start
+        for (const auto & trajectory_end : trajectory_ends) {
+            moment& start_moment = moments.at(trajectory_start);
+            moment& end_moment = moments.at(trajectory_end);
+            if (start_moment.player_id == end_moment.player_id && start_moment.quarter == end_moment.quarter) {
+                trajectories.push_back({start_moment.team_id, start_moment.player_id, start_moment.x_loc, start_moment.y_loc,
+                                        start_moment.game_clock, end_moment.x_loc, end_moment.y_loc, end_moment.game_clock,
+                                        start_moment.quarter});
+                break;
+            }
+        }
+    }
 }

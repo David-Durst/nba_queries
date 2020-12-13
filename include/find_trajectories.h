@@ -49,7 +49,7 @@ struct st_index {
 coordinate_range compute_initial_range(vector<moment>& moments);
 void create_moment_index(st_index& index, vector<moment>& moments,
                          vector<int> moments_in_region);
-void find_trajectories_fixed_origin(vector<moment>& moments, vector<trajectory_data>& trajectories,
+void find_trajectories_fixed_origin(vector<moment>& moments, vector<trajectory_data>& trajectories, st_index& index,
                                     coordinate_range origin, coordinate_range destination, float t_offset, float t_delta);
 
 #endif
