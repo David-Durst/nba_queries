@@ -88,10 +88,11 @@ coordinate_range compute_initial_range(vector<moment>& moments) {
     for (int i = 1; i < (int) moments.size(); i++) {
         range.start.x = std::min(moments.at(i).x_loc, range.start.x);
         range.start.y = std::min(moments.at(i).y_loc, range.start.y);
-        range.start.game_clock = std::min(moments.at(i).game_clock, range.start.game_clock);
+        // largest game_clock comes first
+        range.start.game_clock = std::max(moments.at(i).game_clock, range.start.game_clock);
         range.end.x = std::max(moments.at(i).x_loc, range.end.x);
         range.end.y = std::max(moments.at(i).y_loc, range.end.y);
-        range.end.game_clock = std::max(moments.at(i).game_clock, range.end.game_clock);
+        range.end.game_clock = std::min(moments.at(i).game_clock, range.end.game_clock);
     }
     return range;
 }
@@ -117,7 +118,8 @@ void create_moment_index(st_index& index, vector<moment>& moments,
         moment& cur_moment = moments.at(i);
         int x_factor = cur_moment.x_loc > x_median ? 2*2 : 0;
         int y_factor = cur_moment.y_loc > y_median ? 2 : 0;
-        int clock_factor = cur_moment.game_clock > clock_median ? 1 : 0;
+        // larger game clock means earlier
+        int clock_factor = cur_moment.game_clock > clock_median ? 0 : 1;
         moments_in_children.at(x_factor + y_factor + clock_factor).push_back(i);
     }
 
@@ -144,6 +146,8 @@ void create_moment_index(st_index& index, vector<moment>& moments,
         }
         // x is largest bit
         if ((c & 1) == 1) {
+            // since end.game_clock is smaller and start.game_clock is larger
+            // this puts children in right order
             child_range.start.game_clock = clock_median;
             child_range.end.game_clock = index.cur_range.end.game_clock;
         } else {
@@ -158,4 +162,19 @@ void create_moment_index(st_index& index, vector<moment>& moments,
    for (unsigned int c = 0; c < (unsigned int) moments_in_children.size(); c++) {
        create_moment_index(index.children.at(c), moments, moments_in_children.at(c));
    }
+}
+
+bool range_intersect(coordinate_range r0, coordinate_range r1, bool consider_x, bool consider_y, bool consider_t) {
+    bool x_intersects = !consider_x || (r0.start.x >= r1.start.x && r0.start.x <= r1.end.x) ||
+            (r0.end.x >= r1.start.x && r0.end.x <= r1.end.x);
+    bool y_intersects = !consider_y || (r0.start.y >= r1.start.y && r0.start.y <= r1.end.y) ||
+                        (r0.end.y >= r1.start.y && r0.end.y <= r1.end.y);
+    bool t_intersects = !consider_t || (r0.start.game_clock >= r1.start.game_clock && r0.start.game_clock <= r1.end.game_clock) ||
+                        (r0.end.game_clock >= r1.start.game_clock && r0.end.game_clock <= r1.end.game_clock);
+    return x_intersects && y_intersects && t_intersects;
+}
+
+void find_trajectories_fixed_origin(vector<moment>& moments, vector<trajectory_data>& trajectories,
+                                    coordinate_range origin, coordinate_range destination, float t_offset, float t_delta) {
+
 }
