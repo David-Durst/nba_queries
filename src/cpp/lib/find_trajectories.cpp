@@ -76,3 +76,86 @@ void print_trajectory_csv(std::ostream& os, const trajectory_data& value) {
        << "," << value.end_game_clock
        << "," << value.quarter;
 }
+
+coordinate_range compute_initial_range(vector<moment>& moments) {
+    coordinate_range range;
+    range.start.x = moments.at(0).x_loc;
+    range.start.y = moments.at(0).y_loc;
+    range.start.game_clock = moments.at(0).game_clock;
+    range.end.x = moments.at(0).x_loc;
+    range.end.y = moments.at(0).y_loc;
+    range.end.game_clock = moments.at(0).game_clock;
+    for (int i = 1; i < (int) moments.size(); i++) {
+        range.start.x = std::min(moments.at(i).x_loc, range.start.x);
+        range.start.y = std::min(moments.at(i).y_loc, range.start.y);
+        range.start.game_clock = std::min(moments.at(i).game_clock, range.start.game_clock);
+        range.end.x = std::max(moments.at(i).x_loc, range.end.x);
+        range.end.y = std::max(moments.at(i).y_loc, range.end.y);
+        range.end.game_clock = std::max(moments.at(i).game_clock, range.end.game_clock);
+    }
+    return range;
+}
+
+void create_moment_index(st_index& index, vector<moment>& moments,
+                         vector<int> moments_in_region) {
+    // if not enough nodes, contain them all at this layer
+    if (moments_in_region.size() < 8) {
+        index.values = moments_in_region;
+        return;
+    }
+    // otherwise, collect values for children, find child ranges, and then create children nodes
+    // first collecting values for children
+    vector<vector<int>> moments_in_children;
+    for (int i = 0; i < 2*2*2; i++){
+        moments_in_children.push_back(vector<int>{});
+        index.children.push_back(st_index{});
+    }
+    float x_median = (index.cur_range.end.x + index.cur_range.start.x) / 2;
+    float y_median = (index.cur_range.end.y + index.cur_range.start.y) / 2;
+    float clock_median = (index.cur_range.end.game_clock + index.cur_range.start.game_clock) / 2;
+    for (int i = 0; i < (int) moments_in_region.size(); i++) {
+        moment& cur_moment = moments.at(i);
+        int x_factor = cur_moment.x_loc > x_median ? 2*2 : 0;
+        int y_factor = cur_moment.y_loc > y_median ? 2 : 0;
+        int clock_factor = cur_moment.game_clock > clock_median ? 1 : 0;
+        moments_in_children.at(x_factor + y_factor + clock_factor).push_back(i);
+    }
+
+    // now determining ranges of each child
+    for (unsigned int c = 0; c < (unsigned int) moments_in_children.size(); c++) {
+        vector<int> child_moments = moments_in_children.at(c);
+
+        coordinate_range child_range;
+        // x is largest bit
+        if ((c & 4) == 4) {
+            child_range.start.x = x_median;
+            child_range.end.x = index.cur_range.end.x;
+        } else {
+            child_range.start.x = index.cur_range.start.x;
+            child_range.end.x = x_median;
+        }
+        // y is middle bit
+        if ((c & 2) == 2) {
+            child_range.start.y = y_median;
+            child_range.end.y = index.cur_range.end.y;
+        } else {
+            child_range.start.y = index.cur_range.start.y;
+            child_range.end.y = y_median;
+        }
+        // x is largest bit
+        if ((c & 1) == 1) {
+            child_range.start.game_clock = clock_median;
+            child_range.end.game_clock = index.cur_range.end.game_clock;
+        } else {
+            child_range.start.game_clock = index.cur_range.start.game_clock;
+            child_range.end.game_clock = clock_median;
+        }
+        index.children_ranges.push_back(child_range);
+        index.children.at(c).cur_range = child_range;
+    }
+
+   // now creating children
+   for (unsigned int c = 0; c < (unsigned int) moments_in_children.size(); c++) {
+       create_moment_index(index.children.at(c), moments, moments_in_children.at(c));
+   }
+}
