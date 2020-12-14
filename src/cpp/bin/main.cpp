@@ -83,7 +83,7 @@ int main(int argc, char * argv[]) {
         });
 
     }
-    else if (query.compare("2a") == 0) {
+    else if (query.compare("2") == 0) {
         min_time = Halide::Tools::benchmark(10, 10, [&]() {
             trajectories.clear();
             find_trajectories_no_fixed_origin(moments, trajectories);
@@ -118,7 +118,7 @@ int main(int argc, char * argv[]) {
             std::cout << std::endl;
         }
     }
-    else if (query.compare("2a") == 0 || query.compare("3") == 0) {
+    else if (query.compare("2") == 0 || query.compare("3") == 0) {
         std::cout << "team_id,player_id,start_x_loc,start_y_loc,start_game_clock,end_x_loc,end_y_loc,end_game_clock,quarter" << std::endl;
         for (const auto & t : trajectories) {
             print_trajectory_csv(std::cout, t);
