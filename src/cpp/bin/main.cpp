@@ -5,6 +5,7 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#include <numeric>
 #include "check_distances.h"
 #include "find_trajectories.h"
 #include "benchmark.h"
@@ -88,6 +89,19 @@ int main(int argc, char * argv[]) {
             find_trajectories_no_fixed_origin(moments, trajectories);
         });
     }
+    else if (query.compare("3") == 0) {
+        st_index index;
+        vector<int> moments_in_region(moments.size());
+        std::iota(moments_in_region.begin(), moments_in_region.end(), 0);
+        index.cur_range = compute_initial_range(moments);
+        create_moment_index(index, moments, moments_in_region);
+        coordinate_range origin{{3.8,26.0,655.5}, {3.95,26.9, 0}};
+        coordinate_range destination{{5.2,48.0,635.5}, {5.9,48.9, 0}};
+        min_time = Halide::Tools::benchmark(10, 10, [&]() {
+            find_trajectories_fixed_origin(moments, trajectories, index, origin, destination, 20.0, 2.0);
+        });
+
+    }
 #ifdef CALLGRIND
     CALLGRIND_TOGGLE_COLLECT;
     CALLGRIND_STOP_INSTRUMENTATION;
@@ -104,7 +118,7 @@ int main(int argc, char * argv[]) {
             std::cout << std::endl;
         }
     }
-    else if (query.compare("2a") == 0) {
+    else if (query.compare("2a") == 0 || query.compare("3") == 0) {
         std::cout << "team_id,player_id,start_x_loc,start_y_loc,start_game_clock,end_x_loc,end_y_loc,end_game_clock,quarter" << std::endl;
         for (const auto & t : trajectories) {
             print_trajectory_csv(std::cout, t);
