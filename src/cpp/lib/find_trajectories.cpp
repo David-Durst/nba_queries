@@ -116,7 +116,7 @@ void create_moment_index(st_index& index, vector<moment>& moments,
     float x_median = (index.cur_range.end.x + index.cur_range.start.x) / 2;
     float y_median = (index.cur_range.end.y + index.cur_range.start.y) / 2;
     float clock_median = (index.cur_range.end.game_clock + index.cur_range.start.game_clock) / 2;
-    for (int i = 0; i < (int) moments_in_region.size(); i++) {
+    for (const auto & i : moments_in_region) {
         moment& cur_moment = moments.at(i);
         int x_factor = cur_moment.x_loc > x_median ? 2*2 : 0;
         int y_factor = cur_moment.y_loc > y_median ? 2 : 0;
