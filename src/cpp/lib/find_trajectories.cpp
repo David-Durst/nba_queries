@@ -99,10 +99,9 @@ coordinate_range compute_initial_range(vector<moment>& moments) {
     return range;
 }
 
-void create_moment_index(st_index& index, vector<moment>& moments,
-                         vector<int> moments_in_region) {
+void create_moment_index(st_index& index, vector<moment>& moments, vector<int> moments_in_region, int max_bucket_size) {
     // if not enough nodes, contain them all at this layer
-    if (moments_in_region.size() < 8) {
+    if (moments_in_region.size() < max_bucket_size) {
         index.values = moments_in_region;
         return;
     }
@@ -125,10 +124,30 @@ void create_moment_index(st_index& index, vector<moment>& moments,
         moments_in_children.at(x_factor + y_factor + clock_factor).push_back(i);
     }
 
+    // if all points are the same, stop, clear the children, and make them all values at this layer
+    for (int i = 0; i < moments_in_children.size(); i++) {
+        // first check if all same by seeing if all assigned to same bucker
+        if (moments_in_children.at(i).size() == moments_in_region.size()) {
+            bool all_moments_same = true;
+            for (const auto & j : moments_in_children.at(i)) {
+                // all same if all equal to first moment in this region
+                if (moments.at(j).x_loc != moments.at(moments_in_region.at(0)).x_loc ||
+                    moments.at(j).y_loc != moments.at(moments_in_region.at(0)).y_loc ||
+                    moments.at(j).game_clock != moments.at(moments_in_region.at(0)).game_clock) {
+                    all_moments_same = false;
+                    break;
+                }
+            }
+            if (all_moments_same) {
+                index.children.clear();
+                index.values = moments_in_region;
+                return;
+            }
+        }
+    }
+
     // now determining ranges of each child
     for (unsigned int c = 0; c < (unsigned int) moments_in_children.size(); c++) {
-        vector<int> child_moments = moments_in_children.at(c);
-
         coordinate_range child_range;
         // x is largest bit
         if ((c & 4) == 4) {

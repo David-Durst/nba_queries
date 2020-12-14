@@ -76,7 +76,7 @@ TEST_CASE( "find_trajectories_fixed_origin", "[find_trajectories_fixed_origin, t
     std::iota(moments_in_region.begin(), moments_in_region.end(), 0);
     SECTION( "create moment index" ) {
         index.cur_range = compute_initial_range(test_moments_trajectories);
-        create_moment_index(index, test_moments_trajectories, moments_in_region);
+        create_moment_index(index, test_moments_trajectories, moments_in_region, 8);
         coordinate_range origin{{3.8,26.0,655.5}, {3.95,26.9, 0}};
         coordinate_range destination{{5.2,48.0,635.5}, {5.9,48.9, 0}};
         find_trajectories_fixed_origin(test_moments_trajectories, trajectories, index, origin, destination, 20.0, 2.0);
