@@ -90,15 +90,20 @@ int main(int argc, char * argv[]) {
         });
     }
     else if (query.compare("3") == 0) {
+        std::cout << "handling query 3" << std::endl;
         st_index index;
         vector<int> moments_in_region(moments.size());
         std::iota(moments_in_region.begin(), moments_in_region.end(), 0);
+        std::cout << "computing initial range" << std::endl;
         index.cur_range = compute_initial_range(moments);
+        std::cout << "making index" << std::endl;
         create_moment_index(index, moments, moments_in_region);
-        coordinate_range origin{{3.8,26.0,655.5}, {3.95,26.9, 0}};
-        coordinate_range destination{{5.2,48.0,635.5}, {5.9,48.9, 0}};
+        float space_delta = 0.1;
+        coordinate_range origin{{72.0f - space_delta,25.0f - space_delta,0}, {72.0f + space_delta,25.0f + space_delta, 0}};
+        coordinate_range destination{{70.0f,16.0f,0}, {90.0f,32.0f, 0}};
+        std::cout << "running benchmark" << std::endl;
         min_time = Halide::Tools::benchmark(10, 10, [&]() {
-            find_trajectories_fixed_origin(moments, trajectories, index, origin, destination, 20.0, 2.0);
+            find_trajectories_fixed_origin(moments, trajectories, index, origin, destination, 5.0f, space_delta);
         });
 
     }
