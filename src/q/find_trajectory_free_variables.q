@@ -59,8 +59,8 @@ row_offset-9000
 
 filter_by_x: select t:moments[i+4741;`x_loc] within (x_loc-0.1;x_loc+0.1) from moments
 count select from filter_by_x where t=1
-\t filter_by_x_and_y: select t:(moments[i+4741;`x_loc] within (x_loc-0.1;x_loc+0.1))&(moments[i+4741;`y_loc] within (y_loc-0.1;y_loc+0.1)) from moments
-count select from filter_by_x_and_y where t=1
+/\t filter_by_x_and_y: select t:(moments[i+4741;`x_loc] within (x_loc-0.1;x_loc+0.1))&(moments[i+4741;`y_loc] within (y_loc-0.1;y_loc+0.1)) from moments
+/count select from filter_by_x_and_y where t=1
 
 
 
