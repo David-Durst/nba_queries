@@ -5,6 +5,7 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#include <numeric>
 #include "check_distances.h"
 #include "find_trajectories.h"
 #include "benchmark.h"
@@ -82,11 +83,29 @@ int main(int argc, char * argv[]) {
         });
 
     }
-    else if (query.compare("2a") == 0) {
+    else if (query.compare("2") == 0) {
         min_time = Halide::Tools::benchmark(10, 10, [&]() {
             trajectories.clear();
             find_trajectories_no_fixed_origin(moments, trajectories);
         });
+    }
+    else if (query.compare("3") == 0) {
+        std::cout << "handling query 3" << std::endl;
+        st_index index;
+        vector<int> moments_in_region(moments.size());
+        std::iota(moments_in_region.begin(), moments_in_region.end(), 0);
+        std::cout << "computing initial range" << std::endl;
+        index.cur_range = compute_initial_range(moments);
+        std::cout << "making index" << std::endl;
+        create_moment_index(index, moments, moments_in_region);
+        coordinate_range origin{{70.0f,16.0f,0}, {90.0f,32.0f, 0}};
+        coordinate_range destination{{71.9f,24.9f,0}, {72.1f,25.1f, 0}};
+        std::cout << "running benchmark" << std::endl;
+        min_time = Halide::Tools::benchmark(10, 10, [&]() {
+            trajectories.clear();
+            find_trajectories_fixed_origin(moments, trajectories, index, origin, destination, 5.0f, 1);
+        });
+
     }
 #ifdef CALLGRIND
     CALLGRIND_TOGGLE_COLLECT;
@@ -104,7 +123,8 @@ int main(int argc, char * argv[]) {
             std::cout << std::endl;
         }
     }
-    else if (query.compare("2a") == 0) {
+    else if (query.compare("2") == 0 || query.compare("3") == 0) {
+        std::cout << "trajectories size: " << trajectories.size() << std::endl;
         std::cout << "team_id,player_id,start_x_loc,start_y_loc,start_game_clock,end_x_loc,end_y_loc,end_game_clock,quarter" << std::endl;
         for (const auto & t : trajectories) {
             print_trajectory_csv(std::cout, t);
