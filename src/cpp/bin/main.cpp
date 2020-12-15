@@ -98,12 +98,16 @@ int main(int argc, char * argv[]) {
         index.cur_range = compute_initial_range(moments);
         std::cout << "making index" << std::endl;
         create_moment_index(index, moments, moments_in_region);
-        float space_delta = 0.1;
-        coordinate_range origin{{72.0f - space_delta,25.0f - space_delta,0}, {72.0f + space_delta,25.0f + space_delta, 0}};
-        coordinate_range destination{{70.0f,16.0f,0}, {90.0f,32.0f, 0}};
+        coordinate_range origin2{{70.0f,30.7f,186}, {70.1f,30.8f, 185}};
+        //coordinate_range origin2{{76.12f,23.23f,186}, {76.14f,23.23f, 185}};
+        vector<int> ts2;
+        traverse_index_for_points_in_range(moments, origin2, index, ts2, true);
+        coordinate_range origin{{70.0f,16.0f,0}, {90.0f,32.0f, 0}};
+        coordinate_range destination{{71.9f,24.9f,0}, {72.1f,25.1f, 0}};
         std::cout << "running benchmark" << std::endl;
-        min_time = Halide::Tools::benchmark(10, 10, [&]() {
-            find_trajectories_fixed_origin(moments, trajectories, index, origin, destination, 5.0f, space_delta);
+        min_time = Halide::Tools::benchmark(3, 3, [&]() {
+            trajectories.clear();
+            find_trajectories_fixed_origin(moments, trajectories, index, origin, destination, 5.0f, 1);
         });
 
     }
@@ -124,6 +128,7 @@ int main(int argc, char * argv[]) {
         }
     }
     else if (query.compare("2") == 0 || query.compare("3") == 0) {
+        std::cout << "trajectories size: " << trajectories.size() << std::endl;
         std::cout << "team_id,player_id,start_x_loc,start_y_loc,start_game_clock,end_x_loc,end_y_loc,end_game_clock,quarter" << std::endl;
         for (const auto & t : trajectories) {
             print_trajectory_csv(std::cout, t);

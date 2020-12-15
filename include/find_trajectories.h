@@ -48,6 +48,8 @@ struct st_index {
 
 coordinate_range compute_initial_range(vector<moment>& moments);
 void create_moment_index(st_index& index, vector<moment>& moments, vector<int> moments_in_region, int max_bucket_size=30);
+void traverse_index_for_points_in_range(vector<moment> &moments, coordinate_range &search_range,
+                                        st_index& index, vector<int> &values_in_range, bool consider_t);
 void find_trajectories_fixed_origin(vector<moment>& moments, vector<trajectory_data>& trajectories, st_index& index,
                                     coordinate_range origin, coordinate_range destination, float t_offset, float t_delta);
 
