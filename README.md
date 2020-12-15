@@ -8,7 +8,7 @@ to answer all these queries with low latency and high throuhgput.
 This repository contains queries implemented in three languages: 
 1. [C++](src/cpp)
 2. [Q (for KDB)](src/q)
-3. [SQL (for Postgres 13)](src/sql)
+3. [SQL (for PostgreSQL 13)](src/sql)
 
 ## Theory
 See the [theory directory.](theory)
