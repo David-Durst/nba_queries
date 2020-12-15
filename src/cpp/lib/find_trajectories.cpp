@@ -186,12 +186,21 @@ void create_moment_index(st_index& index, vector<moment>& moments, vector<int> m
 }
 
 bool range_intersect(coordinate_range r0, coordinate_range r1, bool consider_x, bool consider_y, bool consider_t) {
-    bool x_intersects = !consider_x || (r0.start.x >= r1.start.x && r0.start.x <= r1.end.x) ||
-            (r0.end.x >= r1.start.x && r0.end.x <= r1.end.x);
-    bool y_intersects = !consider_y || (r0.start.y >= r1.start.y && r0.start.y <= r1.end.y) ||
-                        (r0.end.y >= r1.start.y && r0.end.y <= r1.end.y);
-    bool t_intersects = !consider_t || (r0.start.game_clock <= r1.start.game_clock && r0.start.game_clock >= r1.end.game_clock) ||
-                        (r0.end.game_clock <= r1.start.game_clock && r0.end.game_clock >= r1.end.game_clock);
+    bool x_intersects = !consider_x ||
+            (r0.start.x >= r1.start.x && r0.start.x <= r1.end.x) ||
+            (r0.end.x >= r1.start.x && r0.end.x <= r1.end.x) ||
+            (r1.start.x >= r0.start.x && r1.start.x <= r0.end.x) ||
+            (r1.end.x >= r0.start.x && r1.end.x <= r0.end.x);
+    bool y_intersects = !consider_y ||
+            (r0.start.y >= r1.start.y && r0.start.y <= r1.end.y) ||
+            (r0.end.y >= r1.start.y && r0.end.y <= r1.end.y) ||
+            (r1.start.y >= r0.start.y && r1.start.y <= r0.end.y) ||
+            (r1.end.y >= r0.start.y && r1.end.y <= r0.end.y);
+    bool t_intersects = !consider_t ||
+            (r0.start.game_clock <= r1.start.game_clock && r0.start.game_clock >= r1.end.game_clock) ||
+            (r0.end.game_clock <= r1.start.game_clock && r0.end.game_clock >= r1.end.game_clock) ||
+            (r1.start.game_clock <= r0.start.game_clock && r1.start.game_clock >= r0.end.game_clock) ||
+            (r1.end.game_clock <= r0.start.game_clock && r1.end.game_clock >= r0.end.game_clock);
     return x_intersects && y_intersects && t_intersects;
 }
 
