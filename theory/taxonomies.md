@@ -11,7 +11,7 @@ Taxonomies of the types of queries, the join strategies used in the queries, and
         2. By the an algorithm (like k-means)
 2. How the reference and other objects are compared 
     1. Point query – find all objects at same location as reference 
-    2. Range query – find all objects in a range of space relative to the reference 
+    2. Range query – find all objects in a range of space relative to the reference
     3. Nearest-Neighbor – find the k nearest neighbors to the reference
     4. Trajectory intersection – find all objects whose trajectory intersects that of the reference
     5. Trajectory similarity – find most similar trajectories 
