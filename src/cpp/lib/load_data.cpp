@@ -78,6 +78,50 @@ void load_moment_row(string& row, moment& m) {
     m.moment_in_event = stoi_with_default(col);
 }
 
+/* load a CSV file of cleaned_moments with a header row */
+void load_cleaned_moment_rows(istream& rows, vector<cleaned_moment>& ms) {
+    string row;
+    std::getline(rows, row);
+    int row_num = 0;
+    while(std::getline(rows, row)) {
+        cleaned_moment m;
+        load_cleaned_moment_row(row, m);
+        ms.push_back(m);
+        row_num++;
+    }
+}
+
+void load_cleaned_moment_row(string& row, cleaned_moment& m) {
+    string col;
+    stringstream ss(row);
+
+    std::getline(ss, col, ',');
+    m.team_id = stol_with_default(col);
+    std::getline(ss, col, ',');
+    m.player_id = stoi_with_default(col);
+    std::getline(ss, col, ',');
+    m.x_loc = stof_with_default(col);
+    std::getline(ss, col, ',');
+    m.y_loc = stof_with_default(col);
+    std::getline(ss, col, ',');
+    m.radius = stof_with_default(col);
+    std::getline(ss, col, ',');
+    m.game_clock = stof_with_default(col);
+    std::getline(ss, col, ',');
+    m.shot_clock = stof_with_default(col);
+    std::getline(ss, col, ',');
+    m.quarter = stoi_with_default(col);
+    std::getline(ss, col, ',');
+    m.game_id = stol_with_default(col);
+    std::getline(ss, m.event_ids, ',');
+    std::getline(ss, col, ',');
+    m.moment_in_event = stoi_with_default(col);
+}
+
+void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst) {
+
+}
+
 /* load a CSV file of events with a header row */
 void load_event_rows(istream& rows, vector<event>& es) {
     string row;

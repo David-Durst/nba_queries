@@ -31,7 +31,7 @@ FATAL: In-source builds are not allowed.
 endif()
 
 add_executable(nba_queries ${NBA_SOURCES} ${PROJECT_SOURCE_DIR}/src/cpp/bin/query_main.cpp)
-add_executable(preprocess_moments ${NBA_SOURCES} ${PROJECT_SOURCE_DIR}/src/cpp/bin/preprocess_moments.cpp)
+add_executable(preprocess_moments ${NBA_SOURCES} ${PROJECT_SOURCE_DIR}/src/cpp/bin/preprocess_main.cpp)
 # add this to enable debug printing statements
 #target_compile_definitions(nba_queries PRIVATE DEBUG)
 #target_compile_definitions(nba_queries PRIVATE CALLGRIND)

@@ -21,6 +21,24 @@ bool operator==(moment const & lhs, moment const & rhs);
 std::ostream& operator<<(std::ostream& os, moment const& value);
 void print_moment_csv(std::ostream& os, const moment& value);
 
+struct cleaned_moment {
+    long int team_id;
+    int player_id;
+    float x_loc;
+    float y_loc;
+    float radius;
+    float game_clock;
+    float shot_clock;
+    short int quarter;
+    long int game_id;
+    string event_ids;
+    int moment_in_event;
+} ;
+
+bool operator==(cleaned_moment const & lhs, cleaned_moment const & rhs);
+std::ostream& operator<<(std::ostream& os, cleaned_moment const& value);
+void print_cleaned_moment_csv(std::ostream& os, const cleaned_moment& value);
+
 struct event {
     long int game_id;
     long int event_num;
