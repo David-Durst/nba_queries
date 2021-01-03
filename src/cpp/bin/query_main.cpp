@@ -9,7 +9,7 @@
 #include "check_distances.h"
 #include "find_trajectories.h"
 #include "benchmark.h"
-#include "main.h"
+#include "query_main.h"
 #include "load_data.h"
 #include "query_structs.h"
 #ifdef CALLGRIND
