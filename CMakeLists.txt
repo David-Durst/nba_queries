@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.14)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Debug)
 #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
 #SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
@@ -38,6 +38,7 @@ add_executable(preprocess_moments ${NBA_SOURCES} ${PROJECT_SOURCE_DIR}/src/cpp/b
 
 # add the install targets
 install (TARGETS nba_queries DESTINATION bin)
+install (TARGETS preprocess_moments DESTINATION bin)
 
 # ADDING TESTS
 # add executable

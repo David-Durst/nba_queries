@@ -115,11 +115,34 @@ void load_cleaned_moment_row(string& row, cleaned_moment& m) {
     m.game_id = stol_with_default(col);
     std::getline(ss, m.event_ids, ',');
     std::getline(ss, col, ',');
-    m.moment_in_event = stoi_with_default(col);
+    m.moment_in_event_ids = stoi_with_default(col);
 }
-
+/* load a CSV file of cleaned_moments with a header row */
 void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst) {
-
+    long int last_cleaned_moment_index = 0;
+    for (const auto & m : src) {
+        if (dst.empty() ||
+            dst.at(dst.size() - 1).player_id != m.player_id ||
+            dst.at(dst.size() - 1).game_clock != m.game_clock) {
+            dst.push_back(cleaned_moment {
+                    m.team_id,
+                    m.player_id,
+                    m.x_loc,
+                    m.y_loc,
+                    m.radius,
+                    m.game_clock,
+                    m.shot_clock,
+                    m.quarter,
+                    m.game_id,
+                    std::to_string(m.event_id) + ";",
+                    std::to_string(m.moment_in_event) + ";"
+            });
+        }
+        else {
+            dst.at(dst.size() - 1).event_ids.append(std::to_string(m.event_id) + ";");
+            dst.at(dst.size() - 1).moment_in_event_ids.append(std::to_string(m.moment_in_event) + ";");
+        }
+    }
 }
 
 /* load a CSV file of events with a header row */

@@ -58,7 +58,7 @@ bool operator==(cleaned_moment const& lhs, cleaned_moment const& rhs) {
             lhs.quarter == rhs.quarter &&
             lhs.game_id == rhs.game_id &&
             lhs.event_ids.compare(rhs.event_ids) == 0 &&
-            lhs.moment_in_event == rhs.moment_in_event;
+            lhs.moment_in_event_ids.compare(rhs.moment_in_event_ids) == 0;
 }
 
 std::ostream& operator<<(std::ostream& os, const cleaned_moment& value) {
@@ -72,7 +72,7 @@ std::ostream& operator<<(std::ostream& os, const cleaned_moment& value) {
        << ", quarter: " << value.quarter
        << ", game_id: " << value.game_id
        << ", event_id: " << value.event_ids
-       << ", moment_in_event: " << value.moment_in_event;
+       << ", moment_in_event: " << value.moment_in_event_ids;
     return os;
 }
 
@@ -87,7 +87,7 @@ void print_cleaned_moment_csv(std::ostream& os, const cleaned_moment& value) {
        << "," << value.quarter
        << "," << value.game_id
        << "," << value.event_ids
-       << "," << value.moment_in_event;
+       << "," << value.moment_in_event_ids;
 }
 
 bool operator==(shot const &lhs, shot const &rhs) {

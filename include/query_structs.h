@@ -32,7 +32,7 @@ struct cleaned_moment {
     short int quarter;
     long int game_id;
     string event_ids;
-    int moment_in_event;
+    string moment_in_event_ids;
 } ;
 
 bool operator==(cleaned_moment const & lhs, cleaned_moment const & rhs);
