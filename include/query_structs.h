@@ -65,6 +65,10 @@ public:
     clock_fixed_point abs_diff(const clock_fixed_point& other) const {
         return clock_fixed_point(std::abs(this->to_float() - other.to_float()));
     }
+
+    bool gt(float f) const {
+        return this->to_float() > f;
+    }
 };
 
 bool operator==(clock_fixed_point const & lhs, clock_fixed_point const & rhs);

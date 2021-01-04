@@ -153,6 +153,24 @@ void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst) {
     for (const auto & m : src) {
         if (dst.empty() ||
             dst.at(dst.size() - 1).game_clock != clock_fixed_point(m.game_clock)) {
+            // fix case where skip 0.08 by reinserting last value
+            int num_inserted = 0;
+            size_t cur_size = dst.size();
+            while (!dst.empty() && dst.at(dst.size() - 1).quarter == m.quarter &&
+                dst.at(dst.size() - 1).game_clock.abs_diff(clock_fixed_point(m.game_clock)).gt(0.04f)) {
+                num_inserted++;
+                /*
+                if (num_inserted > 300) {
+                    clock_fixed_point target_clock = clock_fixed_point(m.game_clock);
+                    cleaned_moment init_moment = dst.at(cur_size - 1);
+                    int x = 0;
+                }
+                 */
+                cleaned_moment copied_moment = dst.at(dst.size() - 1);
+                copied_moment.game_clock = clock_fixed_point(copied_moment.game_clock.to_float() - 0.04f);
+                dst.push_back(copied_moment);
+            }
+
             player_in_moment = 0;
             last_player_id = m.player_id;
             // since sorting player_ids, first one in the moment is the ball

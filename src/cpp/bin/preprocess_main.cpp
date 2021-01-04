@@ -39,9 +39,15 @@ int main(int argc, char * argv[]) {
                  m0.event_id == m1.event_id && m0.moment_in_event < m1.moment_in_event));
     });
     clean_moment_rows(moments, cleaned_moments);
-    for (size_t i = 1; i < cleaned_moments.size(); i++) {
+    for (size_t i = 1; i < 1000; i++) {
         if (cleaned_moments.at(i-1).game_clock.abs_diff(cleaned_moments.at(i).game_clock) != clock_fixed_point(0.04f)) {
             std::cout << "big jump in cleaned moments " << i-1 << " with quarter " << cleaned_moments.at(i-1).quarter
+                      << " and gameclock " << cleaned_moments.at(i-1).game_clock.to_float()
+                      << "and " << i << " with quarter " << cleaned_moments.at(i).quarter
+                      << " and gameclock " << cleaned_moments.at(i).game_clock.to_float() << std::endl << std::endl;
+        }
+        if (cleaned_moments.at(i-1).quarter != cleaned_moments.at(i).quarter) {
+            std::cout << "quarter change in cleaned moments " << i-1 << " with quarter " << cleaned_moments.at(i-1).quarter
                       << " and gameclock " << cleaned_moments.at(i-1).game_clock.to_float()
                       << "and " << i << " with quarter " << cleaned_moments.at(i).quarter
                       << " and gameclock " << cleaned_moments.at(i).game_clock.to_float() << std::endl << std::endl;
