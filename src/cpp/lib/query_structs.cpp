@@ -90,6 +90,13 @@ void print_event_moment_data_csv(std::ostream& os, const event_moment_data& valu
        << ")";
 }
 
+bool operator==(clock_fixed_point const& lhs, clock_fixed_point const& rhs) {
+    return
+            lhs.seconds == rhs.seconds &&
+            lhs.twenty_fifths_of_second == rhs.twenty_fifths_of_second;
+}
+
+bool operator!=(clock_fixed_point const& lhs, clock_fixed_point const& rhs) { return !(lhs == rhs); }
 
 bool operator==(cleaned_moment const& lhs, cleaned_moment const& rhs) {
     bool all_players_eq = lhs.ball == rhs.ball;
@@ -118,7 +125,7 @@ std::ostream& operator<<(std::ostream& os, const cleaned_moment& value) {
            << ", y_loc_" << i << ": " << value.players[i].y_loc
            << ", radius_" << i << ": " << value.players[i].radius;
     }
-    os << ", game_clock: " << value.game_clock
+    os << ", game_clock: " << value.game_clock.to_float()
        << ", shot_clock: " << value.shot_clock
        << ", quarter: " << value.quarter
        << ", game_id: " << value.game_id
@@ -135,7 +142,7 @@ void print_cleaned_moment_csv(std::ostream& os, const cleaned_moment& value) {
         os << ",";
         print_player_data_csv(os, value.players[i]);
     }
-    os << "," << value.game_clock
+    os << "," << value.game_clock.to_float()
        << "," << value.shot_clock
        << "," << value.quarter
        << "," << value.game_id << ",";

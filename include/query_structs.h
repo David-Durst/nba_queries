@@ -2,6 +2,8 @@
 #define QUERY_STRUCTS_H
 #include <string>
 #include <vector>
+#include <cmath>
+
 using std::string;
 using std::vector;
 
@@ -44,10 +46,34 @@ bool operator==(event_moment_data const & lhs, event_moment_data const & rhs);
 std::ostream& operator<<(std::ostream& os, event_moment_data const& value);
 void print_event_moment_data_csv(std::ostream& os, const event_moment_data& value);
 
+class clock_fixed_point {
+public:
+    long int seconds;
+    int twenty_fifths_of_second;
+
+    clock_fixed_point () { }
+
+    clock_fixed_point (float f) {
+        seconds = std::floor(f);
+        twenty_fifths_of_second = std::round((f - seconds) * 25);
+    }
+
+    float to_float() const {
+        return seconds + (twenty_fifths_of_second / 25.0f);
+    }
+
+    clock_fixed_point abs_diff(const clock_fixed_point& other) const {
+        return clock_fixed_point(std::abs(this->to_float() - other.to_float()));
+    }
+};
+
+bool operator==(clock_fixed_point const & lhs, clock_fixed_point const & rhs);
+bool operator!=(clock_fixed_point const& lhs, clock_fixed_point const& rhs);
+
 struct cleaned_moment {
     player_data ball;
     player_data players[10];
-    float game_clock;
+    clock_fixed_point game_clock;
     float shot_clock;
     short int quarter;
     long int game_id;

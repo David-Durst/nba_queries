@@ -123,7 +123,7 @@ void load_cleaned_moment_row(string& row, cleaned_moment& m) {
     }
 
     std::getline(ss, col, ',');
-    m.game_clock = stof_with_default(col);
+    m.game_clock = clock_fixed_point(stof_with_default(col));
     std::getline(ss, col, ',');
     m.shot_clock = stof_with_default(col);
     std::getline(ss, col, ',');
@@ -152,13 +152,13 @@ void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst) {
     long int last_player_id = -2;
     for (const auto & m : src) {
         if (dst.empty() ||
-            dst.at(dst.size() - 1).game_clock != m.game_clock) {
+            dst.at(dst.size() - 1).game_clock != clock_fixed_point(m.game_clock)) {
             player_in_moment = 0;
             last_player_id = m.player_id;
             // since sorting player_ids, first one in the moment is the ball
             dst.push_back(cleaned_moment());
             cleaned_moment& cur_moment = dst.at(dst.size() - 1);
-            cur_moment.game_clock = m.game_clock;
+            cur_moment.game_clock = clock_fixed_point(m.game_clock);
             cur_moment.shot_clock = m.shot_clock;
             cur_moment.quarter = m.quarter;
             cur_moment.game_id = m.game_id;
