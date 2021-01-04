@@ -40,9 +40,11 @@ int main(int argc, char * argv[]) {
     });
     clean_moment_rows(moments, cleaned_moments);
     for (size_t i = 1; i < cleaned_moments.size(); i++) {
-        if (std::abs(cleaned_moments.at(i).game_clock - cleaned_moments.at(i-1).game_clock - 0.04) > 0.02) {
-            std::cout << "big jump in cleaned moments " << i-1 << " with std::endl << cleaned_moments.at(i-1)
-                      << "and " << i << std::endl << cleaned_moments.at(i) << std::endl << std::endl;
+        if (std::abs(cleaned_moments.at(i-1).game_clock - cleaned_moments.at(i).game_clock - 0.04) > 0.02) {
+            std::cout << "big jump in cleaned moments " << i-1 << " with quarter " << cleaned_moments.at(i-1).quarter
+                      << " and gameclock " << cleaned_moments.at(i-1).game_clock
+                      << "and " << i << " with quarter " << cleaned_moments.at(i).quarter
+                      << " and gameclock " << cleaned_moments.at(i).game_clock << std::endl << std::endl;
         }
     }
 
