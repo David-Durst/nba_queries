@@ -29,12 +29,12 @@ long int stol_with_default(string& s) {
     }
 }
 
-float stof_with_default(string& s) {
+double stod_with_default(string& s) {
     if (s.size() == 0) {
-        return -1.0f;
+        return -1.0;
     }
     else {
-        return stof(s);
+        return stod(s);
     }
 }
 
@@ -60,15 +60,15 @@ void load_moment_row(string& row, moment& m) {
     std::getline(ss, col, ',');
     m.player_id = stoi_with_default(col);
     std::getline(ss, col, ',');
-    m.x_loc = stof_with_default(col);
+    m.x_loc = stod_with_default(col);
     std::getline(ss, col, ',');
-    m.y_loc = stof_with_default(col);
+    m.y_loc = stod_with_default(col);
     std::getline(ss, col, ',');
-    m.radius = stof_with_default(col);
+    m.radius = stod_with_default(col);
     std::getline(ss, col, ',');
-    m.game_clock = stof_with_default(col);
+    m.game_clock = stod_with_default(col);
     std::getline(ss, col, ',');
-    m.shot_clock = stof_with_default(col);
+    m.shot_clock = stod_with_default(col);
     std::getline(ss, col, ',');
     m.quarter = stoi_with_default(col);
     std::getline(ss, col, ',');
@@ -102,11 +102,11 @@ void load_cleaned_moment_row(string& row, cleaned_moment& m) {
     std::getline(ss, col, ',');
     m.ball.player_id = stoi_with_default(col);
     std::getline(ss, col, ',');
-    m.ball.x_loc = stof_with_default(col);
+    m.ball.x_loc = stod_with_default(col);
     std::getline(ss, col, ',');
-    m.ball.y_loc = stof_with_default(col);
+    m.ball.y_loc = stod_with_default(col);
     std::getline(ss, col, ',');
-    m.ball.radius = stof_with_default(col);
+    m.ball.radius = stod_with_default(col);
 
     // load players
     for (int i = 0; i < 10; i++) {
@@ -115,17 +115,17 @@ void load_cleaned_moment_row(string& row, cleaned_moment& m) {
         std::getline(ss, col, ',');
         m.players[i].player_id = stoi_with_default(col);
         std::getline(ss, col, ',');
-        m.players[i].x_loc = stof_with_default(col);
+        m.players[i].x_loc = stod_with_default(col);
         std::getline(ss, col, ',');
-        m.players[i].y_loc = stof_with_default(col);
+        m.players[i].y_loc = stod_with_default(col);
         std::getline(ss, col, ',');
-        m.players[i].radius = stof_with_default(col);
+        m.players[i].radius = stod_with_default(col);
     }
 
     std::getline(ss, col, ',');
-    m.game_clock = clock_fixed_point(stof_with_default(col));
+    m.game_clock = clock_fixed_point(stod_with_default(col));
     std::getline(ss, col, ',');
-    m.shot_clock = stof_with_default(col);
+    m.shot_clock = stod_with_default(col);
     std::getline(ss, col, ',');
     m.quarter = stoi_with_default(col);
     std::getline(ss, col, ',');
@@ -153,7 +153,7 @@ void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst) {
     for (const auto & m : src) {
         if (dst.empty() ||
             dst.at(dst.size() - 1).game_clock != clock_fixed_point(m.game_clock)) {
-            if (dst.size() == 3451) {
+            if (dst.size() == 151) {
                 clock_fixed_point c = clock_fixed_point(m.game_clock);
                 int x = 0;
             }
@@ -161,7 +161,7 @@ void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst) {
             int num_inserted = 0;
             size_t cur_size = dst.size();
             while (!dst.empty() && dst.at(dst.size() - 1).quarter == m.quarter &&
-                dst.at(dst.size() - 1).game_clock.abs_diff(clock_fixed_point(m.game_clock)).gt(0.04f)) {
+                dst.at(dst.size() - 1).game_clock.abs_diff(clock_fixed_point(m.game_clock)).gt(0.04)) {
                 num_inserted++;
                 /*
                 if (num_inserted > 300) {
@@ -171,7 +171,7 @@ void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst) {
                 }
                  */
                 cleaned_moment copied_moment = dst.at(dst.size() - 1);
-                copied_moment.game_clock = clock_fixed_point(copied_moment.game_clock.to_float() - 0.04f);
+                copied_moment.game_clock = clock_fixed_point(copied_moment.game_clock.to_double() - 0.04);
                 dst.push_back(copied_moment);
             }
 
@@ -251,7 +251,7 @@ void load_event_row(string& row, event& e) {
     e.player1_id = stoi_with_default(col);
     std::getline(ss, e.player1_name, ',');
     std::getline(ss, col, ',');
-    e.player1_team_id = stof_with_default(col);
+    e.player1_team_id = stod_with_default(col);
     std::getline(ss, e.player1_team_city, ',');
     std::getline(ss, e.player1_team_nickname, ',');
     std::getline(ss, e.player1_team_abbreviation, ',');
@@ -263,7 +263,7 @@ void load_event_row(string& row, event& e) {
     e.player2_id = stoi_with_default(col);
     std::getline(ss, e.player2_name, ',');
     std::getline(ss, col, ',');
-    e.player2_team_id = stof_with_default(col);
+    e.player2_team_id = stod_with_default(col);
     std::getline(ss, e.player2_team_city, ',');
     std::getline(ss, e.player2_team_nickname, ',');
     std::getline(ss, e.player2_team_abbreviation, ',');
@@ -275,7 +275,7 @@ void load_event_row(string& row, event& e) {
     e.player3_id = stoi_with_default(col);
     std::getline(ss, e.player3_name, ',');
     std::getline(ss, col, ',');
-    e.player3_team_id = stof_with_default(col);
+    e.player3_team_id = stod_with_default(col);
     std::getline(ss, e.player3_team_city, ',');
     std::getline(ss, e.player3_team_nickname, ',');
     std::getline(ss, e.player3_team_abbreviation, ',');
@@ -308,9 +308,9 @@ void load_shot_row(string& row, shot& sh) {
     std::getline(ss, sh.grid_type, ',');
     std::getline(ss, sh.htm, ',');
     std::getline(ss, col, ',');
-    sh.loc_x = stof_with_default(col);
+    sh.loc_x = stod_with_default(col);
     std::getline(ss, col, ',');
-    sh.loc_y = stof_with_default(col);
+    sh.loc_y = stod_with_default(col);
     std::getline(ss, col, ',');
     sh.minutes_remaining = stoi_with_default(col);
     std::getline(ss, col, ',');
@@ -319,7 +319,7 @@ void load_shot_row(string& row, shot& sh) {
     sh.player_id = stoi_with_default(col);
     std::getline(ss, sh.player_name, ',');
     std::getline(ss, col, ',');
-    sh.quarter = stof_with_default(col);
+    sh.quarter = stod_with_default(col);
     std::getline(ss, col, ',');
     sh.seconds_remaining = stoi_with_default(col);
     std::getline(ss, col, ',');
@@ -329,13 +329,13 @@ void load_shot_row(string& row, shot& sh) {
     std::getline(ss, col, ',');
     sh.shot_made_flag = stoi_with_default(col);
     std::getline(ss, col, ',');
-    sh.shot_time = stof_with_default(col);
+    sh.shot_time = stod_with_default(col);
     std::getline(ss, sh.shot_type, ',');
     std::getline(ss, sh.shot_zone_area, ',');
     std::getline(ss, sh.shot_zone_basic, ',');
     std::getline(ss, sh.shot_zone_range, ',');
     std::getline(ss, col, ',');
-    sh.team_id = stof_with_default(col);
+    sh.team_id = stod_with_default(col);
     std::getline(ss, sh.team_name, ',');
     std::getline(ss, sh.team_vtm, ',');
 }

@@ -10,11 +10,11 @@ using std::vector;
 struct moment {
     long int team_id;
     int player_id;
-    float x_loc;
-    float y_loc;
-    float radius;
-    float game_clock;
-    float shot_clock;
+    double x_loc;
+    double y_loc;
+    double radius;
+    double game_clock;
+    double shot_clock;
     short int quarter;
     long int game_id;
     long int event_id;
@@ -28,9 +28,9 @@ void print_moment_csv(std::ostream& os, const moment& value);
 struct player_data {
     long int team_id;
     int player_id;
-    float x_loc;
-    float y_loc;
-    float radius;
+    double x_loc;
+    double y_loc;
+    double radius;
 };
 
 bool operator==(player_data const & lhs, player_data const & rhs);
@@ -53,21 +53,25 @@ public:
 
     clock_fixed_point () { }
 
-    clock_fixed_point (float f) {
+    clock_fixed_point (double f) {
         seconds = std::floor(f);
         twenty_fifths_of_second = std::round((f - seconds) * 25);
+        if (twenty_fifths_of_second == 25) {
+            seconds++;
+            twenty_fifths_of_second = 0;
+        }
     }
 
-    float to_float() const {
-        return seconds + (twenty_fifths_of_second / 25.0f);
+    double to_double() const {
+        return seconds + (twenty_fifths_of_second / 25.0);
     }
 
     clock_fixed_point abs_diff(const clock_fixed_point& other) const {
-        return clock_fixed_point(std::abs(this->to_float() - other.to_float()));
+        return clock_fixed_point(std::abs(this->to_double() - other.to_double()));
     }
 
-    bool gt(float f) const {
-        return this->to_float() > f;
+    bool gt(double f) const {
+        return this->to_double() > f;
     }
 };
 
@@ -78,7 +82,7 @@ struct cleaned_moment {
     player_data ball;
     player_data players[10];
     clock_fixed_point game_clock;
-    float shot_clock;
+    double shot_clock;
     short int quarter;
     long int game_id;
     vector<event_moment_data> events;

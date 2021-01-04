@@ -12,12 +12,12 @@ using std::reference_wrapper;
 struct trajectory_data {
     long int team_id;
     int player_id;
-    float start_x_loc;
-    float start_y_loc;
-    float start_game_clock;
-    float end_x_loc;
-    float end_y_loc;
-    float end_game_clock;
+    double start_x_loc;
+    double start_y_loc;
+    double start_game_clock;
+    double end_x_loc;
+    double end_y_loc;
+    double end_game_clock;
     short int quarter;
 } ;
 
@@ -29,9 +29,9 @@ void find_trajectories_no_fixed_origin(vector<moment>& moments, vector<trajector
         float x_offset=10, float y_offset=10, float t_offset=10);
 
 struct coordinate {
-    float x;
-    float y;
-    float game_clock;
+    double x;
+    double y;
+    double game_clock;
 };
 
 struct coordinate_range {
