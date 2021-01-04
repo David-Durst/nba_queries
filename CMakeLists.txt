@@ -8,6 +8,7 @@ set(CMAKE_BUILD_TYPE Debug)
 #SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
 
 project (nba_queries VERSION "0.1")
+include(GNUInstallDirs)
 
 include_directories(${PROJECT_BINARY_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/include)
@@ -17,6 +18,7 @@ file(GLOB NBA_TESTS "${PROJECT_SOURCE_DIR}/test/*.cpp")
 list(FILTER NBA_TESTS EXCLUDE REGEX "\.#.*")
 file(GLOB_RECURSE NBA_TESTS_SOURCES ${PROJECT_SOURCE_DIR}/src/cpp/lib/*.cpp)
 list(FILTER NBA_TESTS_SOURCES EXCLUDE REGEX "\.#.*")
+file(GLOB_RECURSE NBA_HEADERS ${PROJECT_SOURCE_DIR}/include/*.h)
 
 
 # from OpenCV via https://medium.com/@onur.dundar1/cmake-tutorial-585dd180109b
@@ -32,13 +34,19 @@ endif()
 
 add_executable(nba_queries ${NBA_SOURCES} ${PROJECT_SOURCE_DIR}/src/cpp/bin/query_main.cpp)
 add_executable(preprocess_moments ${NBA_SOURCES} ${PROJECT_SOURCE_DIR}/src/cpp/bin/preprocess_main.cpp)
+add_library(nba_queries_lib SHARED ${NBA_SOURCES} ${NBA_HEADERS})
 # add this to enable debug printing statements
 #target_compile_definitions(nba_queries PRIVATE DEBUG)
 #target_compile_definitions(nba_queries PRIVATE CALLGRIND)
 
+set_target_properties(nba_queries_lib PROPERTIES VERSION ${PROJECT_VERSION})
+
 # add the install targets
 install (TARGETS nba_queries DESTINATION bin)
 install (TARGETS preprocess_moments DESTINATION bin)
+install (TARGETS nba_queries_lib
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDERDIR})
 
 # ADDING TESTS
 # add executable
