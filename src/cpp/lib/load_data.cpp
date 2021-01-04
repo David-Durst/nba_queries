@@ -153,6 +153,10 @@ void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst) {
     for (const auto & m : src) {
         if (dst.empty() ||
             dst.at(dst.size() - 1).game_clock != clock_fixed_point(m.game_clock)) {
+            if (dst.size() == 3451) {
+                clock_fixed_point c = clock_fixed_point(m.game_clock);
+                int x = 0;
+            }
             // fix case where skip 0.08 by reinserting last value
             int num_inserted = 0;
             size_t cur_size = dst.size();
