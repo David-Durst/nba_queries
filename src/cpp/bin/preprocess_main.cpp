@@ -39,10 +39,24 @@ int main(int argc, char * argv[]) {
                  m0.event_id == m1.event_id && m0.moment_in_event < m1.moment_in_event));
     });
     clean_moment_rows(moments, cleaned_moments);
+    for (size_t i = 1; i < cleaned_moments.size(); i++) {
+        if (std::abs(cleaned_moments.at(i).game_clock - cleaned_moments.at(i-1).game_clock - 0.04) > 0.02) {
+            std::cout << "big jump in cleaned moments " << i-1 << " with std::endl << cleaned_moments.at(i-1)
+                      << "and " << i << std::endl << cleaned_moments.at(i) << std::endl << std::endl;
+        }
+    }
 
     std::cout << "writing output cleaned moments file: " << cleaned_moments_file_path << std::endl;
     cleaned_moments_file.open(cleaned_moments_file_path, std::ios::out);
-    cleaned_moments_file << "team_id,player_id,x_loc,y_loc,radius,game_clock,shot_clock,quarter,game_id,event_ids,moment_in_event" << std::endl;
+    cleaned_moments_file << "team_id_ball, player_id_ball, x_loc_ball, y_loc_ball, radius_ball";
+    for (int i = 0; i < 10; i++) {
+        cleaned_moments_file << ", team_id_" << i
+                             << ", player_id_" << i
+                             << ", x_loc_" << i
+                             << ", y_loc_" << i
+                             << ", radius_" << i;
+    }
+    cleaned_moments_file << ", game_clock, shot_clock, quarter, game_id, events" << std::endl;
     for (const auto & c : cleaned_moments) {
         print_cleaned_moment_csv(cleaned_moments_file, c);
         cleaned_moments_file << std::endl;

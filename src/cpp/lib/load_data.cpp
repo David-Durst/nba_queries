@@ -153,21 +153,21 @@ void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst) {
     for (const auto & m : src) {
         if (dst.empty() ||
             dst.at(dst.size() - 1).game_clock != m.game_clock) {
-            player_in_moment == 0;
+            player_in_moment = 0;
             last_player_id = m.player_id;
             // since sorting player_ids, first one in the moment is the ball
-            dst.push_back(cleaned_moment {
-                .game_clock = m.game_clock,
-                .shot_clock = m.shot_clock,
-                .quarter = m.quarter,
-                .game_id = m.game_id,
-                .events = {event_moment_data{m.event_id, m.moment_in_event}}
-            });
-            dst.at(dst.size() - 1).ball.team_id = m.team_id;
-            dst.at(dst.size() - 1).ball.player_id = m.player_id;
-            dst.at(dst.size() - 1).ball.x_loc = m.x_loc;
-            dst.at(dst.size() - 1).ball.y_loc = m.y_loc;
-            dst.at(dst.size() - 1).ball.radius = m.radius;
+            dst.push_back(cleaned_moment());
+            cleaned_moment& cur_moment = dst.at(dst.size() - 1);
+            cur_moment.game_clock = m.game_clock;
+            cur_moment.shot_clock = m.shot_clock;
+            cur_moment.quarter = m.quarter;
+            cur_moment.game_id = m.game_id;
+            cur_moment.events = {event_moment_data{m.event_id, m.moment_in_event}};
+            cur_moment.ball.team_id = m.team_id;
+            cur_moment.ball.player_id = m.player_id;
+            cur_moment.ball.x_loc = m.x_loc;
+            cur_moment.ball.y_loc = m.y_loc;
+            cur_moment.ball.radius = m.radius;
         }
         else {
             cleaned_moment& cur_moment = dst.at(dst.size() - 1);

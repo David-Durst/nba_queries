@@ -52,7 +52,7 @@ bool operator==(player_data const& lhs, player_data const& rhs) {
             lhs.player_id == rhs.player_id &&
             lhs.x_loc == rhs.x_loc &&
             lhs.y_loc == rhs.y_loc &&
-            lhs.radius == rhs.radius &&
+            lhs.radius == rhs.radius;
 }
 
 std::ostream& operator<<(std::ostream& os, const player_data& value) {
