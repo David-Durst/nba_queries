@@ -3,6 +3,7 @@
 #include <istream>
 #include <sstream>
 #include <iostream>
+#include <algorithm>
 #include "query_structs.h"
 #include "load_data.h"
 using std::vector;
@@ -95,16 +96,32 @@ void load_cleaned_moment_row(string& row, cleaned_moment& m) {
     string col;
     stringstream ss(row);
 
+    // load ball
     std::getline(ss, col, ',');
-    m.team_id = stol_with_default(col);
+    m.ball.team_id = stol_with_default(col);
     std::getline(ss, col, ',');
-    m.player_id = stoi_with_default(col);
+    m.ball.player_id = stoi_with_default(col);
     std::getline(ss, col, ',');
-    m.x_loc = stof_with_default(col);
+    m.ball.x_loc = stof_with_default(col);
     std::getline(ss, col, ',');
-    m.y_loc = stof_with_default(col);
+    m.ball.y_loc = stof_with_default(col);
     std::getline(ss, col, ',');
-    m.radius = stof_with_default(col);
+    m.ball.radius = stof_with_default(col);
+
+    // load players
+    for (int i = 0; i < 10; i++) {
+        std::getline(ss, col, ',');
+        m.players[i].team_id = stol_with_default(col);
+        std::getline(ss, col, ',');
+        m.players[i].player_id = stoi_with_default(col);
+        std::getline(ss, col, ',');
+        m.players[i].x_loc = stof_with_default(col);
+        std::getline(ss, col, ',');
+        m.players[i].y_loc = stof_with_default(col);
+        std::getline(ss, col, ',');
+        m.players[i].radius = stof_with_default(col);
+    }
+
     std::getline(ss, col, ',');
     m.game_clock = stof_with_default(col);
     std::getline(ss, col, ',');
@@ -113,34 +130,61 @@ void load_cleaned_moment_row(string& row, cleaned_moment& m) {
     m.quarter = stoi_with_default(col);
     std::getline(ss, col, ',');
     m.game_id = stol_with_default(col);
-    std::getline(ss, m.event_ids, ',');
+
+    // load event data
     std::getline(ss, col, ',');
-    m.moment_in_event_ids = stoi_with_default(col);
+    stringstream es(col);
+    string event_subcol;
+    while (std::getline(es, event_subcol, ';')) {
+        string without_parens = event_subcol.substr(1, event_subcol.size()-2);
+        size_t colon_loc = without_parens.find(':');
+        string event_id_str = without_parens.substr(0, colon_loc);
+        string moment_in_event_str = without_parens.substr(colon_loc+1,without_parens.size()-colon_loc-1);
+        event_moment_data emd {stol_with_default(event_id_str),
+                               stoi_with_default(moment_in_event_str)};
+        m.events.push_back(emd);
+    }
 }
+
 /* load a CSV file of cleaned_moments with a header row */
 void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst) {
-    long int last_cleaned_moment_index = 0;
+    int player_in_moment = 0;
+    long int last_player_id = -2;
     for (const auto & m : src) {
         if (dst.empty() ||
-            dst.at(dst.size() - 1).player_id != m.player_id ||
             dst.at(dst.size() - 1).game_clock != m.game_clock) {
+            player_in_moment == 0;
+            last_player_id = m.player_id;
+            // since sorting player_ids, first one in the moment is the ball
             dst.push_back(cleaned_moment {
-                    m.team_id,
-                    m.player_id,
-                    m.x_loc,
-                    m.y_loc,
-                    m.radius,
-                    m.game_clock,
-                    m.shot_clock,
-                    m.quarter,
-                    m.game_id,
-                    std::to_string(m.event_id) + ";",
-                    std::to_string(m.moment_in_event) + ";"
+                .game_clock = m.game_clock,
+                .shot_clock = m.shot_clock,
+                .quarter = m.quarter,
+                .game_id = m.game_id,
+                .events = {event_moment_data{m.event_id, m.moment_in_event}}
             });
+            dst.at(dst.size() - 1).ball.team_id = m.team_id;
+            dst.at(dst.size() - 1).ball.player_id = m.player_id;
+            dst.at(dst.size() - 1).ball.x_loc = m.x_loc;
+            dst.at(dst.size() - 1).ball.y_loc = m.y_loc;
+            dst.at(dst.size() - 1).ball.radius = m.radius;
         }
         else {
-            dst.at(dst.size() - 1).event_ids.append(std::to_string(m.event_id) + ";");
-            dst.at(dst.size() - 1).moment_in_event_ids.append(std::to_string(m.moment_in_event) + ";");
+            cleaned_moment& cur_moment = dst.at(dst.size() - 1);
+            if (m.player_id != last_player_id && player_in_moment < 10) {
+                cur_moment.players[player_in_moment].team_id = m.team_id;
+                cur_moment.players[player_in_moment].player_id = m.player_id;
+                cur_moment.players[player_in_moment].x_loc = m.x_loc;
+                cur_moment.players[player_in_moment].y_loc = m.y_loc;
+                cur_moment.players[player_in_moment].radius = m.radius;
+                player_in_moment++;
+                last_player_id = m.player_id;
+            }
+            // if this event and moment in event not already accounted for, add it
+            event_moment_data emd{m.event_id, m.moment_in_event};
+            if (std::find(cur_moment.events.begin(), cur_moment.events.end(), emd) == cur_moment.events.end()) {
+                cur_moment.events.push_back(emd);
+            }
         }
     }
 }

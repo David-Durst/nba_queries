@@ -46,48 +46,103 @@ void print_moment_csv(std::ostream& os, const moment& value) {
        << "," << value.moment_in_event;
 }
 
-bool operator==(cleaned_moment const& lhs, cleaned_moment const& rhs) {
+bool operator==(player_data const& lhs, player_data const& rhs) {
     return
             lhs.team_id == rhs.team_id &&
             lhs.player_id == rhs.player_id &&
             lhs.x_loc == rhs.x_loc &&
             lhs.y_loc == rhs.y_loc &&
             lhs.radius == rhs.radius &&
-            lhs.game_clock == rhs.game_clock &&
-            lhs.shot_clock == rhs.shot_clock &&
-            lhs.quarter == rhs.quarter &&
-            lhs.game_id == rhs.game_id &&
-            lhs.event_ids.compare(rhs.event_ids) == 0 &&
-            lhs.moment_in_event_ids.compare(rhs.moment_in_event_ids) == 0;
 }
 
-std::ostream& operator<<(std::ostream& os, const cleaned_moment& value) {
+std::ostream& operator<<(std::ostream& os, const player_data& value) {
     os << "team_id: " << value.team_id
        << ", player_id: " << value.player_id
        << ", x_loc: " << value.x_loc
        << ", y_loc: " << value.y_loc
-       << ", radius: " << value.radius
-       << ", game_clock: " << value.game_clock
-       << ", shot_clock: " << value.shot_clock
-       << ", quarter: " << value.quarter
-       << ", game_id: " << value.game_id
-       << ", event_id: " << value.event_ids
-       << ", moment_in_event: " << value.moment_in_event_ids;
+       << ", radius: " << value.radius;
     return os;
 }
 
-void print_cleaned_moment_csv(std::ostream& os, const cleaned_moment& value) {
+void print_player_data_csv(std::ostream& os, const player_data& value) {
     os << value.team_id
        << "," << value.player_id
        << "," << value.x_loc
        << "," << value.y_loc
-       << "," << value.radius
-       << "," << value.game_clock
+       << "," << value.radius;
+}
+
+bool operator==(event_moment_data const& lhs, event_moment_data const& rhs) {
+    return
+            lhs.event_id == rhs.event_id &&
+            lhs.moment_in_event == rhs.moment_in_event;
+}
+
+std::ostream& operator<<(std::ostream& os, const event_moment_data& value) {
+    os << "event_id: " << value.event_id
+       << ", moment_in_event: " << value.moment_in_event;
+    return os;
+}
+
+void print_event_moment_data_csv(std::ostream& os, const event_moment_data& value) {
+    os << "(" << value.event_id
+       << ":" << value.moment_in_event
+       << ")";
+}
+
+
+bool operator==(cleaned_moment const& lhs, cleaned_moment const& rhs) {
+    bool all_players_eq = lhs.ball == rhs.ball;
+    for (int i = 0; i < 10; i++) {
+        all_players_eq &= lhs.players[i] == rhs.players[i];
+    }
+    return
+            all_players_eq &&
+            lhs.game_clock == rhs.game_clock &&
+            lhs.shot_clock == rhs.shot_clock &&
+            lhs.quarter == rhs.quarter &&
+            lhs.game_id == rhs.game_id &&
+            lhs.events == rhs.events;
+}
+
+std::ostream& operator<<(std::ostream& os, const cleaned_moment& value) {
+    os << "team_id_ball: " << value.ball.team_id
+       << ", player_id_ball: " << value.ball.player_id
+       << ", x_loc_ball: " << value.ball.x_loc
+       << ", y_loc_ball: " << value.ball.y_loc
+       << ", radius_ball: " << value.ball.radius;
+    for (int i = 0; i < 10; i++) {
+        os << ", team_id_" << i << ": " << value.players[i].team_id
+           << ", player_id_" << i << ": " << value.players[i].player_id
+           << ", x_loc_" << i << ": " << value.players[i].x_loc
+           << ", y_loc_" << i << ": " << value.players[i].y_loc
+           << ", radius_" << i << ": " << value.players[i].radius;
+    }
+    os << ", game_clock: " << value.game_clock
+       << ", shot_clock: " << value.shot_clock
+       << ", quarter: " << value.quarter
+       << ", game_id: " << value.game_id
+       << ", events: ";
+    for (auto const & e : value.events) {
+        os << "(" << e << ")" << ";";
+    }
+    return os;
+}
+
+void print_cleaned_moment_csv(std::ostream& os, const cleaned_moment& value) {
+    print_player_data_csv(os, value.ball);
+    for (int i = 0; i < 10; i++) {
+        os << ",";
+        print_player_data_csv(os, value.players[i]);
+    }
+    os << "," << value.game_clock
        << "," << value.shot_clock
        << "," << value.quarter
-       << "," << value.game_id
-       << "," << value.event_ids
-       << "," << value.moment_in_event_ids;
+       << "," << value.game_id << ",";
+    for (auto const & e : value.events) {
+        print_event_moment_data_csv(os, e);
+        os << ";";
+    }
 }
 
 bool operator==(shot const &lhs, shot const &rhs) {

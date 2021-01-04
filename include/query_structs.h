@@ -1,7 +1,9 @@
 #ifndef QUERY_STRUCTS_H
 #define QUERY_STRUCTS_H
 #include <string>
+#include <vector>
 using std::string;
+using std::vector;
 
 struct moment {
     long int team_id;
@@ -21,18 +23,35 @@ bool operator==(moment const & lhs, moment const & rhs);
 std::ostream& operator<<(std::ostream& os, moment const& value);
 void print_moment_csv(std::ostream& os, const moment& value);
 
-struct cleaned_moment {
+struct player_data {
     long int team_id;
     int player_id;
     float x_loc;
     float y_loc;
     float radius;
+};
+
+bool operator==(player_data const & lhs, player_data const & rhs);
+std::ostream& operator<<(std::ostream& os, player_data const& value);
+void print_player_data_csv(std::ostream& os, const player_data& value);
+
+struct event_moment_data {
+    long int event_id;
+    int moment_in_event;
+};
+
+bool operator==(event_moment_data const & lhs, event_moment_data const & rhs);
+std::ostream& operator<<(std::ostream& os, event_moment_data const& value);
+void print_event_moment_data_csv(std::ostream& os, const event_moment_data& value);
+
+struct cleaned_moment {
+    player_data ball;
+    player_data players[10];
     float game_clock;
     float shot_clock;
     short int quarter;
     long int game_id;
-    string event_ids;
-    string moment_in_event_ids;
+    vector<event_moment_data> events;
 } ;
 
 bool operator==(cleaned_moment const & lhs, cleaned_moment const & rhs);
