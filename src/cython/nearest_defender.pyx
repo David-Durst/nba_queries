@@ -4,6 +4,12 @@ from libcpp.vector cimport vector
 
 cdef vector[cleaned_moment] moment_data
 cdef vector[shot] shot_data
+cdef vector[shot] selected_shot_data
+
+cpdef void get_shots_for_game(long int game_id):
+    for i in range(shot_data.size()):
+        if shot_data.at(i).game_id == game_id:
+            selected_shot_data.push_back(shot_data.at(i))
 
 cpdef void parse_file(str moment_file, str shot_file):
     i = 0
@@ -31,12 +37,24 @@ cpdef vector[cleaned_moment] take_moment(int n):
 cpdef cleaned_moment get_moment(int n):
     return moment_data.at(n)
 
-cpdef vector[shot] take_shot(int n):
+cpdef vector[shot] take_shot(int n, int op):
     cpdef vector[shot] res
     for i in range(n):
-        res.push_back(shot_data.at(i))
+        if op == 0:
+            res.push_back(shot_data.at(i))
+        else:
+            res.push_back(selected_shot_data.at(i))
     return res
 
 
-cpdef shot get_shot(int n):
-    return shot_data.at(n)
+cpdef shot get_shot(int n, int op):
+    if op == 0:
+        return shot_data.at(n)
+    else:
+        return selected_shot_data.at(n)
+
+cpdef size_t shot_size(int op):
+    if op == 0:
+        return shot_data.size()
+    else:
+        return selected_shot_data.size()
