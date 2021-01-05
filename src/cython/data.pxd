@@ -1,5 +1,6 @@
 # distutils: language = c++
 from libcpp.vector cimport vector
+from libcpp cimport bool
 
 cpdef cleaned_moment parse_cleaned_moment_data(str data)
 
@@ -27,3 +28,34 @@ cdef struct cleaned_moment:
     short int quarter
     long int game_id
     vector[event_moment_data] events
+
+cpdef shot parse_shot_data(str data)
+
+cdef struct shot:
+    char* action_type;
+    int event_time;
+    char* event_type;
+    char* game_date;
+    long int game_event_id;
+    long int game_id;
+    char* grid_type;
+    char* htm;
+    double loc_x;
+    double loc_y;
+    int minutes_remaining;
+    int period;
+    int player_id;
+    char* player_name;
+    double quarter;
+    int seconds_remaining;
+    bool shot_attempted_flag;
+    int shot_distance;
+    bool shot_made_flag;
+    double shot_time;
+    char* shot_type;
+    char* shot_zone_area;
+    char* shot_zone_basic;
+    char* shot_zone_range;
+    double team_id;
+    char* team_name;
+    char* team_vtm;
