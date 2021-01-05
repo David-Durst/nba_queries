@@ -15,7 +15,6 @@ cdef struct event_moment_data:
     long int event_id
     int moment_in_event
 
-cpdef int ticks_per_second = 25
 cdef struct clock_fixed_point:
     long int seconds
     int twenty_fifths_of_second

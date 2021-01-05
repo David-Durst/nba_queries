@@ -8,13 +8,31 @@ cdef vector[cleaned_moment] moment_data
 cdef vector[shot] shot_data
 cdef vector[shot] selected_shot_data
 
-#cpdef void vector[shot_and_player_data] find_nearest_defender_at_each_shot(double time_delta = 2.0):
-    #for shot in selected_shot_data:
-#    return
+cpdef vector[shot_and_player_data] find_nearest_defender_at_each_shot(int tick_delta = 50):
+    cdef vector[shot_and_player_data] result
+    cdef shot_and_player_data nearest_at_tick
+    cdef shot_and_player_data nearest_at_shot
+    for s in selected_shot_data:
+        shot_moment_index = time_to_index(s.shot_time, s.period)
+        for i in range(shot_moment_index - tick_delta,shot_moment_index + tick_delta + 1):
+            if i >= moment_data.size():
+                break
+
+            nearest_at_tick = nearest_defender_in_moment(moment_data.at(i), s)
+
+            if s.quarter != moment_data.at(i).quarter:
+                continue
+
+            if i == shot_moment_index - tick_delta or \
+                nearest_at_tick.defender_distance < nearest_at_shot.defender_distance:
+                nearest_at_shot = nearest_at_tick
+
+        result.push_back(nearest_at_shot)
+    return result
 
 cpdef size_t time_to_index(clock_fixed_point c, int quarter):
     # 720 seconds in a quarter
-    return ticks_per_second * (720 * (quarter - 1) + 720 - c.seconds) - c.twenty_fifths_of_second
+    return 25 * (720 * (quarter - 1) + 720 - c.seconds) - c.twenty_fifths_of_second
 
 cpdef shot_and_player_data nearest_defender_in_moment(cleaned_moment m, shot s):
     cdef shot_and_player_data nearest
