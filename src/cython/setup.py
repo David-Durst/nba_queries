@@ -10,6 +10,6 @@ extensions = [
 ]
 setup(
     name='Hello world app',
-    ext_modules=cythonize(extensions, language_level=3),
+    ext_modules=cythonize(extensions, language_level=3, build_dir="build"),
     zip_safe=False,
 )

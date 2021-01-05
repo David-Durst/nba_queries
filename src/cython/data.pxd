@@ -1,8 +1,7 @@
 # distutils: language = c++
 from libcpp.vector cimport vector
 
-cpdef read_file(str filename)
-cpdef player_data parse_player_data(str data)
+cpdef cleaned_moment parse_cleaned_moment_data(str data)
 
 cdef struct player_data:
     long int team_id
@@ -27,4 +26,4 @@ cdef struct cleaned_moment:
     double shot_clock
     short int quarter
     long int game_id
-    char* events
+    vector[event_moment_data] events
