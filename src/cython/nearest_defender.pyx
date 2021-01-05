@@ -1,16 +1,57 @@
 # distutils: language = c++
 from data cimport *
 from libcpp.vector cimport vector
+from libcpp cimport bool
+from libc.math cimport hypot
 
 cdef vector[cleaned_moment] moment_data
 cdef vector[shot] shot_data
 cdef vector[shot] selected_shot_data
 
-cpdef void get_shots_for_game(long int game_id):
-    for i in range(shot_data.size()):
-        if shot_data.at(i).game_id == game_id:
-            selected_shot_data.push_back(shot_data.at(i))
+#cpdef void vector[shot_and_player_data] find_nearest_defender_at_each_shot(double time_delta = 2.0):
+    #for shot in selected_shot_data:
+#    return
 
+cpdef size_t time_to_index(clock_fixed_point c, int quarter):
+    # 720 seconds in a quarter
+    return ticks_per_second * (720 * (quarter - 1) + 720 - c.seconds) - c.twenty_fifths_of_second
+
+cpdef shot_and_player_data nearest_defender_in_moment(cleaned_moment m, shot s):
+    cdef shot_and_player_data nearest
+    nearest.offense_team_id = s.team_id
+    nearest.offense_player_id = s.player_id
+    nearest.defender_distance = 100000.0
+    nearest.game_clock = s.shot_time
+    nearest.shot_clock = m.shot_clock
+    nearest.quarter = m.quarter
+    nearest.game_id = m.game_id
+    nearest.event_id = s.game_event_id
+    nearest.shot_attempted = s.shot_attempted_flag
+    nearest.shot_made = s.shot_made_flag
+
+    cdef player_data* shooter_data
+    for p in m.players:
+        if p.player_id == s.player_id:
+            shooter_data = &p
+            break
+
+    nearest.offense_x_loc = shooter_data.x_loc
+    nearest.offense_y_loc = shooter_data.y_loc
+
+    cdef double new_distance
+    for p in m.players:
+        new_distance = compute_distance(shooter_data, &p)
+        if new_distance < nearest.defender_distance and nearest.offense_team_id != p.team_id:
+            nearest.defense_team_id = p.team_id
+            nearest.defense_player_id = p.player_id
+            nearest.defense_x_loc = p.x_loc
+            nearest.defense_y_loc = p.y_loc
+    return nearest
+
+cdef double compute_distance(player_data* p1, player_data* p2):
+    return hypot(p1.x_loc-p2.x_loc, p1.y_loc-p2.y_loc)
+
+# loading the file and setting up data structures
 cpdef void parse_file(str moment_file, str shot_file):
     i = 0
     with open(moment_file, "r") as f:
@@ -27,6 +68,12 @@ cpdef void parse_file(str moment_file, str shot_file):
                 continue
             shot_data.push_back(parse_shot_data(line))
 
+cpdef void get_shots_for_game(long int game_id):
+    for i in range(shot_data.size()):
+        if shot_data.at(i).game_id == game_id:
+            selected_shot_data.push_back(shot_data.at(i))
+
+# helper functions for looking at vectors in python interpreter
 cpdef vector[cleaned_moment] take_moment(int n):
     cpdef vector[cleaned_moment] res
     for i in range(n):

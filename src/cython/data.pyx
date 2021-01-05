@@ -18,7 +18,6 @@ cpdef event_moment_data parse_event_moment_data(str data):
 
 cpdef clock_fixed_point parse_clock_fixed_point_data(str data):
     f = float(data)
-
     seconds = floor(f)
     twenty_fifths_of_second = round((f - seconds) * 25)
     if twenty_fifths_of_second == 25:
@@ -92,8 +91,8 @@ cpdef shot parse_shot_data(str data):
         int_def(sp_str[17]),
         #bool shot_made_flag;
         int_def(sp_str[18]) != 0,
-        #double shot_time;
-        float(sp_str[19]),
+        #clock_fixed_point shot_time;
+        parse_clock_fixed_point_data(sp_str[19]),
         #char* shot_type;
         str.encode(sp_str[20]),
         #char* shot_zone_area;
@@ -102,8 +101,8 @@ cpdef shot parse_shot_data(str data):
         str.encode(sp_str[22]),
         #char* shot_zone_range;
         str.encode(sp_str[23]),
-        #double team_id;
-        float(sp_str[24]),
+        #long team_id;
+        int(sp_str[24]),
         #char* team_name;
         str.encode(sp_str[25]),
         #char* team_vtm;
