@@ -53,7 +53,6 @@ cdef int int_def(str data):
 
 cpdef shot parse_shot_data(str data):
     sp_str = data.split(",")
-    print("first string: " + sp_str[0])
     return shot(
         #char* action_type;
         str.encode(sp_str[0]),

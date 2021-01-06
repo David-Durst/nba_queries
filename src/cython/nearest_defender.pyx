@@ -68,18 +68,23 @@ cpdef shot_and_player_data nearest_defender_in_moment(cleaned_moment m, shot s):
     nearest.shot_attempted = s.shot_attempted_flag
     nearest.shot_made = s.shot_made_flag
 
-    cdef player_data* shooter_data
+    cdef player_data shooter_data = m.players[0]
+    not_assigned = True 
     for p in m.players:
         if p.player_id == s.player_id:
-            shooter_data = &p
+            shooter_data = p
+            not_assigned = False
             break
+    if not_assigned:
+        nearest.defense_player_id = -1
+        return nearest
 
     nearest.offense_x_loc = shooter_data.x_loc
     nearest.offense_y_loc = shooter_data.y_loc
 
     cdef double new_distance
     for p in m.players:
-        new_distance = compute_distance(shooter_data, &p)
+        new_distance = compute_distance(&shooter_data, &p)
         if new_distance < nearest.defender_distance and nearest.offense_team_id != p.team_id:
             nearest.defender_distance = new_distance
             nearest.defense_team_id = p.team_id
