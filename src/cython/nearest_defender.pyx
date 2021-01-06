@@ -48,10 +48,6 @@ cpdef vector[shot_and_player_data] find_nearest_defender_at_each_shot(int tick_d
         result.push_back(nearest_at_shot)
     return result
 
-cpdef size_t time_to_index(clock_fixed_point c, int quarter):
-    # 720 seconds in a quarter
-    return 25 * (720 * (quarter - 1) + 720 - c.seconds) - c.twenty_fifths_of_second
-
 cpdef shot_and_player_data nearest_defender_in_moment(cleaned_moment m, shot s):
     cdef shot_and_player_data nearest
     nearest.offense_team_id = s.team_id

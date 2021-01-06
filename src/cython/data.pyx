@@ -27,6 +27,11 @@ cpdef clock_fixed_point parse_clock_fixed_point_data(str data):
     return clock_fixed_point(seconds,
                              twenty_fifths_of_second)
 
+
+cpdef size_t time_to_index(clock_fixed_point c, int quarter):
+# 720 seconds in a quarter
+    return 25 * (720 * (quarter - 1) + 720 - c.seconds) - c.twenty_fifths_of_second
+
 cpdef cleaned_moment parse_cleaned_moment_data(str data):
     sp_str = data.split(",")
     ball = parse_player_data(sp_str[0:5])
