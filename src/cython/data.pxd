@@ -34,28 +34,28 @@ cpdef shot parse_shot_data(str data)
 cdef struct shot:
     string action_type
     int event_time
-    char* event_type
-    char* game_date
+    string event_type
+    string game_date
     long int game_event_id
     long int game_id
-    char* grid_type
-    char* htm
+    string grid_type
+    string htm
     double loc_x
     double loc_y
     int minutes_remaining
     int period
     int player_id
-    char* player_name
+    string player_name
     double quarter
     int seconds_remaining
     bool shot_attempted_flag
     int shot_distance
     bool shot_made_flag
     clock_fixed_point shot_time
-    char* shot_type
-    char* shot_zone_area
-    char* shot_zone_basic
-    char* shot_zone_range
+    string shot_type
+    string shot_zone_area
+    string shot_zone_basic
+    string shot_zone_range
     long int team_id
-    char* team_name
-    char* team_vtm
+    string team_name
+    string team_vtm
