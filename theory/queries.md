@@ -14,6 +14,7 @@ For the reference part of the taxonomy, I also state which entity is the referen
         1. PostgreSQL: 35s, even after adding custom indexes. 
         2. C++: 0.015s
         3. Q: 0.08s
+        4. Cython: 0.039s
 2. Query 2: find all trajectories of a player or the ball from position (x,y,t) to (x+10,y+10,t+5), such that x,y, and t are free variables
     1. Place in Taxonomy:
         1. reference - players/ball - moving, series
