@@ -56,7 +56,7 @@ cpdef shot parse_shot_data(str data):
     print("first string: " + sp_str[0])
     return shot(
         #char* action_type;
-        sp_str[0],
+        str.encode(sp_str[0]),
         #int event_time;
         int_def(sp_str[1]),
         #char* event_type;
