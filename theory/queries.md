@@ -26,6 +26,7 @@ For the reference part of the taxonomy, I also state which entity is the referen
     4. Performance:
         1. C++: 0.07s
         2. Q: 0.164s
+        3. Cython: 0.38s
 3. Query 3: find all trajectories of a player or the ball that start in the range ((70, 16, t) - (90, 32, t)) to (72, 25, t+5). 
    The starting range is the paint on one side of the court. The destination is a point at the top of the key on that same side of the court.
     1. Place in Taxonomy:
