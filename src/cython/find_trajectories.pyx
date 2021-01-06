@@ -39,3 +39,10 @@ cdef void trajectory_match(cleaned_moment& src_m, cleaned_moment& dst_m,
                                          dst_p.y_loc,
                                          src_m.game_clock,
                                          src_m.quarter))
+
+#cpdef vector[trajectory_data] find_trajectories_fixed_origin(coordinate_range start,
+#                                                             coordinate_range end,
+#                                                             clock_fixed_point t_offset,
+#
+#                                                             double y_offset,
+#                                                             int t_offset):

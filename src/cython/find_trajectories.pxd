@@ -4,6 +4,9 @@ from load cimport *
 from libcpp.vector cimport vector
 from libcpp cimport bool
 
+cpdef vector[trajectory_data] find_trajectories_no_fixed_origin(double x_offset,
+                                                                double y_offset,
+                                                                int t_offset)
 cdef struct trajectory_data:
     long int team_id
     int player_id
@@ -14,3 +17,12 @@ cdef struct trajectory_data:
     double end_y_loc
     clock_fixed_point end_game_clock
     int quarter
+    
+cdef struct coordinate:
+    double x_loc
+    double y_loc
+    clock_fixed_point game_clock
+
+cdef struct coordinate_range:
+    coordinate start
+    coordinate end

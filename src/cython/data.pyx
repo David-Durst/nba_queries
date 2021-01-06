@@ -32,6 +32,27 @@ cpdef size_t time_to_index(clock_fixed_point c, int quarter):
 # 720 seconds in a quarter
     return 25 * (720 * (quarter - 1) + 720 - c.seconds) - c.twenty_fifths_of_second
 
+cpdef clock_fixed_point add_ticks(clock_fixed_point c, int ticks):
+    cdef clock_fixed_point result = c
+    cdef long int old_ticks, new_ticks
+    old_ticks = c.twenty_fifths_of_second
+    new_ticks = old_ticks + ticks
+    result.twenty_fifths_of_second = new_ticks % 25
+    result.seconds += int(new_ticks / 25)
+    return result
+
+
+cpdef clock_fixed_point sub_ticks(clock_fixed_point c, int ticks):
+    cdef clock_fixed_point result = c
+    cdef long int old_ticks, new_ticks
+    old_ticks = c.twenty_fifths_of_second
+    new_ticks = old_ticks - ticks
+    result.twenty_fifths_of_second = new_ticks % 25
+    result.seconds += int(new_ticks / 25)
+    if new_ticks < 0:
+        result.seconds -= 1
+    return result
+
 cpdef cleaned_moment parse_cleaned_moment_data(str data):
     sp_str = data.split(",")
     ball = parse_player_data(sp_str[0:5])

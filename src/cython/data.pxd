@@ -20,6 +20,9 @@ cdef struct clock_fixed_point:
     long int seconds
     int twenty_fifths_of_second
 
+cpdef clock_fixed_point add_ticks(clock_fixed_point c, int ticks)
+cpdef clock_fixed_point sub_ticks(clock_fixed_point c, int ticks)
+
 cpdef size_t time_to_index(clock_fixed_point c, int quarter)
 
 cdef struct cleaned_moment:
