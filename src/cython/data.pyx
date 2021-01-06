@@ -1,5 +1,6 @@
 # distutils: language = c++
 from libcpp.vector cimport vector
+from libcpp.string cimport string
 from libcpp cimport bool
 from math import floor
 
@@ -52,9 +53,10 @@ cdef int int_def(str data):
 
 cpdef shot parse_shot_data(str data):
     sp_str = data.split(",")
+    print("first string: " + sp_str[0])
     return shot(
         #char* action_type;
-        str.encode(sp_str[0]),
+        sp_str[0],
         #int event_time;
         int_def(sp_str[1]),
         #char* event_type;

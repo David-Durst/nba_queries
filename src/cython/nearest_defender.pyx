@@ -3,10 +3,31 @@ from data cimport *
 from libcpp.vector cimport vector
 from libcpp cimport bool
 from libc.math cimport hypot
+from math import ceil, floor
 
 cdef vector[cleaned_moment] moment_data
 cdef vector[shot] shot_data
 cdef vector[shot] selected_shot_data
+
+cpdef bucket_distances(vector[shot_and_player_data] data):
+    cdef double max_distance_f
+    max_distance_f = data.at(0).defender_distance
+    for d in data:
+        if max_distance_f < d.defender_distance:
+            max_distance_f = d.defender_distance
+    cdef int max_distance = ceil(max_distance_f)
+
+    result = []
+    for i in range(max_distance + 1):
+        result.append(0)
+
+    print("result length: " + str(len(result)))
+    print("max_distance_f: " + str(max_distance_f))
+
+    for d in data:
+        result[floor(d.defender_distance)] += 1
+
+    return result
 
 cpdef vector[shot_and_player_data] find_nearest_defender_at_each_shot(int tick_delta = 50):
     cdef vector[shot_and_player_data] result
@@ -60,6 +81,7 @@ cpdef shot_and_player_data nearest_defender_in_moment(cleaned_moment m, shot s):
     for p in m.players:
         new_distance = compute_distance(shooter_data, &p)
         if new_distance < nearest.defender_distance and nearest.offense_team_id != p.team_id:
+            nearest.defender_distance = new_distance
             nearest.defense_team_id = p.team_id
             nearest.defense_player_id = p.player_id
             nearest.defense_x_loc = p.x_loc
@@ -81,6 +103,17 @@ cpdef void parse_file(str moment_file, str shot_file):
     i = 0
     with open(shot_file, "r") as f:
         for line in f.readlines():
+            if i == 0:
+                i += 1
+                continue
+            shot_data.push_back(parse_shot_data(line))
+
+# loading the file and setting up data structures
+cpdef void parse_file2(str shot_file):
+    i = 0
+    with open(shot_file, "r") as f:
+        for line in f.readlines():
+            print(line)
             if i == 0:
                 i += 1
                 continue

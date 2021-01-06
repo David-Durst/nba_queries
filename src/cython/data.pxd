@@ -1,5 +1,6 @@
 # distutils: language = c++
 from libcpp.vector cimport vector
+from libcpp.string cimport string
 from libcpp cimport bool
 
 cpdef cleaned_moment parse_cleaned_moment_data(str data)
@@ -31,7 +32,7 @@ cdef struct cleaned_moment:
 cpdef shot parse_shot_data(str data)
 
 cdef struct shot:
-    char* action_type
+    string action_type
     int event_time
     char* event_type
     char* game_date
