@@ -33,6 +33,7 @@ FATAL: In-source builds are not allowed.
 endif()
 
 add_executable(nba_queries ${NBA_SOURCES} ${PROJECT_SOURCE_DIR}/src/cpp/bin/query_main.cpp)
+add_executable(cleaned_nba_queries ${NBA_SOURCES} ${PROJECT_SOURCE_DIR}/src/cpp/bin/cleaned_query_main.cpp)
 add_executable(preprocess_moments ${NBA_SOURCES} ${PROJECT_SOURCE_DIR}/src/cpp/bin/preprocess_main.cpp)
 add_library(nba_queries_lib SHARED ${NBA_SOURCES} ${NBA_HEADERS})
 # add this to enable debug printing statements
@@ -43,6 +44,7 @@ set_target_properties(nba_queries_lib PROPERTIES VERSION ${PROJECT_VERSION})
 
 # add the install targets
 install (TARGETS nba_queries DESTINATION bin)
+install (TARGETS cleaned_nba_queries DESTINATION bin)
 install (TARGETS preprocess_moments DESTINATION bin)
 install (TARGETS nba_queries_lib
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
