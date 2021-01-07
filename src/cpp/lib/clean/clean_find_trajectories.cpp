@@ -10,8 +10,11 @@ void find_trajectories_fixed_origin_clean(vector<cleaned_moment>& moments, vecto
     for (size_t i = 0; i < moments.size() - t_index_offset + t_delta_ticks; i++) {
         cleaned_moment& src_m = moments.at(i);
         get_all_player_data(src_players, src_m);
+        if (i == 602) {
+            int x = 2;
+        }
         src_players.erase(std::remove_if(src_players.begin(), src_players.end(), [origin](player_data p){
-            return point_intersect_no_time(origin, p);
+            return !point_intersect_no_time(origin, p);
         }), src_players.end());
         if (src_players.empty()) {
             continue;
@@ -47,7 +50,7 @@ void find_trajectories_fixed_origin_clean(vector<cleaned_moment>& moments, vecto
 
 
 bool point_intersect_no_time(const coordinate_range& r, const player_data& c) {
-    bool x_intersects = c.x_loc >= r.start.x and c.x_loc <= r.end.x;
-    bool y_intersects = c.y_loc >= r.start.y and c.y_loc <= r.end.y;
-    return x_intersects and y_intersects;
+    bool x_intersects = c.x_loc >= r.start.x && c.x_loc <= r.end.x;
+    bool y_intersects = c.y_loc >= r.start.y && c.y_loc <= r.end.y;
+    return x_intersects && y_intersects;
 }
