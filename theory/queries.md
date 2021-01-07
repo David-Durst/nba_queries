@@ -39,6 +39,7 @@ For the reference part of the taxonomy, I also state which entity is the referen
     4. Performance:
         1. C++: 0.87s
         2. Q: 48.18s
+        3. Cython: 6.3 
     5. Future work on this query: a better answer for this query appears to be sorting by time and taking the approach from query 2.
     It's surprising that the octree didn't help. Other indices focused on trajectories may improve over both the octree and sort by time approaches.
 
