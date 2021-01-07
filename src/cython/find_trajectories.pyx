@@ -48,7 +48,6 @@ cpdef vector[trajectory_data] find_trajectories_fixed_origin(coordinate_range st
                                                              coordinate_range end,
                                                              int t_offset,
                                                              int t_delta_ticks):
-    print("got to the start")
     cdef vector[trajectory_data] result
     cdef int t_index_offset = t_offset * 25
     cdef cleaned_moment src_m, dst_m
@@ -84,7 +83,6 @@ cpdef vector[trajectory_data] find_trajectories_fixed_origin(coordinate_range st
                                 src_m.quarter
                         ))
                         continue
-    print("got to the end")
     return result
 
 
