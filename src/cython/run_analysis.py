@@ -22,3 +22,16 @@ res = find_trajectories_no_fixed_origin(10.0, 10.0, 5)
 end = timer()
 print("time: " + str(end - start))
 print(str(res))
+
+print("query 3: find all trajectories of a player or the ball from position " +
+      "(x,y,t) to (x+10,y+10,t+5), such that x,y, and t are free variables")
+
+start = timer()
+res = find_trajectories_fixed_origin(
+    {'start': {'x_loc': 70.0, 'y_loc': 16.0}, 'end': {'x_loc': 90.0, 'y_loc': 32.0}},
+    {'start': {'x_loc': 71.9, 'y_loc': 24.9}, 'end': {'x_loc': 72.1, 'y_loc': 25.1}},
+    5, 25)
+
+end = timer()
+print("time: " + str(end - start))
+print(str(len(res)))

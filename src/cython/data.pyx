@@ -70,6 +70,11 @@ cpdef cleaned_moment parse_cleaned_moment_data(str data):
                           int(sp_str[58]),
                           events)
 
+cdef vector[player_data] get_all_player_data(cleaned_moment& c):
+    cdef vector[player_data] result = c.players
+    result.push_back(c.ball)
+    return result
+
 cdef int int_def(str data):
     if len(data) == 0:
         return -1

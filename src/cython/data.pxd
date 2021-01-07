@@ -34,6 +34,7 @@ cdef struct cleaned_moment:
     long int game_id
     vector[event_moment_data] events
 
+cdef vector[player_data] get_all_player_data(cleaned_moment& c)
 cpdef shot parse_shot_data(str data)
 
 cdef struct shot:
