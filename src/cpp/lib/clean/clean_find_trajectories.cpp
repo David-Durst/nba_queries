@@ -2,7 +2,7 @@
 #include <functional>
 
 void find_trajectories_fixed_origin_clean(vector<cleaned_moment>& moments, vector<trajectory_data>& trajectories,
-                                          st_index& index, coordinate_range origin, coordinate_range destination,
+                                          coordinate_range origin, coordinate_range destination,
                                           int t_offset, int t_delta_ticks) {
     int t_index_offset = t_offset * 25;
     vector<std::reference_wrapper<player_data>> src_players, dst_players;

@@ -9,7 +9,7 @@
 #include "find_trajectories.h"
 
 void find_trajectories_fixed_origin_clean(vector<cleaned_moment>& moments, vector<trajectory_data>& trajectories,
-                                          st_index& index, coordinate_range origin, coordinate_range destination,
+                                          coordinate_range origin, coordinate_range destination,
                                           int t_offset, int t_delta_ticks);
 
 bool point_intersect_no_time(const coordinate_range& r, const player_data& c);
