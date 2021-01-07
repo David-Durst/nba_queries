@@ -152,6 +152,14 @@ void print_cleaned_moment_csv(std::ostream& os, const cleaned_moment& value) {
     }
 }
 
+void get_all_player_data(vector<std::reference_wrapper<player_data>> data, cleaned_moment& c) {
+    data.clear();
+    data.push_back(c.ball);
+    for (std::reference_wrapper<player_data> p : c.players) {
+        data.push_back(p);
+    }
+}
+
 bool operator==(shot const &lhs, shot const &rhs) {
     return
             lhs.action_type == rhs.action_type &&

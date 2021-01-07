@@ -52,5 +52,6 @@ int main(int argc, char * argv[]) {
         return (s0.period < s1.period || (s0.period == s1.period && s0.shot_time > s1.shot_time) ||
                 (s0.period == s1.period && s0.shot_time == s1.shot_time && s0.game_event_id < s1.game_event_id));
     });
+
     return 0;
 }
