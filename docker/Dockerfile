@@ -4,10 +4,11 @@ RUN apt clean; apt update; apt upgrade -y
 ENV DEBIAN_FRONTEND="noninteractive" TZ="America/New_York"
 RUN apt install -y curl vim neovim git g++ rlwrap openssh-server sudo make
 
-RUN adduser --disabled-password --gecos '' durst
-RUN adduser durst sudo
-RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-USER durst
+#RUN adduser --disabled-password --gecos '' durst
+#RUN adduser durst sudo
+#RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+#USER durst
+RUN mkdir /home/durst
 WORKDIR /home/durst
 
 #setup kdb
@@ -28,5 +29,9 @@ RUN git clone https://github.com/David-Durst/nba_queries.git
 RUN conda config --prepend pkgs_dirs /home/durst/.conda/pkgs
 RUN conda create -y -n nba_queries python=3.8
 WORKDIR /home/durst/nba_queries/src/cython
-SHELL ["conda", "run", "-n", "nba_queries", "pip", "install", "-e", "."]
+#SHELL ["conda", "run", "-n", "nba_queries", "pip", "install", "-e", "."]
+RUN conda run -n nba_queries pip install -e .
 WORKDIR /home/durst/nba_queries
+
+# config bash setings
+RUN echo "conda activate base" >> /root/.bashrc
