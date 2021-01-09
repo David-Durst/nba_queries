@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <stdexcept>
 #include "query_structs.h"
 
 bool operator==(moment const& lhs, moment const& rhs) {
@@ -259,4 +260,44 @@ bool shot_before_moment(const shot & s, const moment & m){
 
 bool moment_before_shot(const moment & m, const shot & s) {
     return m.quarter < s.period || (m.quarter == s.period && m.game_clock > s.shot_time);
+}
+
+template <typename T>
+void list<T>::append_node(T * elem) {
+    if (head == NULL) {
+        head = new list_node<T>();
+        tail = head;
+        head->data = elem;
+    }
+    else {
+        list_node<T> * next_tail = new list_node<T>();
+        next_tail->data = elem;
+        tail->next = next_tail;
+        tail = tail->next;
+    }
+}
+
+template <typename T>
+T * list<T>::get(size_t i) {
+    if (i >= size) {
+        throw std::invalid_argument("size " + std::to_string(i) + "greater than list size " + std::to_string(size));
+    }
+    list_node<T> * result_node = head;
+    for (int j = 0; j < i; j++) {
+        result_node = result_node->next;
+    }
+    return result_node->data;
+}
+
+template <typename T>
+size_t list<T>::get_size() {
+    return size;
+}
+template <typename T>
+void list<T>::to_vector(vector<T> &vec) {
+    list_node<T> * cur_node = head;
+    for (int i = 0; i < size; i++) {
+        vec.push_back(*cur_node->data);
+        cur_node = cur_node->next;
+    }
 }

@@ -81,7 +81,6 @@ void load_moment_row(string& row, moment& m) {
 
 /* load a CSV file of cleaned_moments with a header row */
 size_t load_cleaned_moment_rows(string filepath, cleaned_moment * ms[]) {
-    std::cout << "loading cleaned moments file: " << filepath << std::endl;
     size_t num_rows = 0;
     std::fstream count_f, load_f;
     count_f.open(filepath);
@@ -298,7 +297,6 @@ void load_event_row(string& row, event& e) {
 
 /* load a CSV file of shots with a header row */
 size_t load_show_rows(string filepath, shot * s_arr[]) {
-    std::cout << "loading shots file: " << filepath << std::endl;
     size_t num_rows = 0;
     std::fstream count_f, load_f;
     count_f.open(filepath);

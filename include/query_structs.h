@@ -166,4 +166,22 @@ void print_shot_csv(std::ostream& os, const shot& value);
 
 bool shot_before_moment(const shot & s, const moment & m);
 bool moment_before_shot(const moment & m, const shot & s);
+
+template <typename T>
+struct list_node {
+    T* data;
+    list_node<T>* next;
+};
+
+template <typename T>
+class list {
+    list_node<T> *head, *tail;
+    size_t size;
+public:
+    list() : head(NULL), tail(NULL), size(0) { }
+    void append_node(T * elem);
+    T * get(size_t i);
+    size_t get_size();
+    void to_vector(vector<T> & vec);
+};
 #endif
