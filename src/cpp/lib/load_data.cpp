@@ -1,6 +1,6 @@
 #include <string>
 #include <vector>
-#include <istream>
+#include <fstream>
 #include <sstream>
 #include <iostream>
 #include <algorithm>
@@ -80,7 +80,33 @@ void load_moment_row(string& row, moment& m) {
 }
 
 /* load a CSV file of cleaned_moments with a header row */
-void load_cleaned_moment_rows(istream& rows, vector<cleaned_moment>& ms) {
+size_t load_cleaned_moment_rows(string filepath, cleaned_moment * ms[]) {
+    std::cout << "loading cleaned moments file: " << filepath << std::endl;
+    size_t num_rows = 0;
+    std::fstream count_f, load_f;
+    count_f.open(filepath);
+    string row;
+    while(std::getline(count_f, row)) {
+        if (row.length() > 0) {
+            num_rows++;
+        }
+    }
+    // don't count header rows
+    num_rows--;
+    count_f.close();
+    load_f.open(filepath);
+    *ms = new cleaned_moment[num_rows];
+    // load first row to skip header
+    std::getline(load_f, row);
+    for (size_t i = 0; i < num_rows; i++) {
+        std::getline(load_f, row);
+        load_cleaned_moment_row(row, (*ms)[i]);
+    }
+    return num_rows;
+}
+
+/* load a CSV file of cleaned_moments with a header row */
+void load_cleaned_moment_rows_vec(istream& rows, vector<cleaned_moment>& ms) {
     string row;
     std::getline(rows, row);
     int row_num = 0;
@@ -271,7 +297,31 @@ void load_event_row(string& row, event& e) {
 }
 
 /* load a CSV file of shots with a header row */
-void load_shot_rows(istream& rows, vector<shot>& shs) {
+size_t load_show_rows(string filepath, shot * s_arr[]) {
+    std::cout << "loading shots file: " << filepath << std::endl;
+    size_t num_rows = 0;
+    std::fstream count_f, load_f;
+    count_f.open(filepath);
+    string row;
+    while(std::getline(count_f, row)) {
+        if (row.length() > 0) {
+            num_rows++;
+        }
+    }
+    // don't count header rows
+    num_rows--;
+    count_f.close();
+    load_f.open(filepath);
+    *s_arr = new shot[num_rows];
+    // load first row to skip header
+    std::getline(load_f, row);
+    for (size_t i = 0; i < num_rows; i++) {
+        std::getline(load_f, row);
+        load_shot_row(row, (*s_arr)[i]);
+    }
+    return num_rows;
+}
+void load_shot_rows_vec(istream& rows, vector<shot>& shs) {
     string row;
     std::getline(rows, row);
     while(std::getline(rows, row)) {

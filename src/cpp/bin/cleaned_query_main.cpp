@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <iostream>
 #include <vector>
-#include <fstream>
 #include <string>
 #include <thread>
 #include <chrono>
@@ -18,8 +17,8 @@
 using std::string;
 
 int main(int argc, char * argv[]) {
-    vector<cleaned_moment> moments;
-    vector<shot> shots;
+    cleaned_moment * moments;
+    shot * shots;
     vector<shot_and_player_data> shots_and_players;
     vector<trajectory_data> trajectories;
     if (argc != 3) {
@@ -28,7 +27,6 @@ int main(int argc, char * argv[]) {
         std::cout << "2. path/to/shots_file.csv " << std::endl;
     }
     string moments_file_path = argv[1], shots_file_path = argv[2];
-    std::fstream moments_file, shots_file;
 
     // load the cleaned moments
     std::cout << "loading cleaned moments file: " << moments_file_path << std::endl;

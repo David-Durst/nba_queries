@@ -43,7 +43,7 @@ int main(int argc, char * argv[]) {
     // load the shots 
     std::cout << "loading shots file: " << shots_file_path << std::endl;
     shots_file.open(shots_file_path);
-    load_shot_rows(shots_file, shots);
+    load_shot_rows_vec(shots_file, shots);
     shots_file.close();
     std::cout << "shots size: " << shots.size() << std::endl;
     // filter shots, sort by quarter than gametime
