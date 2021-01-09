@@ -25,13 +25,13 @@ ENV PATH="$PATH:/home/durst/cmake/bin/"
 WORKDIR /home/durst
 
 # setup code
-RUN git clone https://github.com/David-Durst/nba_queries.git
 RUN conda config --prepend pkgs_dirs /home/durst/.conda/pkgs
 RUN conda create -y -n nba_queries python=3.8
+RUN git clone https://github.com/David-Durst/nba_queries.git
 WORKDIR /home/durst/nba_queries/src/cython
 #SHELL ["conda", "run", "-n", "nba_queries", "pip", "install", "-e", "."]
 RUN conda run -n nba_queries pip install -e .
 WORKDIR /home/durst/nba_queries
 
 # config bash setings
-RUN echo "conda activate base" >> /root/.bashrc
+RUN echo "conda activate nba_queries" >> /root/.bashrc
