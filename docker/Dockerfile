@@ -11,6 +11,9 @@ USER db
 WORKDIR /home/db
 
 #setup kdb
-COPY q q/
-ENV QHOME "${HOME}/q/"
-ENV PATH="$PATH:${QHOME}/l32/"
+COPY --chown=db:db q q/
+ENV QHOME "/home/db/q/"
+#ENV PATH="$PATH:/home/db/q/l32/"
+
+# setup code
+RUN git clone https://github.com/David-Durst/nba_queries.git
