@@ -8,7 +8,7 @@
 #include <numeric>
 #include "check_distances.h"
 #include "find_trajectories.h"
-#include "clean_find_trajectories.h"
+#include "query3_clean_find_trajectories_fixed_origin.h"
 #include "benchmark.h"
 #include "load_data.h"
 #include "query_structs.h"
