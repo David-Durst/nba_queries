@@ -41,6 +41,7 @@ int main(int argc, char * argv[]) {
     load_cleaned_moment_rows_vec(moments_file, moments);
     moments_file.close();
     std::cout << "moments size: " << moments.size() << std::endl;
+    moments_col = new moment_col_store(moments);
     // load the shots
     std::cout << "loading shots file: " << shots_file_path << std::endl;
     shots_file.open(shots_file_path);

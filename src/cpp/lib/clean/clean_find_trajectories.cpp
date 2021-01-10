@@ -1,5 +1,6 @@
 #include "clean_find_trajectories.h"
 #include <functional>
+#include <iostream>
 
 void find_trajectories_fixed_origin_clean(moment_col_store * moments, list<trajectory_data> * trajectories,
                                           coordinate_range origin, coordinate_range destination,

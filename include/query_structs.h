@@ -199,6 +199,7 @@ void list<T>::append_node(T elem) {
         tail->next = next_tail;
         tail = tail->next;
     }
+    size++;
 }
 
 template <typename T>
@@ -227,6 +228,7 @@ void list<T>::clear() {
         cur_node = cur_node->next;
         free(prior_node);
     }
+    head = NULL;
     size = 0;
 }
 
