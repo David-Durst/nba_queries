@@ -263,7 +263,7 @@ bool moment_before_shot(const moment & m, const shot & s) {
 }
 
 template <typename T>
-void list<T>::append_node(T * elem) {
+void list<T>::append_node(T elem) {
     if (head == NULL) {
         head = new list_node<T>();
         tail = head;

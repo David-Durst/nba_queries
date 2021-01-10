@@ -13,6 +13,6 @@ void find_trajectories_fixed_origin_clean(moment_col_store * moments, list<traje
                                           coordinate_range origin, coordinate_range destination,
                                           int t_offset, int t_delta_ticks);
 
-bool point_intersect_no_time(const coordinate_range * r, const player_data * c);
+bool point_intersect_no_time(coordinate_range * r, double x_loc, double y_loc);
 
 #endif //NBA_QUERIES_CLEAN_FIND_TRAJECTORIES_H

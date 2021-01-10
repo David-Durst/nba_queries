@@ -169,7 +169,7 @@ bool moment_before_shot(const moment & m, const shot & s);
 
 template <typename T>
 struct list_node {
-    T* data;
+    T data;
     list_node<T>* next;
 };
 
@@ -179,7 +179,7 @@ class list {
     size_t size;
 public:
     list() : head(NULL), tail(NULL), size(0) { }
-    void append_node(T * elem);
+    void append_node(T elem);
     T * get(size_t i);
     size_t get_size();
     void clear();
