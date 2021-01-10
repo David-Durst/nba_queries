@@ -54,7 +54,7 @@ int main(int argc, char * argv[]) {
     }), shots.end());
     std::cout << "new shots size: " << shots.size() << ", sorting shots" << std::endl;
     std::sort(shots.begin(), shots.end(), [](shot s0, shot s1) {
-        return (s0.period < s1.period || (s0.period == s1.period && s0.shot_time > s1.shot_time) ||
+        return (s0.period < s1.period || (s0.period == s1.period && s0.shot_time.to_double() > s1.shot_time.to_double()) ||
                 (s0.period == s1.period && s0.shot_time == s1.shot_time && s0.game_event_id < s1.game_event_id));
     });
     for (int i = 0; i < 5; i++) {

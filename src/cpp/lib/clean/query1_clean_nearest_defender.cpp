@@ -78,7 +78,7 @@ void find_nearest_defender_at_each_shot_clean(moment_col_store * moments,
             0, // not worrying about moment in event for right now
             shots->shot_attempted_flag[shot_index],
             shots->shot_made_flag[shot_index]
-        })
+        });
     }
 }
 
