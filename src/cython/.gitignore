@@ -3,4 +3,6 @@ __pycache__/
 *.cpp
 *.so
 *.csv
+load_cython.pyc
+nba_queries.egg-info/
 
