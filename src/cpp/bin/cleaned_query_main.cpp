@@ -73,6 +73,16 @@ int main(int argc, char * argv[]) {
     trajectories_list.to_vector(trajectories);
     printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "trajectories size: " << trajectories.size() << std::endl;
+    trajectories.clear();
+
+    std::cout << "running query 3 cleaned with row store" << std::endl;
+    min_time = Halide::Tools::benchmark(3, 3, [&]() {
+        trajectories.clear();
+        find_trajectories_fixed_origin_clean_rowstore(moments, trajectories, origin, destination, 5, 25);
+    });
+    printf("compute time: %gms\n", min_time * 1e3);
+    std::cout << "trajectories size: " << trajectories.size() << std::endl;
+
 
     return 0;
 }
