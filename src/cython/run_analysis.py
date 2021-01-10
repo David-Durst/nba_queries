@@ -5,7 +5,7 @@ from nearest_defender import *
 from find_trajectories import *
 import sys
 
-if sys.argc > 2:
+if len(sys.argv) != 2:
     print("please call this code with 1 argument:")
     print("debug/measure")
 if sys.argv[1] == "debug":

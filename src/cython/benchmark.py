@@ -13,5 +13,5 @@ def benchmark(samples: int, iterations: int, f: Callable[[None], None]) -> float
         for _ in range(iterations):
             f()
         end = counter()
-        best = min(best, start-end)
+        best = min(best, end-start)
     return best / iterations
