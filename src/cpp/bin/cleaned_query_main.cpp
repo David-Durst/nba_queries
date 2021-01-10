@@ -62,23 +62,34 @@ int main(int argc, char * argv[]) {
                 (s0.period == s1.period && s0.shot_time == s1.shot_time && s0.game_event_id < s1.game_event_id));
     });
     shots_col = new shot_col_store(shots);
+
+
     std::cout << "running query 1 cleaned" << std::endl;
     double min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         shots_and_players_list.clear();
         find_nearest_defender_at_each_shot_clean(moments_col, shots_col, shots_and_players_list, 50);
     });
+    shots_and_players_list.to_vector(shots_and_players);
+    std::cout << "shot_and_players size: " << shots_and_players.size() << std::endl;
+    vector<shot_distance_bucket> buckets = bucket_shots_by_distance(shots_and_players);
+    std::cout << "distance,num_shot_made,num_shot_attempt,percent_made" << std::endl;
+    for (const auto & b : buckets) {
+        print_shot_distance_bucket_csv(std::cout, b);
+        std::cout << std::endl;
+    }
+
 
     std::cout << "running query 3 cleaned" << std::endl;
     coordinate_range origin{{70.0f,16.0f,0}, {90.0f,32.0f, 0}};
     coordinate_range destination{{71.9f,24.9f,0}, {72.1f,25.1f, 0}};
-    double min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
+    min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         trajectories_list.clear();
         find_trajectories_fixed_origin_clean(moments_col, &trajectories_list, origin, destination, 5, 25);
     });
     trajectories_list.to_vector(trajectories);
     printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "trajectories size: " << trajectories.size() << std::endl;
-    trajectories.clear();
+
 
     std::cout << "running query 3 cleaned with row store" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {

@@ -234,6 +234,7 @@ void list<T>::clear() {
 
 template <typename T>
 void list<T>::to_vector(vector<T> &vec) {
+    vec.clear();
     list_node<T> * cur_node = head;
     for (int i = 0; i < size; i++) {
         vec.push_back(cur_node->data);
