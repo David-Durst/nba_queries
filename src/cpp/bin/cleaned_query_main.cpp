@@ -27,12 +27,14 @@ int main(int argc, char * argv[]) {
     list<shot_and_player_data> shots_and_players_list;
     vector<trajectory_data> trajectories;
     list<trajectory_data> trajectories_list;
-    if (argc != 3) {
-        std::cout << "please call this code with 2 arguments: " << std::endl;
+    if (argc != 4) {
+        std::cout << "please call this code with 3 arguments: " << std::endl;
         std::cout << "1. path/to/cleaned_moments_file.csv " << std::endl;
         std::cout << "2. path/to/shots_file.csv " << std::endl;
+        std::cout << "3. debug/measure " << std::endl;
     }
-    string moments_file_path = argv[1], shots_file_path = argv[2];
+    string moments_file_path = argv[1], shots_file_path = argv[2], run_type = argv[3];
+    int num_samples_and_iterations = (run_type.compare("debug") == 0) ? 1 : 10;
     std::fstream moments_file, shots_file;
 
     // load the cleaned moments
@@ -66,7 +68,7 @@ int main(int argc, char * argv[]) {
     std::cout << "running query 3 cleaned" << std::endl;
     coordinate_range origin{{70.0f,16.0f,0}, {90.0f,32.0f, 0}};
     coordinate_range destination{{71.9f,24.9f,0}, {72.1f,25.1f, 0}};
-    double min_time = Halide::Tools::benchmark(3, 3, [&]() {
+    double min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         trajectories_list.clear();
         find_trajectories_fixed_origin_clean(moments_col, &trajectories_list, origin, destination, 5, 25);
     });
@@ -76,7 +78,7 @@ int main(int argc, char * argv[]) {
     trajectories.clear();
 
     std::cout << "running query 3 cleaned with row store" << std::endl;
-    min_time = Halide::Tools::benchmark(3, 3, [&]() {
+    min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         trajectories.clear();
         find_trajectories_fixed_origin_clean_rowstore(moments, trajectories, origin, destination, 5, 25);
     });

@@ -36,19 +36,19 @@ moment_col_store::moment_col_store(vector<cleaned_moment> &moments) {
     events = new vector<event_moment_data>[moments.size()];
     vector<std::reference_wrapper<player_data>> data;
     for (int i = 0; i < moments.size(); i++) {
+        cleaned_moment& m = moments.at(i);
+        get_all_player_data(data, m);
         for (int j = 0; j < 11; j++) {
-            cleaned_moment& m = moments.at(i);
-            get_all_player_data(data, m);
             team_id[j][i] = data.at(j).get().team_id;
             player_id[j][i] = data.at(j).get().player_id;
             x_loc[j][i] = data.at(j).get().x_loc;
             y_loc[j][i] = data.at(j).get().y_loc;
             radius[j][i] = data.at(j).get().radius;
         }
-        game_clock[i] = moments.at(i).game_clock;
-        shot_clock[i] = moments.at(i).shot_clock;
-        quarter[i] = moments.at(i).quarter;
-        game_id[i] = moments.at(i).game_id;
-        events[i] = moments.at(i).events;
+        game_clock[i] = m.game_clock;
+        shot_clock[i] = m.shot_clock;
+        quarter[i] = m.quarter;
+        game_id[i] = m.game_id;
+        events[i] = m.events;
     }
 }
