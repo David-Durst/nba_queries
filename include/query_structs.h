@@ -74,6 +74,11 @@ public:
     bool gt(double f) const {
         return this->to_double() > f;
     }
+
+    inline int64_t time_to_index(int quarter) {
+        // 720 seconds in a quarter
+        return 25 * (720 * (quarter - 1) + 720 - seconds) - twenty_fifths_of_second;
+    }
 };
 
 bool operator==(clock_fixed_point const & lhs, clock_fixed_point const & rhs);
@@ -150,12 +155,12 @@ struct shot {
     bool shot_attempted_flag;
     int shot_distance;
     bool shot_made_flag;
-    float shot_time;
+    clock_fixed_point shot_time;
     string shot_type;
     string shot_zone_area;
     string shot_zone_basic;
     string shot_zone_range;
-    float team_id;
+    double team_id;
     string team_name;
     string team_vtm;
 } ;

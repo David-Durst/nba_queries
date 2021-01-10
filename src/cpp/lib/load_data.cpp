@@ -366,7 +366,7 @@ void load_shot_row(string& row, shot& sh) {
     std::getline(ss, col, ',');
     sh.shot_made_flag = stoi_with_default(col);
     std::getline(ss, col, ',');
-    sh.shot_time = stod_with_default(col);
+    sh.shot_time = clock_fixed_point(stod_with_default(col));
     std::getline(ss, sh.shot_type, ',');
     std::getline(ss, sh.shot_zone_area, ',');
     std::getline(ss, sh.shot_zone_basic, ',');

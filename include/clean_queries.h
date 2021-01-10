@@ -8,11 +8,12 @@
 #include "query_structs.h"
 #include "find_trajectories.h"
 #include "col_stores.h"
+#include "check_distances.h"
 
 // query 1
 void find_nearest_defender_at_each_shot_clean(moment_col_store * moments,
                                               shot_col_store * shots,
-                                              list<shot_and_player_data>& shots_and_players,
+                                              list<shot_and_player_data> * shots_and_players,
                                               int time_delta_ticks);
 
 // query 3

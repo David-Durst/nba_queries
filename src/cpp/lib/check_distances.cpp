@@ -47,7 +47,7 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
             result.defense_x_loc = nearest_defender.x_loc;
             result.defense_y_loc = nearest_defender.y_loc;
             result.defender_distance = nearest_distance;
-            result.game_clock = shooter_moment.game_clock;
+            result.game_clock = clock_fixed_point(shooter_moment.game_clock);
             result.shot_clock = shooter_moment.shot_clock;
             result.quarter = shooter_moment.quarter;
             result.game_id = shooter_moment.game_id;
@@ -57,7 +57,7 @@ void find_nearest_defender_at_each_shot(vector<moment>& moments,
             result.shot_made = cur_shot.shot_made_flag;
             shots_and_players.push_back(result);
             cur_shot_idx++;
-            last_shot_time = cur_shot.shot_time;
+            last_shot_time = cur_shot.shot_time.to_double();
         }
         // skip bugged, repeated shots
         else if (last_shot_time == cur_shot.shot_time) {

@@ -74,12 +74,12 @@ shot_col_store::shot_col_store(vector<shot> &shots) {
     shot_attempted_flag = new bool[shots.size()];
     shot_distance = new int[shots.size()];
     shot_made_flag = new bool[shots.size()];
-    shot_time = new float[shots.size()];
+    shot_time = new clock_fixed_point[shots.size()];
     shot_type = new string[shots.size()];
     shot_zone_area = new string[shots.size()];
     shot_zone_basic = new string[shots.size()];
     shot_zone_range = new string[shots.size()];
-    team_id = new float[shots.size()];
+    team_id = new long int[shots.size()];
     team_name = new string[shots.size()];
     team_vtm = new string[shots.size()];
 
@@ -104,12 +104,12 @@ shot_col_store::shot_col_store(vector<shot> &shots) {
         shot_attempted_flag[i] = s.shot_attempted_flag;
         shot_distance[i] = s.shot_distance;
         shot_made_flag[i] = s.shot_made_flag;
-        shot_time[i] = s.shot_time;
+        shot_time[i] = clock_fixed_point(s.shot_time);
         shot_type[i] = s.shot_type;
         shot_zone_area[i] = s.shot_zone_area;
         shot_zone_basic[i] = s.shot_zone_basic;
         shot_zone_range[i] = s.shot_zone_range;
-        team_id[i] = s.team_id;
+        team_id[i] = std::lround(s.team_id);
         team_name[i] = s.team_name;
         team_vtm[i] = s.team_vtm;
     }

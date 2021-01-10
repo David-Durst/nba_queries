@@ -213,7 +213,7 @@ std::ostream &operator<<(std::ostream &os, const shot &value) {
        << ", shot_attempted_flag: " << value.shot_attempted_flag
        << ", shot_distance: " << value.shot_distance
        << ", shot_made_flag: " << value.shot_made_flag
-       << ", shot_time: " << value.shot_time
+       << ", shot_time: " << value.shot_time.to_double()
        << ", shot_type: " << value.shot_type
        << ", shot_zone_area: " << value.shot_zone_area
        << ", shot_zone_basic: " << value.shot_zone_basic
@@ -244,7 +244,7 @@ void print_shot_csv(std::ostream& os, const shot& value) {
        << "," << value.shot_attempted_flag
        << "," << value.shot_distance
        << "," << value.shot_made_flag
-       << "," << value.shot_time
+       << "," << value.shot_time.to_double()
        << "," << value.shot_type
        << "," << value.shot_zone_area
        << "," << value.shot_zone_basic
@@ -255,10 +255,10 @@ void print_shot_csv(std::ostream& os, const shot& value) {
 }
 
 bool shot_before_moment(const shot & s, const moment & m){
-    return s.period < m.quarter || (s.period == m.quarter && s.shot_time > m.game_clock);
+    return s.period < m.quarter || (s.period == m.quarter && s.shot_time.to_double() > m.game_clock);
 }
 
 bool moment_before_shot(const moment & m, const shot & s) {
-    return m.quarter < s.period || (m.quarter == s.period && m.game_clock > s.shot_time);
+    return m.quarter < s.period || (m.quarter == s.period && m.game_clock > s.shot_time.to_double());
 }
 

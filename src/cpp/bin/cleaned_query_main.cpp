@@ -67,7 +67,7 @@ int main(int argc, char * argv[]) {
     std::cout << "running query 1 cleaned" << std::endl;
     double min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         shots_and_players_list.clear();
-        find_nearest_defender_at_each_shot_clean(moments_col, shots_col, shots_and_players_list, 50);
+        find_nearest_defender_at_each_shot_clean(moments_col, shots_col, &shots_and_players_list, 50);
     });
     shots_and_players_list.to_vector(shots_and_players);
     std::cout << "shot_and_players size: " << shots_and_players.size() << std::endl;
