@@ -187,7 +187,7 @@ public:
 };
 
 template <typename T>
-void list<T>::append_node(T elem) {
+inline void list<T>::append_node(T elem) {
     if (head == NULL) {
         head = new list_node<T>();
         tail = head;

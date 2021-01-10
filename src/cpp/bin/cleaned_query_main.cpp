@@ -8,7 +8,7 @@
 #include <numeric>
 #include "check_distances.h"
 #include "find_trajectories.h"
-#include "query3_clean_find_trajectories_fixed_origin.h"
+#include "clean_queries.h"
 #include "benchmark.h"
 #include "load_data.h"
 #include "query_structs.h"
@@ -22,7 +22,7 @@ int main(int argc, char * argv[]) {
     vector<cleaned_moment> moments;
     moment_col_store * moments_col;
     vector<shot> shots;
-    shot * shots_arr;
+    shot_col_store * shots_col;
     vector<shot_and_player_data> shots_and_players;
     list<shot_and_player_data> shots_and_players_list;
     vector<trajectory_data> trajectories;
@@ -61,8 +61,8 @@ int main(int argc, char * argv[]) {
         return (s0.period < s1.period || (s0.period == s1.period && s0.shot_time > s1.shot_time) ||
                 (s0.period == s1.period && s0.shot_time == s1.shot_time && s0.game_event_id < s1.game_event_id));
     });
-    shots_arr = new shot[shots.size()];
-    std::copy(shots.begin(), shots.end(), shots_arr);
+    shots_col = new shot_col_store(shots);
+    std::cout << "running query 1 cleaned" << std::endl;
 
 
     std::cout << "running query 3 cleaned" << std::endl;

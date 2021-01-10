@@ -1,4 +1,4 @@
-#include "query3_clean_find_trajectories_fixed_origin.h"
+#include "clean_queries.h"
 #include <functional>
 #include <iostream>
 
