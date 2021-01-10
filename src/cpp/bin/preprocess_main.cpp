@@ -16,13 +16,17 @@ using std::string;
 int main(int argc, char * argv[]) {
     vector<moment> moments;
     vector<cleaned_moment> cleaned_moments;
-    if (argc != 3) {
-        std::cout << "please call this code with 2 arguments: " << std::endl;
+    vector<shot> shots;
+    if (argc != 5) {
+        std::cout << "please call this code with 4 arguments: " << std::endl;
         std::cout << "1. path/to/moments_file.csv " << std::endl;
         std::cout << "2. path/to/cleaned_moments_file.csv " << std::endl;
+        std::cout << "3. path/to/shots_file.csv " << std::endl;
+        std::cout << "4. path/to/cleaned_shots_file.csv " << std::endl;
     }
-    string moments_file_path = argv[1], cleaned_moments_file_path = argv[2];
-    std::fstream moments_file, cleaned_moments_file;
+    string moments_file_path = argv[1], cleaned_moments_file_path = argv[2],
+           shots_file_path = argv[3], cleaned_shots_file_path = argv[4];
+    std::fstream moments_file, cleaned_moments_file, shots_file, cleaned_shots_file;
     // load the moments
     std::cout << "moment size: " << sizeof(moment) << std::endl;
     std::cout << "loading moments file: " << moments_file_path << std::endl;
@@ -70,5 +74,31 @@ int main(int argc, char * argv[]) {
         cleaned_moments_file << std::endl;
     }
     cleaned_moments_file.close();
+
+
+    std::cout << "loading shots file: " << shots_file_path << std::endl;
+    shots_file.open(shots_file_path);
+    load_shot_rows_vec(shots_file, shots);
+    shots_file.close();
+    std::cout << "shots size: " << shots.size() << std::endl;
+    std::sort(shots.begin(), shots.end(), [](shot s0, shot s1) {
+        return (s0.game_id < s1.game_id ||
+                (s0.game_id == s1.game_id && s0.period < s1.period) ||
+                (s0.game_id == s1.game_id && s0.period == s1.period && s0.shot_time.to_double() > s1.shot_time.to_double()) ||
+                (s0.game_id == s1.game_id && s0.period == s1.period && s0.shot_time == s1.shot_time && s0.game_event_id < s1.game_event_id));
+    });
+
+    std::cout << "writing output cleaned shots file: " << cleaned_shots_file_path << std::endl;
+    cleaned_shots_file.open(cleaned_shots_file_path, std::ios::out);
+    cleaned_shots_file << " action_type, event_time, event_type, game_date, game_event_id, game_id, grid_type, htm,"
+                       << " loc_x, loc_y, minutes_remaining, period, player_id, player_name, quarter, seconds_remaining,"
+                       << " shot_attempted_flag, shot_distance, shot_made_flag, shot_time, shot_type, shot_zone_area,"
+                       << " shot_zone_basic, shot_zone_range, team_id, team_name, team_vtm" << std::endl;
+    for (const auto & s : shots) {
+        print_shot_csv(cleaned_shots_file, s);
+        cleaned_shots_file << std::endl;
+    }
+    cleaned_shots_file.close();
+
     return 0;
 }
