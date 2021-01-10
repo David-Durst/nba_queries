@@ -25,7 +25,7 @@ TEST_CASE( "one row of load_moment_row", "[load_moment_row, loading]" ) {
         REQUIRE( m.player_id == 101161);
     }
     SECTION( "x_loc" ) {
-        REQUIRE( m.x_loc == 45.50782f);
+        REQUIRE( m.x_loc == 45.50782);
     }
     SECTION( "moment_in_event" ) {
         REQUIRE( m.moment_in_event == 0);
@@ -47,9 +47,9 @@ TEST_CASE( "many rows of load_moment_rows", "[load_moment_rows, loading]" ) {
         REQUIRE( ms.at(2).player_id == 202323);
     }
     SECTION( "x_loc" ) {
-        REQUIRE( ms.at(0).x_loc == 46.99036f);
-        REQUIRE( ms.at(1).x_loc == 45.50782f);
-        REQUIRE( ms.at(2).x_loc == 50.36068f);
+        REQUIRE( ms.at(0).x_loc == 46.99036);
+        REQUIRE( ms.at(1).x_loc == 45.50782);
+        REQUIRE( ms.at(2).x_loc == 50.36068);
     }
     SECTION( "moment_in_event" ) {
         REQUIRE( ms.at(0).moment_in_event == 0);
