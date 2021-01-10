@@ -13,7 +13,7 @@
 void find_nearest_defender_at_each_shot_clean(moment_col_store * moments,
                                               shot_col_store * shots,
                                               list<shot_and_player_data>& shots_and_players,
-                                              float time_delta);
+                                              int time_delta_ticks);
 
 // query 3
 void find_trajectories_fixed_origin_clean(moment_col_store * moments, list<trajectory_data> * trajectories,

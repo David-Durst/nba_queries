@@ -26,7 +26,7 @@ cpdef bucket_distances(vector[shot_and_player_data] data):
 
     return result
 
-cpdef vector[shot_and_player_data] find_nearest_defender_at_each_shot(int tick_delta = 50):
+cpdef vector[shot_and_player_data] find_nearest_defender_at_each_shot(int tick_delta):
     cdef vector[shot_and_player_data] result
     cdef shot_and_player_data nearest_at_tick
     cdef shot_and_player_data nearest_at_shot

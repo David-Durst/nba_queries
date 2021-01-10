@@ -20,5 +20,3 @@ cdef struct shot_and_player_data:
     long int event_id
     bool shot_attempted
     bool shot_made
-
-#cpdef void vector[shot_and_player_data] find_nearest_defender_at_each_shot(double time_delta = 2.0)

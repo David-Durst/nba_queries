@@ -24,7 +24,7 @@ res = None
 print("query 1: nearest defender within 2 seconds of each shot")
 def query1():
     global res
-    res = find_nearest_defender_at_each_shot()
+    res = find_nearest_defender_at_each_shot(50)
 time_res = benchmark(num_samples_and_iterations, num_samples_and_iterations, query1)
 print("time: " + str(time_res))
 print(str(bucket_distances(res)))

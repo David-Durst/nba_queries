@@ -63,7 +63,10 @@ int main(int argc, char * argv[]) {
     });
     shots_col = new shot_col_store(shots);
     std::cout << "running query 1 cleaned" << std::endl;
-
+    double min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
+        shots_and_players_list.clear();
+        find_nearest_defender_at_each_shot_clean(moments_col, shots_col, shots_and_players_list, 50);
+    });
 
     std::cout << "running query 3 cleaned" << std::endl;
     coordinate_range origin{{70.0f,16.0f,0}, {90.0f,32.0f, 0}};
