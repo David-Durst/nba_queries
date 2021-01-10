@@ -182,6 +182,7 @@ public:
     void append_node(T * elem);
     T * get(size_t i);
     size_t get_size();
+    void clear();
     void to_vector(vector<T> & vec);
 };
 #endif

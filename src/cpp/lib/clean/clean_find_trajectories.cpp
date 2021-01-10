@@ -1,7 +1,7 @@
 #include "clean_find_trajectories.h"
 #include <functional>
 
-void find_trajectories_fixed_origin_clean(vector<cleaned_moment>& moments, vector<trajectory_data>& trajectories,
+void find_trajectories_fixed_origin_clean(moment_col_store * moments, list<trajectory_data> * trajectories,
                                           coordinate_range origin, coordinate_range destination,
                                           int t_offset, int t_delta_ticks) {
     int t_index_offset = t_offset * 25;
@@ -49,8 +49,8 @@ void find_trajectories_fixed_origin_clean(vector<cleaned_moment>& moments, vecto
 }
 
 
-bool point_intersect_no_time(const coordinate_range& r, const player_data& c) {
-    bool x_intersects = c.x_loc >= r.start.x && c.x_loc <= r.end.x;
-    bool y_intersects = c.y_loc >= r.start.y && c.y_loc <= r.end.y;
+bool point_intersect_no_time(coordinate_range * r, player_data * c) {
+    bool x_intersects = c->x_loc >= r->start.x && c->x_loc <= r->end.x;
+    bool y_intersects = c->y_loc >= r->start.y && c->y_loc <= r->end.y;
     return x_intersects && y_intersects;
 }

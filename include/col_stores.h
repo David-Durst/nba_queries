@@ -15,6 +15,7 @@ public:
 
 class moment_col_store {
 public:
+    size_t size;
     // the first player is always the ball
     long int * team_id[11];
     int * player_id[11];

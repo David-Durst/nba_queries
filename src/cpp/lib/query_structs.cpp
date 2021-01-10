@@ -293,6 +293,19 @@ template <typename T>
 size_t list<T>::get_size() {
     return size;
 }
+
+template <typename T>
+void list<T>::clear() {
+    list_node<T> * cur_node = head;
+    tail = NULL;
+    for (int i = 0; i < size; i++) {
+        list_node<T> * prior_node = cur_node;
+        cur_node = cur_node->next;
+        free(prior_node);
+    }
+    size = 0;
+}
+
 template <typename T>
 void list<T>::to_vector(vector<T> &vec) {
     list_node<T> * cur_node = head;

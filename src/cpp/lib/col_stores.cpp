@@ -21,6 +21,7 @@ player_col_store::player_col_store(vector<cleaned_moment> &moments, int player_i
 }
 
 moment_col_store::moment_col_store(vector<cleaned_moment> &moments) {
+    size = moments.size();
     for (int i = 0; i < 11; i++) {
         team_id[i] = new long int[moments.size()];
         player_id[i] = new int[moments.size()];
