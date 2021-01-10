@@ -185,4 +185,57 @@ public:
     void clear();
     void to_vector(vector<T> & vec);
 };
+
+template <typename T>
+void list<T>::append_node(T elem) {
+    if (head == NULL) {
+        head = new list_node<T>();
+        tail = head;
+        head->data = elem;
+    }
+    else {
+        list_node<T> * next_tail = new list_node<T>();
+        next_tail->data = elem;
+        tail->next = next_tail;
+        tail = tail->next;
+    }
+}
+
+template <typename T>
+T * list<T>::get(size_t i) {
+    if (i >= size) {
+        throw std::invalid_argument("size " + std::to_string(i) + "greater than list size " + std::to_string(size));
+    }
+    list_node<T> * result_node = head;
+    for (int j = 0; j < i; j++) {
+        result_node = result_node->next;
+    }
+    return result_node->data;
+}
+
+template <typename T>
+size_t list<T>::get_size() {
+    return size;
+}
+
+template <typename T>
+void list<T>::clear() {
+    list_node<T> * cur_node = head;
+    tail = NULL;
+    for (int i = 0; i < size; i++) {
+        list_node<T> * prior_node = cur_node;
+        cur_node = cur_node->next;
+        free(prior_node);
+    }
+    size = 0;
+}
+
+template <typename T>
+void list<T>::to_vector(vector<T> &vec) {
+    list_node<T> * cur_node = head;
+    for (int i = 0; i < size; i++) {
+        vec.push_back(cur_node->data);
+        cur_node = cur_node->next;
+    }
+}
 #endif

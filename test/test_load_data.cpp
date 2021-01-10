@@ -123,7 +123,7 @@ TEST_CASE( "one row of load_shot_row", "[load_shot_row, loading]" ) {
 TEST_CASE( "many rows of load_shot_rows", "[load_shot_rows, loading]" ) {
     vector<shot> sh;
     stringstream ss(test_shots);
-    load_shot_rows(ss, sh);
+    load_shot_rows_vec(ss, sh);
     SECTION( "size" ) {
         REQUIRE( sh.size() == 3 );
     }
