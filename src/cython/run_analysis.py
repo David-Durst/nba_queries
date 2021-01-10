@@ -28,6 +28,7 @@ def query1():
 time_res = benchmark(num_samples_and_iterations, num_samples_and_iterations, query1)
 print("time: " + str(time_res))
 print(str(bucket_distances(res)))
+print("first nearest at shot: " + str(res[0]))
 
 
 print("query 2: find all trajectories of a player or the ball from position " +

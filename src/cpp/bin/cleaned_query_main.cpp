@@ -70,6 +70,7 @@ int main(int argc, char * argv[]) {
         find_nearest_defender_at_each_shot_clean(moments_col, shots_col, &shots_and_players_list, 50);
     });
     shots_and_players_list.to_vector(shots_and_players);
+    printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "shot_and_players size: " << shots_and_players.size() << std::endl;
     vector<shot_distance_bucket> buckets = bucket_shots_by_distance(shots_and_players);
     std::cout << "distance,num_shot_made,num_shot_attempt,percent_made" << std::endl;
@@ -77,6 +78,7 @@ int main(int argc, char * argv[]) {
         print_shot_distance_bucket_csv(std::cout, b);
         std::cout << std::endl;
     }
+    std::cout << "first nearest at shot: " << shots_and_players.at(0) << std::endl;
 
 
     std::cout << "running query 3 cleaned" << std::endl;

@@ -140,6 +140,66 @@ const moment & get_nearest_defender(vector<moment>& moments, int ball_moment_at_
     }
 }
 
+bool operator==(shot_and_player_data const & lhs, shot_and_player_data const & rhs) {
+    return
+            lhs.offense_team_id == rhs.offense_team_id &&
+            lhs.offense_player_id == rhs.offense_player_id &&
+            lhs.offense_x_loc == rhs.offense_x_loc &&
+            lhs.offense_y_loc == rhs.offense_y_loc &&
+            lhs.defense_team_id == rhs.defense_team_id &&
+            lhs.defense_player_id == rhs.defense_player_id &&
+            lhs.defense_x_loc == rhs.defense_x_loc &&
+            lhs.defense_y_loc == rhs.defense_y_loc &&
+            lhs.defender_distance == rhs.defender_distance &&
+            lhs.game_clock == rhs.game_clock &&
+            lhs.shot_clock == rhs.shot_clock &&
+            lhs.quarter == rhs.quarter &&
+            lhs.game_id == rhs.game_id &&
+            lhs.event_id == rhs.event_id &&
+            lhs.moment_in_event == rhs.moment_in_event &&
+            lhs.shot_attempted == rhs.shot_attempted &&
+            lhs.shot_made == rhs.shot_made;
+}
+std::ostream& operator<<(std::ostream& os, shot_and_player_data const& value) {
+    os << "offense_team_id: " << value.offense_team_id
+       << "offense_player_id: " << value.offense_player_id
+       << "offense_x_loc: " << value.offense_x_loc
+       << "offense_y_loc: " << value.offense_y_loc
+       << "defense_team_id: " << value.defense_team_id
+       << "defense_player_id: " << value.defense_player_id
+       << "defense_x_loc: " << value.defense_x_loc
+       << "defense_y_loc: " << value.defense_y_loc
+       << "defender_distance: " << value.defender_distance
+       << "game_clock: " << value.game_clock.to_double()
+       << "shot_clock: " << value.shot_clock
+       << "quarter: " << value.quarter
+       << "game_id: " << value.game_id
+       << "event_id: " << value.event_id
+       << "moment_in_event: " << value.moment_in_event
+       << "shot_attempted: " << value.shot_attempted
+       << "shot_made: " << value.shot_made;
+    return os;
+}
+void print_shot_and_player_data_csv(std::ostream& os, const shot_and_player_data& value) {
+    os << value.offense_team_id
+       << value.offense_player_id
+       << value.offense_x_loc
+       << value.offense_y_loc
+       << value.defense_team_id
+       << value.defense_player_id
+       << value.defense_x_loc
+       << value.defense_y_loc
+       << value.defender_distance
+       << value.game_clock.to_double()
+       << value.shot_clock
+       << value.quarter
+       << value.game_id
+       << value.event_id
+       << value.moment_in_event
+       << value.shot_attempted
+       << value.shot_made;
+}
+
 /*  Compute the euclidean distance between two moments. */
 float compute_distance(moment m1, moment m2) {
     return std::hypot(m1.x_loc-m2.x_loc, m1.y_loc-m2.y_loc);

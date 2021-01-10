@@ -25,6 +25,10 @@ struct shot_and_player_data {
     bool shot_made;
 } ;
 
+bool operator==(shot_and_player_data const & lhs, shot_and_player_data const & rhs);
+std::ostream& operator<<(std::ostream& os, shot_and_player_data const& value);
+void print_shot_and_player_data_csv(std::ostream& os, const shot_and_player_data& value);
+
 /* For a list of shots (from possibly more than one game) and a list of moments
    from one game, find all the shots for that game and the player data. */
 void find_nearest_defender_at_each_shot(vector<moment>& moments,
@@ -49,8 +53,8 @@ struct shot_distance_bucket {
     int num_shot_attempts;
     int num_shot_made;
 };
-bool operator==(shot const & lhs, shot const & rhs);
-std::ostream& operator<<(std::ostream& os, shot const& value);
+bool operator==(shot_distance_bucket const & lhs, shot_distance_bucket const & rhs);
+std::ostream& operator<<(std::ostream& os, shot_distance_bucket const& value);
 void print_shot_distance_bucket_csv(std::ostream& os, const shot_distance_bucket& value);
 
 /* bucket shot_and_player_data by distance, bucket size is 1 foot*/
