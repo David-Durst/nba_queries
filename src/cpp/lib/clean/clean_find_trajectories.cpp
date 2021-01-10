@@ -2,6 +2,12 @@
 #include <functional>
 #include <iostream>
 
+inline bool point_intersect_no_time(coordinate_range * r, double x_loc, double y_loc) {
+    bool x_intersects = x_loc >= r->start.x && x_loc <= r->end.x;
+    bool y_intersects = y_loc >= r->start.y && y_loc <= r->end.y;
+    return x_intersects && y_intersects;
+}
+
 void find_trajectories_fixed_origin_clean(moment_col_store * moments, list<trajectory_data> * trajectories,
                                           coordinate_range origin, coordinate_range destination,
                                           int t_offset, int t_delta_ticks) {
@@ -42,16 +48,14 @@ void find_trajectories_fixed_origin_clean(moment_col_store * moments, list<traje
             }
         }
     }
-
 }
 
 
-bool point_intersect_no_time(coordinate_range * r, double x_loc, double y_loc) {
-    bool x_intersects = x_loc >= r->start.x && x_loc <= r->end.x;
-    bool y_intersects = y_loc >= r->start.y && y_loc <= r->end.y;
+inline bool point_intersect_no_time(const coordinate_range& r, const player_data& c) {
+    bool x_intersects = c.x_loc >= r.start.x && c.x_loc <= r.end.x;
+    bool y_intersects = c.y_loc >= r.start.y && c.y_loc <= r.end.y;
     return x_intersects && y_intersects;
 }
-
 
 void find_trajectories_fixed_origin_clean_rowstore(vector<cleaned_moment>& moments, vector<trajectory_data>& trajectories,
                                                    coordinate_range origin, coordinate_range destination,
@@ -93,12 +97,5 @@ void find_trajectories_fixed_origin_clean_rowstore(vector<cleaned_moment>& momen
             }
         }
     }
-
 }
 
-
-bool point_intersect_no_time(const coordinate_range& r, const player_data& c) {
-    bool x_intersects = c.x_loc >= r.start.x && c.x_loc <= r.end.x;
-    bool y_intersects = c.y_loc >= r.start.y && c.y_loc <= r.end.y;
-    return x_intersects && y_intersects;
-}
