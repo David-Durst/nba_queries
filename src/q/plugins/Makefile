@@ -17,4 +17,4 @@ install:
 	cp halide_bench.so ${QHOME}/l64/
 	
 install32:
-	cp halide_bench32.so ${QHOME}/l32/
+	cp halide_bench32.so ${QHOME}/l32/halide_bench.so
