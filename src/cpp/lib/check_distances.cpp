@@ -162,22 +162,22 @@ bool operator==(shot_and_player_data const & lhs, shot_and_player_data const & r
 }
 std::ostream& operator<<(std::ostream& os, shot_and_player_data const& value) {
     os << "offense_team_id: " << value.offense_team_id
-       << "offense_player_id: " << value.offense_player_id
-       << "offense_x_loc: " << value.offense_x_loc
-       << "offense_y_loc: " << value.offense_y_loc
-       << "defense_team_id: " << value.defense_team_id
-       << "defense_player_id: " << value.defense_player_id
-       << "defense_x_loc: " << value.defense_x_loc
-       << "defense_y_loc: " << value.defense_y_loc
-       << "defender_distance: " << value.defender_distance
-       << "game_clock: " << value.game_clock.to_double()
-       << "shot_clock: " << value.shot_clock
-       << "quarter: " << value.quarter
-       << "game_id: " << value.game_id
-       << "event_id: " << value.event_id
-       << "moment_in_event: " << value.moment_in_event
-       << "shot_attempted: " << value.shot_attempted
-       << "shot_made: " << value.shot_made;
+       << ", offense_player_id: " << value.offense_player_id
+       << ", offense_x_loc: " << value.offense_x_loc
+       << ", offense_y_loc: " << value.offense_y_loc
+       << ", defense_team_id: " << value.defense_team_id
+       << ", defense_player_id: " << value.defense_player_id
+       << ", defense_x_loc: " << value.defense_x_loc
+       << ", defense_y_loc: " << value.defense_y_loc
+       << ", defender_distance: " << value.defender_distance
+       << ", game_clock: " << value.game_clock.to_double()
+       << ", shot_clock: " << value.shot_clock
+       << ", quarter: " << value.quarter
+       << ", game_id: " << value.game_id
+       << ", event_id: " << value.event_id
+       << ", moment_in_event: " << value.moment_in_event
+       << ", shot_attempted: " << value.shot_attempted
+       << ", shot_made: " << value.shot_made;
     return os;
 }
 void print_shot_and_player_data_csv(std::ostream& os, const shot_and_player_data& value) {

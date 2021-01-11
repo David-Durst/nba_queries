@@ -56,7 +56,7 @@ int main(int argc, char * argv[]) {
     shots.erase(std::remove_if(shots.begin(), shots.end(), [target_game_id](shot s){
         return s.game_id != target_game_id;
     }), shots.end());
-    std::cout << "new shots size: " << shots.size();
+    std::cout << "new shots size: " << shots.size() << std::endl;
     shots_col = new shot_col_store(shots);
 
 
