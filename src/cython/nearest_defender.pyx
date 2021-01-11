@@ -33,7 +33,6 @@ cpdef vector[shot_and_player_data] find_nearest_defender_at_each_shot(int tick_d
     cdef size_t shot_moment_index
     cdef cleaned_moment shot_moment
     cdef player_data shooter_data
-    cdef bool first = True
     for s in selected_shot_data:
         shot_moment_index = time_to_index(s.shot_time, s.period)
         shot_moment = moment_data.at(shot_moment_index)
@@ -61,19 +60,13 @@ cpdef vector[shot_and_player_data] find_nearest_defender_at_each_shot(int tick_d
                 nearest_at_tick.defender_distance < nearest_at_shot.defender_distance:
                 nearest_at_shot = nearest_at_tick
 
-        if first:
-            first = False
-            print("first hit shooter moment index: " + str(shot_moment_index) +
-                  ", nearest defender moment index: " + str(time_to_index(nearest_at_shot.game_clock, nearest_at_shot.quarter)))
-
         result.push_back(nearest_at_shot)
     return result
-cpdef bool first_t = True
+
 cpdef shot_and_player_data nearest_defender_in_moment(cleaned_moment shot_moment,
                                                       player_data shooter_data,
                                                       cleaned_moment defender_moment,
                                                       shot s):
-    global first_t
     cdef shot_and_player_data nearest
     nearest.offense_team_id = s.team_id
     nearest.offense_player_id = s.player_id
@@ -88,10 +81,6 @@ cpdef shot_and_player_data nearest_defender_in_moment(cleaned_moment shot_moment
 
     nearest.offense_x_loc = shooter_data.x_loc
     nearest.offense_y_loc = shooter_data.y_loc
-    if first_t:
-        first_t = False
-        print("shooter_data: " + str(shooter_data))
-        print("nearest: " + str(nearest))
 
     cdef double new_distance
     for p in defender_moment.players:
