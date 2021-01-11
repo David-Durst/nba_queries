@@ -2,7 +2,7 @@ FROM continuumio/anaconda3:latest
 
 RUN apt clean; apt update; apt upgrade -y
 ENV DEBIAN_FRONTEND="noninteractive" TZ="America/New_York"
-RUN apt install -y curl vim neovim git g++ rlwrap openssh-server sudo make libc6-i386 
+RUN apt install -y curl vim neovim git g++ rlwrap openssh-server sudo make libc6-i386 gcc-multilib g++-multilib 
 
 #RUN adduser --disabled-password --gecos '' durst
 #RUN adduser durst sudo
