@@ -34,5 +34,5 @@ RUN conda run -n nba_queries pip install -e .
 WORKDIR /home/durst/nba_queries
 
 # config bash setings
-RUN echo "conda activate nba_queries" >> /root/.bashrc &&
+RUN echo "conda activate nba_queries" >> /root/.bashrc && \
     echo "alias q='rlwrap -r ${QHOME}/l32/q'" >> /root/.bashrc
