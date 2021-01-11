@@ -26,13 +26,13 @@ inline double benchmark_duration_seconds(
 SteadyClock<>::type::time_point start = benchmark_now();
 
 extern "C"{
-V start_time()
+K start_time(K x)
 {
     start = benchmark_now();
-    return;
+    return kj(0);
 }
 
-K get_duration()
+K get_duration(K x)
 {
     return kf(benchmark_duration_seconds(start, benchmark_now()));
 }

@@ -1,4 +1,4 @@
-CXXFLAGS = -shared -fPIC -DKXVER=3
+CXXFLAGS = -I. -shared -fPIC -DKXVER=3
 
 .PHONY: halide_bench clean
 
