@@ -90,7 +90,7 @@ int main(int argc, char * argv[]) {
 
     std::cout << "writing output cleaned shots file: " << cleaned_shots_file_path << std::endl;
     cleaned_shots_file.open(cleaned_shots_file_path, std::ios::out);
-    cleaned_shots_file << " action_type, event_time, event_type, game_date, game_event_id, game_id, grid_type, htm,"
+    cleaned_shots_file << "action_type, event_time, event_type, game_date, game_event_id, game_id, grid_type, htm,"
                        << " loc_x, loc_y, minutes_remaining, period, player_id, player_name, quarter, seconds_remaining,"
                        << " shot_attempted_flag, shot_distance, shot_made_flag, shot_time, shot_type, shot_zone_area,"
                        << " shot_zone_basic, shot_zone_range, team_id, team_name, team_vtm" << std::endl;

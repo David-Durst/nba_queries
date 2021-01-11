@@ -372,7 +372,7 @@ void load_shot_row(string& row, shot& sh) {
     std::getline(ss, sh.shot_zone_basic, ',');
     std::getline(ss, sh.shot_zone_range, ',');
     std::getline(ss, col, ',');
-    sh.team_id = stod_with_default(col);
+    sh.team_id = std::round(stod_with_default(col));
     std::getline(ss, sh.team_name, ',');
     std::getline(ss, sh.team_vtm, ',');
 }

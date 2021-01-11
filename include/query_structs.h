@@ -160,7 +160,7 @@ struct shot {
     string shot_zone_area;
     string shot_zone_basic;
     string shot_zone_range;
-    double team_id;
+    long int team_id;
     string team_name;
     string team_vtm;
 } ;

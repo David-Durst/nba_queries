@@ -193,8 +193,7 @@ bool operator==(shot const &lhs, shot const &rhs) {
 }
 
 std::ostream &operator<<(std::ostream &os, const shot &value) {
-    os << "team_id: " << value.team_id
-       << ", action_type: " << value.action_type
+    os << ", action_type: " << value.action_type
        << ", event_time: " << value.event_time
        << ", event_type: " << value.event_type
        << ", game_date: " << value.game_date
@@ -224,8 +223,7 @@ std::ostream &operator<<(std::ostream &os, const shot &value) {
     return os;
 }
 void print_shot_csv(std::ostream& os, const shot& value) {
-    os << value.team_id
-       << "," << value.action_type
+    os << value.action_type
        << "," << value.event_time
        << "," << value.event_type
        << "," << value.game_date
