@@ -15,5 +15,14 @@ benchmark:{[samples;iterations;op]
         end: get_duration[];
         best: min (best;end);
         i:i+1];
-    (best % iterations; res)}
+    `time`result!(best % iterations; res)}
 
+compare_times:{[arg1;arg2]
+    $[arg1[`result] ~ arg2[`result];
+        [
+            show " " sv ("arg1 time: ";string arg1[`time]);
+            show " " sv ("arg2 time: ";string arg2[`time]);
+            show " " sv ("difference: ";string arg1[`time] % arg2[`time];string "x");
+        ];
+        show "results differ"]
+    }
