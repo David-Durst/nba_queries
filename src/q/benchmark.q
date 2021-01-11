@@ -10,10 +10,10 @@ benchmark:{[samples;iterations;op]
         start_time[];
         j:0;
         while[j<iterations;
-            op[];
+            res: op[];
             j:j+1];
         end: get_duration[];
         best: min (best;end);
         i:i+1];
-    best % iterations}
+    (best % iterations; res)}
 
