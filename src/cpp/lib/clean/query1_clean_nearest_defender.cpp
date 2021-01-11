@@ -9,6 +9,7 @@ void find_nearest_defender_at_each_shot_clean(moment_col_store * moments,
                                               shot_col_store * shots,
                                               list<shot_and_player_data> * shots_and_players,
                                               int time_delta_ticks) {
+    bool first = true;
     for (int64_t shot_index = 0; shot_index < shots->size; shot_index++) {
         int64_t shooter_moment_index = shots->shot_time[shot_index].time_to_index(shots->period[shot_index]);
 
@@ -57,6 +58,12 @@ void find_nearest_defender_at_each_shot_clean(moment_col_store * moments,
                     }
                 }
             }
+        }
+
+        if (first) {
+            std::cout << "first hit shooter moment index: " << shooter_moment_index
+                      << ", nearest defender moment index: " << nearest_defender_moment_index << std::endl;
+            first = false;
         }
 
         // after all time steps for this shot, append the nearest defender
