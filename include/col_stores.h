@@ -1,6 +1,11 @@
 #ifndef COL_STORES_H
 #define COL_STORES_H
 #include "query_structs.h"
+
+#define MAX_X 100
+#define MAX_Y 50
+#define NUM_PLAYERS_AND_BALL 11
+
 class player_col_store {
 public:
     long int * team_id;
@@ -17,11 +22,11 @@ class moment_col_store {
 public:
     size_t size;
     // the first player is always the ball
-    long int * team_id[11];
-    int * player_id[11];
-    double * x_loc[11];
-    double * y_loc[11];
-    double * radius[11];
+    long int * team_id[NUM_PLAYERS_AND_BALL];
+    int * player_id[NUM_PLAYERS_AND_BALL];
+    double * x_loc[NUM_PLAYERS_AND_BALL];
+    double * y_loc[NUM_PLAYERS_AND_BALL];
+    double * radius[NUM_PLAYERS_AND_BALL];
     clock_fixed_point * game_clock;
     double * shot_clock;
     short int * quarter;
