@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.14)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)
 #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
 #SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
@@ -9,6 +9,7 @@ set(CMAKE_BUILD_TYPE Debug)
 
 project (nba_queries VERSION "0.1")
 include(GNUInstallDirs)
+find_package(OpenMP REQUIRED)
 
 include_directories(${PROJECT_BINARY_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/include)
@@ -36,6 +37,10 @@ add_executable(nba_queries ${NBA_SOURCES} ${PROJECT_SOURCE_DIR}/src/cpp/bin/quer
 add_executable(cleaned_nba_queries ${NBA_SOURCES} ${PROJECT_SOURCE_DIR}/src/cpp/bin/cleaned_query_main.cpp)
 add_executable(preprocess_moments ${NBA_SOURCES} ${PROJECT_SOURCE_DIR}/src/cpp/bin/preprocess_main.cpp)
 add_library(nba_queries_lib SHARED ${NBA_SOURCES} ${NBA_HEADERS})
+target_link_libraries(nba_queries PRIVATE OpenMP::OpenMP_CXX)
+target_link_libraries(cleaned_nba_queries PRIVATE OpenMP::OpenMP_CXX)
+target_link_libraries(preprocess_moments PRIVATE OpenMP::OpenMP_CXX)
+target_link_libraries(nba_queries_lib PRIVATE OpenMP::OpenMP_CXX)
 # add this to enable debug printing statements
 #target_compile_definitions(nba_queries PRIVATE DEBUG)
 #target_compile_definitions(nba_queries PRIVATE CALLGRIND)

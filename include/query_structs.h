@@ -63,7 +63,7 @@ public:
         }
     }
 
-    double to_double() const {
+    inline double to_double() const {
         return seconds + (twenty_fifths_of_second / 25.0);
     }
 
