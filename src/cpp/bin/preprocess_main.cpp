@@ -6,6 +6,7 @@
 #include <thread>
 #include <chrono>
 #include <numeric>
+#include <sstream>
 #include "benchmark.h"
 #include "load_data.h"
 #include "query_structs.h"
@@ -17,47 +18,42 @@ int main(int argc, char * argv[]) {
     vector<moment> moments;
     vector<cleaned_moment> cleaned_moments;
     vector<shot> shots;
-    if (argc != 5) {
-        std::cout << "please call this code with 4 arguments: " << std::endl;
-        std::cout << "1. path/to/moments_file.csv " << std::endl;
-        std::cout << "2. path/to/cleaned_moments_file.csv " << std::endl;
-        std::cout << "3. path/to/shots_file.csv " << std::endl;
-        std::cout << "4. path/to/cleaned_shots_file.csv " << std::endl;
+    if (argc != 6) {
+        std::cout << "please call this code with 5 arguments: " << std::endl;
+        std::cout << "1. path/to/moments_folder " << std::endl;
+        std::cout << "2. moments_file1.csv,moments_file2.csv,... " << std::endl;
+        std::cout << "3. path/to/cleaned_moments_file.csv " << std::endl;
+        std::cout << "4. path/to/shots_file.csv " << std::endl;
+        std::cout << "5. path/to/cleaned_shots_file.csv " << std::endl;
     }
-    string moments_file_path = argv[1], cleaned_moments_file_path = argv[2],
-           shots_file_path = argv[3], cleaned_shots_file_path = argv[4];
+    string moments_folder_path = argv[1], moments_file_names = argv[2], cleaned_moments_file_path = argv[3],
+           shots_file_path = argv[4], cleaned_shots_file_path = argv[5];
     std::fstream moments_file, cleaned_moments_file, shots_file, cleaned_shots_file;
     // load the moments
     std::cout << "moment size: " << sizeof(moment) << std::endl;
-    std::cout << "loading moments file: " << moments_file_path << std::endl;
-    moments_file.open(moments_file_path);
-    load_moment_rows(moments_file, moments);
-    moments_file.close();
+    std::stringstream moment_ss(moments_file_names);
+    string moments_file_name, cur_moments_path;
+    while (moment_ss.good()) {
+        getline(moment_ss, moments_file_name, ',');
+        cur_moments_path = moments_folder_path + moments_file_name;
+        std::cout << "loading moments file: " << cur_moments_path << std::endl;
+        moments_file.open(cur_moments_path);
+        load_moment_rows(moments_file, moments);
+        moments_file.close();
+    }
     std::cout << "moments size: " << moments.size() << std::endl;
     std::cout << "sorting moments: " << std::endl;
     std::sort(moments.begin(), moments.end(), [](moment m0, moment m1) {
-        return (m0.quarter < m1.quarter || (m0.quarter == m1.quarter && m0.game_clock > m1.game_clock) ||
-                (m0.quarter == m1.quarter && m0.game_clock == m1.game_clock && m0.player_id < m1.player_id) ||
-                (m0.quarter == m1.quarter && m0.game_clock == m1.game_clock && m0.player_id == m1.player_id && m0.event_id < m1.event_id) ||
-                (m0.quarter == m1.quarter && m0.game_clock == m1.game_clock && m0.player_id == m1.player_id &&
-                 m0.event_id == m1.event_id && m0.moment_in_event < m1.moment_in_event));
+        return (m0.game_id < m1.game_id || (m0.game_id == m1.game_id && m0.quarter < m1.quarter) ||
+                (m0.game_id == m1.game_id && m0.quarter == m1.quarter && m0.game_clock > m1.game_clock) ||
+                (m0.game_id == m1.game_id && m0.quarter == m1.quarter && m0.game_clock == m1.game_clock &&
+                    m0.player_id < m1.player_id) ||
+                (m0.game_id == m1.game_id && m0.quarter == m1.quarter && m0.game_clock == m1.game_clock &&
+                    m0.player_id == m1.player_id && m0.event_id < m1.event_id) ||
+                (m0.game_id == m1.game_id && m0.quarter == m1.quarter && m0.game_clock == m1.game_clock &&
+                    m0.player_id == m1.player_id && m0.event_id == m1.event_id && m0.moment_in_event < m1.moment_in_event));
     });
     clean_moment_rows(moments, cleaned_moments);
-    for (size_t i = 1; i < cleaned_moments.size(); i++) {
-        if (cleaned_moments.at(i-1).quarter != cleaned_moments.at(i).quarter) {
-            std::cout << "quarter change in cleaned moments " << i-1 << " with quarter " << cleaned_moments.at(i-1).quarter
-                      << " and gameclock " << cleaned_moments.at(i-1).game_clock.to_double()
-                      << "and " << i << " with quarter " << cleaned_moments.at(i).quarter
-                      << " and gameclock " << cleaned_moments.at(i).game_clock.to_double() << std::endl << std::endl;
-        }
-        else if (cleaned_moments.at(i-1).game_clock.abs_diff(cleaned_moments.at(i).game_clock) != clock_fixed_point(0.04f)) {
-            std::cout << "big jump in cleaned moments " << i-1 << " with quarter " << cleaned_moments.at(i-1).quarter
-                      << " and gameclock " << cleaned_moments.at(i-1).game_clock.to_double()
-                      << "and " << i << " with quarter " << cleaned_moments.at(i).quarter
-                      << " and gameclock " << cleaned_moments.at(i).game_clock.to_double() << std::endl << std::endl;
-        }
-    }
-
     std::cout << "writing output cleaned moments file: " << cleaned_moments_file_path << std::endl;
     cleaned_moments_file.open(cleaned_moments_file_path, std::ios::out);
     cleaned_moments_file << "team_id_ball, player_id_ball, x_loc_ball, y_loc_ball, radius_ball";
