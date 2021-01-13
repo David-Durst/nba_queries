@@ -4,12 +4,13 @@
 
 void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, court_bins * moment_bins,
                                                  list<trajectory_data> * trajectories, coordinate_range origin,
-                                                 coordinate_range destination, int t_offset, int t_delta_ticks) {
+                                                 coordinate_range destination, int t_offset, int t_delta_ticks,
+                                                 bool parallel) {
     std::list<int> origin_bins = court_bins::get_bins_in_region(origin);
     std::list<int> destination_bins = court_bins::get_bins_in_region(destination);
     int t_index_offset = t_offset * 25;
 
-    #pragma omp parallel for
+    #pragma omp parallel for if(parallel)
     for (int player_num = 0; player_num < moment_bins->players_indices_in_bins.size(); player_num++) {
         long int player_id = moment_bins->player_ids[player_num];
         std::list<player_pointer> src_moments;

@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <fstream>
 #include <string>
@@ -18,6 +19,16 @@
 #endif
 using std::string;
 
+struct results {
+    double query1_colstore_sequential_time;
+    double query1_colstore_parallel_time;
+    double query3_rowstore_sequential_time;
+    double query3_colstore_sequential_time;
+    double query3_colstore_parallel_time;
+    double query3_binned_colstore_sequential_time;
+    double query3_binned_colstore_parallel_time;
+};
+
 int main(int argc, char * argv[]) {
     vector<cleaned_moment> moments;
     moment_col_store * moments_col;
@@ -28,15 +39,17 @@ int main(int argc, char * argv[]) {
     list<shot_and_player_data> shots_and_players_list;
     vector<trajectory_data> trajectories;
     list<trajectory_data> trajectories_list;
-    if (argc != 4) {
-        std::cout << "please call this code with 3 arguments: " << std::endl;
+    results res;
+    if (argc != 5) {
+        std::cout << "please call this code with 4 arguments: " << std::endl;
         std::cout << "1. path/to/cleaned_moments_file.csv " << std::endl;
         std::cout << "2. path/to/shots_file.csv " << std::endl;
         std::cout << "3. debug/measure " << std::endl;
+        std::cout << "4. path/to/output/timing/file.csv " << std::endl;
     }
-    string moments_file_path = argv[1], shots_file_path = argv[2], run_type = argv[3];
+    string moments_file_path = argv[1], shots_file_path = argv[2], run_type = argv[3], timing_file_path = argv[4];
     int num_samples_and_iterations = (run_type.compare("debug") == 0) ? 1 : 10;
-    std::fstream moments_file, shots_file;
+    std::fstream moments_file, shots_file, timing_file;
 
     // load the cleaned moments
     std::cout << "loading cleaned moments file: " << moments_file_path << std::endl;
@@ -65,10 +78,10 @@ int main(int argc, char * argv[]) {
     shots_col = new shot_col_store(shots);
 
 
-    std::cout << "running query 1 cleaned" << std::endl;
+    std::cout << "running query 1 cleaned, sequential" << std::endl;
     double min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         shots_and_players_list.clear();
-        find_nearest_defender_at_each_shot_clean(moments_col, shots_col, &shots_and_players_list, 50);
+        find_nearest_defender_at_each_shot_clean(moments_col, shots_col, &shots_and_players_list, 50, false);
     });
     shots_and_players_list.to_vector(shots_and_players);
     printf("compute time: %gms\n", min_time * 1e3);
@@ -80,36 +93,89 @@ int main(int argc, char * argv[]) {
         std::cout << std::endl;
     }
     std::cout << "first nearest at shot: " << shots_and_players.at(0) << std::endl;
+    res.query1_colstore_sequential_time = min_time;
 
-    std::cout << "running query 3 cleaned" << std::endl;
+    std::cout << "running query 1 cleaned, parallel" << std::endl;
+    min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
+        shots_and_players_list.clear();
+        find_nearest_defender_at_each_shot_clean(moments_col, shots_col, &shots_and_players_list, 50, true);
+    });
+    shots_and_players_list.to_vector(shots_and_players);
+    printf("compute time: %gms\n", min_time * 1e3);
+    std::cout << "shot_and_players size: " << shots_and_players.size() << std::endl;
+    buckets = bucket_shots_by_distance(shots_and_players);
+    std::cout << "distance,num_shot_made,num_shot_attempt,percent_made" << std::endl;
+    for (const auto & b : buckets) {
+        print_shot_distance_bucket_csv(std::cout, b);
+        std::cout << std::endl;
+    }
+    std::cout << "first nearest at shot: " << shots_and_players.at(0) << std::endl;
+    res.query1_colstore_parallel_time = min_time;
+
+    std::cout << "running query 3 cleaned with colstore, sequential" << std::endl;
     coordinate_range origin{{70.0f,16.0f,0}, {90.0f,32.0f, 0}};
     coordinate_range destination{{71.9f,24.9f,0}, {72.1f,25.1f, 0}};
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         trajectories_list.clear();
-        find_trajectories_fixed_origin_clean(moments_col, &trajectories_list, origin, destination, 5, 25);
+        find_trajectories_fixed_origin_clean(moments_col, &trajectories_list, origin, destination, 5, 25, false);
     });
     trajectories_list.to_vector(trajectories);
     printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "trajectories size: " << trajectories.size() << std::endl;
+    res.query3_colstore_sequential_time = min_time;
 
-    std::cout << "running query 3 cleaned and binned" << std::endl;
+    std::cout << "running query 3 cleaned with colstore, parallel" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         trajectories_list.clear();
-        find_trajectories_fixed_origin_clean_binned(moments_col, bins, &trajectories_list, origin, destination, 5, 25);
+        find_trajectories_fixed_origin_clean(moments_col, &trajectories_list, origin, destination, 5, 25, true);
     });
     trajectories_list.to_vector(trajectories);
     printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "trajectories size: " << trajectories.size() << std::endl;
+    res.query3_colstore_parallel_time = min_time;
 
+    std::cout << "running query 3 cleaned and binned with colstore, sequential" << std::endl;
+    min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
+        trajectories_list.clear();
+        find_trajectories_fixed_origin_clean_binned(moments_col, bins, &trajectories_list, origin, destination, 5, 25, false);
+    });
+    trajectories_list.to_vector(trajectories);
+    printf("compute time: %gms\n", min_time * 1e3);
+    std::cout << "trajectories size: " << trajectories.size() << std::endl;
+    res.query3_binned_colstore_sequential_time = min_time;
 
-    std::cout << "running query 3 cleaned with row store" << std::endl;
+    std::cout << "running query 3 cleaned and binned with colstore, parallel" << std::endl;
+    min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
+        trajectories_list.clear();
+        find_trajectories_fixed_origin_clean_binned(moments_col, bins, &trajectories_list, origin, destination, 5, 25, true);
+    });
+    trajectories_list.to_vector(trajectories);
+    printf("compute time: %gms\n", min_time * 1e3);
+    std::cout << "trajectories size: " << trajectories.size() << std::endl;
+    res.query3_binned_colstore_parallel_time = min_time;
+
+    std::cout << "running query 3 cleaned with row store, sequential" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         trajectories.clear();
         find_trajectories_fixed_origin_clean_rowstore(moments, trajectories, origin, destination, 5, 25);
     });
     printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "trajectories size: " << trajectories.size() << std::endl;
+    res.query3_rowstore_sequential_time = min_time;
 
+    // write results
+    std::cout << "writing to file: " << timing_file_path << std::endl;
+    timing_file.open(timing_file_path);
+    timing_file << "Language,Query1 Colstore Sequential Time (ms),Query1 Colstore Parallel Time (ms),"
+                << "Query3 Rowstore Sequential Time (ms),Query3 Colstore Sequential Time (ms),"
+                << "Query3 Colstore Parallel Time (ms),Query3 Binned Colstore Sequential Time (ms),"
+                << "Query3 Binned Colstore Parallel Time" << std::endl;
+    timing_file << std::fixed << std::setprecision(2)
+                << "CPP," << res.query1_colstore_sequential_time*1e3 << "," << res.query1_colstore_parallel_time*1e3 << ","
+                << res.query3_rowstore_sequential_time*1e3 << "," << res.query3_colstore_sequential_time*1e3 << ","
+                << res.query3_colstore_parallel_time*1e3 << "," << res.query3_binned_colstore_sequential_time*1e3 << ","
+                << res.query3_binned_colstore_parallel_time*1e3;
+    timing_file.close();
 
     return 0;
 }

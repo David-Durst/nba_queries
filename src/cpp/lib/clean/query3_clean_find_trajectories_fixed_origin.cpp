@@ -4,9 +4,9 @@
 
 void find_trajectories_fixed_origin_clean(moment_col_store * moments, list<trajectory_data> * trajectories,
                                           coordinate_range origin, coordinate_range destination,
-                                          int t_offset, int t_delta_ticks) {
+                                          int t_offset, int t_delta_ticks, bool parallel) {
     int t_index_offset = t_offset * 25;
-    #pragma omp parallel for
+    #pragma omp parallel for if(parallel)
     for (int64_t src_time = 0; src_time < moments->size - t_index_offset + t_delta_ticks; src_time++) {
         bool players_match_src[] = {false,false,false,false,false,false,false,false,false,false,false,false};
         bool any_match = false;
