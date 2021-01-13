@@ -165,7 +165,7 @@ int main(int argc, char * argv[]) {
 
     // write results
     std::cout << "writing to file: " << timing_file_path << std::endl;
-    timing_file.open(timing_file_path);
+    timing_file.open(timing_file_path, std::fstream::out);
     timing_file << "Language,Query1 Colstore Sequential Time (ms),Query1 Colstore Parallel Time (ms),"
                 << "Query3 Rowstore Sequential Time (ms),Query3 Colstore Sequential Time (ms),"
                 << "Query3 Colstore Parallel Time (ms),Query3 Binned Colstore Sequential Time (ms),"
@@ -174,7 +174,7 @@ int main(int argc, char * argv[]) {
                 << "CPP," << res.query1_colstore_sequential_time*1e3 << "," << res.query1_colstore_parallel_time*1e3 << ","
                 << res.query3_rowstore_sequential_time*1e3 << "," << res.query3_colstore_sequential_time*1e3 << ","
                 << res.query3_colstore_parallel_time*1e3 << "," << res.query3_binned_colstore_sequential_time*1e3 << ","
-                << res.query3_binned_colstore_parallel_time*1e3;
+                << res.query3_binned_colstore_parallel_time*1e3 << std::endl;
     timing_file.close();
 
     return 0;
