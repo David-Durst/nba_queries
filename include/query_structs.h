@@ -184,6 +184,7 @@ class list {
     size_t size;
 public:
     list() : head(NULL), tail(NULL), size(0) { }
+    ~list() { clear(); }
     void append_node(T elem);
     T * get(size_t i);
     size_t get_size();

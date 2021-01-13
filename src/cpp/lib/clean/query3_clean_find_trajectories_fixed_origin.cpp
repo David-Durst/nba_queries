@@ -2,26 +2,25 @@
 #include <functional>
 #include <iostream>
 
-inline bool point_intersect_no_time(coordinate_range * r, double x_loc, double y_loc) {
-    bool x_intersects = x_loc >= r->start.x && x_loc <= r->end.x;
-    bool y_intersects = y_loc >= r->start.y && y_loc <= r->end.y;
-    return x_intersects && y_intersects;
-}
-
 void find_trajectories_fixed_origin_clean(moment_col_store * moments, list<trajectory_data> * trajectories,
                                           coordinate_range origin, coordinate_range destination,
                                           int t_offset, int t_delta_ticks) {
     int t_index_offset = t_offset * 25;
     #pragma omp parallel for
-    for (size_t src_time = 0; src_time < moments->size - t_index_offset + t_delta_ticks; src_time++) {
+    for (int64_t src_time = 0; src_time < moments->size - t_index_offset + t_delta_ticks; src_time++) {
         bool players_match_src[] = {false,false,false,false,false,false,false,false,false,false,false,false};
+        bool any_match = false;
         for (int j = 0; j < 11; j++) {
             players_match_src[j] =
                     point_intersect_no_time(&origin, moments->x_loc[j][src_time], moments->y_loc[j][src_time]);
+            any_match &= players_match_src[j];
         }
-        for (size_t dst_time = src_time + t_offset - t_delta_ticks;
-            dst_time < src_time + t_offset + t_delta_ticks + 1; dst_time++) {
-            if (dst_time > moments->size) {
+        if (!any_match) {
+            continue;
+        }
+        for (int64_t dst_time = src_time + t_index_offset - t_delta_ticks;
+            dst_time < src_time + t_index_offset + t_delta_ticks + 1; dst_time++) {
+            if (dst_time < 0 || dst_time > moments->size) {
                 continue;
             }
             for (int src_player_index = 0; src_player_index < 11; src_player_index++) {
@@ -54,13 +53,6 @@ void find_trajectories_fixed_origin_clean(moment_col_store * moments, list<traje
     }
 }
 
-
-inline bool point_intersect_no_time(const coordinate_range& r, const player_data& c) {
-    bool x_intersects = c.x_loc >= r.start.x && c.x_loc <= r.end.x;
-    bool y_intersects = c.y_loc >= r.start.y && c.y_loc <= r.end.y;
-    return x_intersects && y_intersects;
-}
-
 void find_trajectories_fixed_origin_clean_rowstore(vector<cleaned_moment>& moments, vector<trajectory_data>& trajectories,
                                                    coordinate_range origin, coordinate_range destination,
                                                    int t_offset, int t_delta_ticks) {
@@ -75,7 +67,7 @@ void find_trajectories_fixed_origin_clean_rowstore(vector<cleaned_moment>& momen
         if (src_players.empty()) {
             continue;
         }
-        for (int j = t_offset - t_delta_ticks; j < t_offset + t_delta_ticks + 1; j++) {
+        for (int j = t_index_offset - t_delta_ticks; j < t_index_offset + t_delta_ticks + 1; j++) {
             if (i + j > moments.size()) {
                 continue;
             }

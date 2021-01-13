@@ -23,6 +23,7 @@ int main(int argc, char * argv[]) {
     moment_col_store * moments_col;
     vector<shot> shots;
     shot_col_store * shots_col;
+    court_bins * bins;
     vector<shot_and_player_data> shots_and_players;
     list<shot_and_player_data> shots_and_players_list;
     vector<trajectory_data> trajectories;
@@ -44,6 +45,10 @@ int main(int argc, char * argv[]) {
     moments_file.close();
     std::cout << "moments size: " << moments.size() << std::endl;
     moments_col = new moment_col_store(moments);
+
+    // bin the moments
+    bins = new court_bins(moments_col);
+
     // load the shots
     std::cout << "loading shots file: " << shots_file_path << std::endl;
     shots_file.open(shots_file_path);
@@ -75,7 +80,6 @@ int main(int argc, char * argv[]) {
         std::cout << std::endl;
     }
     std::cout << "first nearest at shot: " << shots_and_players.at(0) << std::endl;
-
 
     std::cout << "running query 3 cleaned" << std::endl;
     coordinate_range origin{{70.0f,16.0f,0}, {90.0f,32.0f, 0}};
