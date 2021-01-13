@@ -78,19 +78,19 @@ public:
     }
 
     inline const player_pointer* bin_start(long int player_id, int bin_index) {
-        int player_bin_index = players_indices_in_bins[player_id];
+        int player_bin_index = players_indices_in_bins.at(player_id);
         int offset = bin_starts[player_bin_index][bin_index];
-        return player_moment_bins + offset;
+        return &player_moment_bins[offset];
     }
     inline const player_pointer* bin_end(long int player_id, int bin_index) {
-        int end_player_bin_index = players_indices_in_bins[player_id];
+        int player_bin_index = players_indices_in_bins.at(player_id);
         if (bin_index == NUM_BINS) {
-            end_player_bin_index++;
+            player_bin_index++;
             bin_index = 0;
         }
-        int offset = (end_player_bin_index == players_indices_in_bins.size()) ?
-                     num_player_moments : bin_starts[end_player_bin_index + 1][bin_index];
-        return player_moment_bins + offset;
+        int offset = (player_bin_index == players_indices_in_bins.size()) ?
+                     num_player_moments : bin_starts[player_bin_index][bin_index + 1];
+        return &player_moment_bins[offset];
     }
 
 

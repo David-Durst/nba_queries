@@ -13,14 +13,21 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
         long int player_id = player_and_bin.first;
         std::list<player_pointer> src_moments;
         // all trajectory starts for the current player
+        int bin_num = 0;
         for (const auto & src_bin : origin_bins) {
+            int num = 0;
             for (const player_pointer* src_moment = moment_bins->bin_start(player_id, src_bin);
                  src_moment != moment_bins->bin_end(player_id, src_bin); src_moment++) {
+                num++;
                 if (point_intersect_no_time(&origin, moments->x_loc[src_moment->player_index][src_moment->moment_index],
                                             moments->y_loc[src_moment->player_index][src_moment->moment_index])) {
                     src_moments.push_back(*src_moment);
                 }
             }
+            if (num > 1000) {
+                int x = 2;
+            }
+            bin_num++;
         }
 
         // now for each
@@ -88,7 +95,7 @@ court_bins::court_bins(moment_col_store * moments) {
     int64_t total_sum = 0;
     for (int player = 0; player < NUM_PLAYERS_AND_BALL; player++) {
         for (int64_t i = 0; i < moments->size; i++) {
-            bin_data_in_lists[players_indices_in_bins[moments->player_id[player][i]]]
+            bin_data_in_lists[players_indices_in_bins.at(moments->player_id[player][i])]
                 [get_bin_index(moments->x_loc[player][i], moments->y_loc[player][i])].push_back({i, player});
             total_sum++;
         }
@@ -98,7 +105,11 @@ court_bins::court_bins(moment_col_store * moments) {
     int64_t total_index = 0;
     for (const auto & player_id : player_ids) {
         for (int bin = 0; bin < NUM_BINS; bin++) {
-            bin_starts[players_indices_in_bins[player_id]][bin] = total_index;
+            bin_starts[players_indices_in_bins.at(player_id)][bin] = total_index;
+            int64_t pid = players_indices_in_bins.at(player_id);
+            if (player_id == -1 && bin == 1670) {
+                int asdasd = 2;
+            }
             for (const auto & bin_data : bin_data_in_lists[players_indices_in_bins[player_id]][bin]) {
                 player_moment_bins[total_index++] = bin_data;
             }
