@@ -3,19 +3,18 @@ This document lists a set of queries and places them in the taxonomy.
 For the reference part of the taxonomy, I also state which entity is the reference.
 
 ## Already Implemented:
-1. Query 1: compute the probability of making a shot in an NBA game when adjusting for the nearest defender at any point 2 seconds before or after the shot”
+1. Query 1: compute the probability of making a shot in an NBA game when adjusting for the nearest defender at any point 2 seconds before or after the shot.
     1. Place in Taxonomy:
         1. reference - players/ball - moving, series
         2. comparison - nearest-neighbor in space, range in time
         3. data set changing - static
     2. Join Strategy: merge join of shots and moments for all implementations
     3. Indices: sorting by time for all implementations
-    4. Performance:
+    4. Performance (note: these are pre-DGX numbers. please see [timing](https://github.com/David-Durst/nba_queries/blob/master/timing.csv) for up to date numbers):
         1. PostgreSQL: 35s, even after adding custom indexes.  - yet to run on DGX
-        2. C++: 0.001s without SIMD or OpenMP, 0.004s with OpenMP and without SIMD
-           1. note: it looks like auto-vectorization ran and didn't find anything in this function
+        2. C++: g++ auto-vectorization pass ran, didn't find anything 
         3. Q: 0.08s - yet to run on DGX
-        4. Cython: 0.039s - yet to run on DGX
+        4. Cython: 
 2. Query 2: find all trajectories of a player or the ball from position (x,y,t) to (x+10,y+10,t+5), such that x,y, and t are free variables
     1. Place in Taxonomy:
         1. reference - players/ball - moving, series
@@ -28,7 +27,7 @@ For the reference part of the taxonomy, I also state which entity is the referen
         1. C++: 0.07s - yet to run on DGX
         2. Q: 0.164s - yet to run on DGX
         3. Cython: 0.38s - yet to run on DGX
-3. Query 3: find all trajectories of a player or the ball that start in the range ((70, 16, t) - (90, 32, t)) to (72, 25, t+5). 
+3. Query 3: find all trajectories of a player or the ball that start in the range ((70, 16, t) <-> (90, 32, t)) and end in the range ((71.9, 24.9, t+4) <-> (72.1, 25.1, t+6)). 
    The starting range is the paint on one side of the court. The destination is a point at the top of the key on that same side of the court.
     1. Place in Taxonomy:
         1. reference - region of court - static, single (using region of court as reference, not players)
@@ -38,9 +37,9 @@ For the reference part of the taxonomy, I also state which entity is the referen
     2. Join Strategy: no join required
     3. Indices: sort by x for Q, Octree for C++
     4. Performance:
-        1. C++: 0.009s with OpenMP and auto-vectorization, 0.07s without OpenMP and with auto-vectorization
+        1. C++: g++ auto-vectorization pass ran, added some SIMD instructions
         2. Q: 48.18s (implemented using linear scan) - yet to run on DGX
-        3. Cython: 6.3s (implemented using linear scan) - yet to run on DGX
+        3. Cython: 
     5. Future work on this query: a better answer for this query appears to be sorting by time and taking the approach from query 2.
     It's surprising that the octree didn't help. Other indices focused on trajectories may improve over both the octree and sort by time approaches.
 
