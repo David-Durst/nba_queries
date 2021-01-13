@@ -96,6 +96,7 @@ public:
 
     // map from player index in moments data set to the bin index for that player
     std::map<long int, int> players_indices_in_bins;
+    long int * player_ids;
     // map from player bin index and then bin index to a location in bin_list_indices
     int64_t (* bin_starts)[NUM_BINS];
     // all the moments for each player organized by bin

@@ -9,8 +9,9 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
     std::list<int> destination_bins = court_bins::get_bins_in_region(destination);
     int t_index_offset = t_offset * 25;
 
-    for (const auto & player_and_bin : moment_bins->players_indices_in_bins) {
-        long int player_id = player_and_bin.first;
+    #pragma omp parallel for
+    for (int player_num = 0; player_num < moment_bins->players_indices_in_bins.size(); player_num++) {
+        long int player_id = moment_bins->player_ids[player_num];
         std::list<player_pointer> src_moments;
         // all trajectory starts for the current player
         for (const auto & src_bin : origin_bins) {
@@ -36,6 +37,7 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
                     if (moments->player_id[src_moment.player_index][src_time] == moments->player_id[dst_player_index][dst_time] &&
                         point_intersect_no_time(&destination, moments->x_loc[dst_player_index][dst_time],
                                                 moments->y_loc[dst_player_index][dst_time])) {
+                        #pragma omp critical
                         {
                             trajectories->append_node({
                                                               moments->team_id[src_moment.player_index][src_time],
@@ -62,21 +64,23 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
 court_bins::court_bins(moment_col_store * moments) {
     // first need to collect all the players, as moments just track 10 on the floor and ball
     // and for each player, track how many moments they are in
-    std::set<long int> player_ids;
+    std::set<long int> player_ids_set;
     for (int player_in_game = 0; player_in_game < NUM_PLAYERS_AND_BALL; player_in_game++) {
         for (int64_t moment_index = 0; moment_index < moments->size; moment_index++) {
-            player_ids.insert(moments->player_id[player_in_game][moment_index]);
+            player_ids_set.insert(moments->player_id[player_in_game][moment_index]);
         }
     }
-    // for each player, create an entry in bin_list_starts
+    // for each player, track the id and map it to the bin index
+    player_ids = new long int[player_ids_set.size()];
     int bin_index = 0;
-    for (const auto & player_id : player_ids) {
+    for (const auto & player_id : player_ids_set) {
+        player_ids[bin_index] = player_id;
         players_indices_in_bins[player_id] = bin_index++;
     }
 
     // create all the bins
     // multidimensional new is valid - https://en.cppreference.com/w/cpp/language/new
-    bin_starts = new int64_t[player_ids.size()][NUM_BINS];
+    bin_starts = new int64_t[player_ids_set.size()][NUM_BINS];
     // there are 11 players in every moment, no matter which player is in the game at that time
     num_player_moments = moments->size * NUM_PLAYERS_AND_BALL;
     player_moment_bins = new player_pointer[num_player_moments];
@@ -96,7 +100,7 @@ court_bins::court_bins(moment_col_store * moments) {
 
     // convert the lists to arrays for faster lookup
     int64_t total_index = 0;
-    for (const auto & player_id : player_ids) {
+    for (const auto & player_id : player_ids_set) {
         for (int bin = 0; bin < NUM_BINS; bin++) {
             bin_starts[players_indices_in_bins.at(player_id)][bin] = total_index;
             for (const auto & bin_data : bin_data_in_lists[players_indices_in_bins[player_id]][bin]) {
