@@ -63,7 +63,7 @@ cpdef vector[trajectory_data] find_trajectories_fixed_origin(coordinate_range st
         if src_players.empty():
             continue
         for j in range(t_index_offset - t_delta_ticks, t_index_offset + t_delta_ticks + 1):
-            if i + j > moment_data.size():
+            if i + j >= moment_data.size():
                 continue
             dst_m = moment_data.at(i+j)
             for p in src_players:

@@ -92,6 +92,15 @@ int main(int argc, char * argv[]) {
     printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "trajectories size: " << trajectories.size() << std::endl;
 
+    std::cout << "running query 3 cleaned and binned" << std::endl;
+    min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
+        trajectories_list.clear();
+        find_trajectories_fixed_origin_clean_binned(moments_col, bins, &trajectories_list, origin, destination, 5, 25);
+    });
+    trajectories_list.to_vector(trajectories);
+    printf("compute time: %gms\n", min_time * 1e3);
+    std::cout << "trajectories size: " << trajectories.size() << std::endl;
+
 
     std::cout << "running query 3 cleaned with row store" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {

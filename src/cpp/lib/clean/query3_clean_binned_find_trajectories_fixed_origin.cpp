@@ -85,19 +85,21 @@ court_bins::court_bins(moment_col_store * moments) {
     // this will store the locations of all player in each bin in lists before inserting into array
     std::list<player_pointer> bin_data_in_lists[players_indices_in_bins.size()][NUM_BINS];
 
+    int64_t total_sum = 0;
     for (int player = 0; player < NUM_PLAYERS_AND_BALL; player++) {
         for (int64_t i = 0; i < moments->size; i++) {
             bin_data_in_lists[players_indices_in_bins[moments->player_id[player][i]]]
                 [get_bin_index(moments->x_loc[player][i], moments->y_loc[player][i])].push_back({i, player});
+            total_sum++;
         }
     }
 
     // convert the lists to arrays for faster lookup
     int64_t total_index = 0;
-    for (int player = 0; player < players_indices_in_bins.size(); player++) {
+    for (const auto & player_id : player_ids) {
         for (int bin = 0; bin < NUM_BINS; bin++) {
-            bin_starts[players_indices_in_bins[player]][bin] = total_index;
-            for (const auto & bin_data : bin_data_in_lists[players_indices_in_bins[player]][bin]) {
+            bin_starts[players_indices_in_bins[player_id]][bin] = total_index;
+            for (const auto & bin_data : bin_data_in_lists[players_indices_in_bins[player_id]][bin]) {
                 player_moment_bins[total_index++] = bin_data;
             }
         }

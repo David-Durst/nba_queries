@@ -13,7 +13,7 @@ void find_trajectories_fixed_origin_clean(moment_col_store * moments, list<traje
         for (int j = 0; j < 11; j++) {
             players_match_src[j] =
                     point_intersect_no_time(&origin, moments->x_loc[j][src_time], moments->y_loc[j][src_time]);
-            any_match &= players_match_src[j];
+            any_match |= players_match_src[j];
         }
         if (!any_match) {
             continue;
@@ -68,7 +68,7 @@ void find_trajectories_fixed_origin_clean_rowstore(vector<cleaned_moment>& momen
             continue;
         }
         for (int j = t_index_offset - t_delta_ticks; j < t_index_offset + t_delta_ticks + 1; j++) {
-            if (i + j > moments.size()) {
+            if (i + j >= moments.size()) {
                 continue;
             }
             cleaned_moment& dst_m = moments.at(i+j);
