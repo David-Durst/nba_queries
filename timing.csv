@@ -1,0 +1,2 @@
+Language,Query1 Colstore Sequential Time (ms),Query1 Colstore Parallel Time (ms),Query3 Rowstore Sequential Time (ms),Query3 Colstore Sequential Time (ms),Query3 Colstore Parallel Time (ms),Query3 Binned Colstore Sequential Time (ms),Query3 Binned Colstore Parallel Time
+CPP,6.83,3.20,10654.49,1135.12,325.40,1102.55,373.50
