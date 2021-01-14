@@ -18,9 +18,10 @@ RUN wget https://github.com/Kitware/CMake/releases/download/v3.19.2/cmake-3.19.2
     chmod u+x cmake-3.19.2-Linux-x86_64.sh && \
     ./cmake-3.19.2-Linux-x86_64.sh --skip-license
 ENV PATH="$PATH:/home/durst/cmake/bin/"
+WORKDIR /home/durst
 
-wget https://github.com/ispc/ispc/releases/download/v1.14.1/ispc-v1.14.1-linux.tar.gz
-tar -xvf ispc-v1.14.1-linux.tar.gz
+RUN wget https://github.com/ispc/ispc/releases/download/v1.14.1/ispc-v1.14.1-linux.tar.gz && \
+    tar -xvf ispc-v1.14.1-linux.tar.gz
 
 # setup code
 RUN conda config --prepend pkgs_dirs /home/durst/.conda/pkgs
@@ -33,5 +34,5 @@ WORKDIR /home/durst/nba_queries
 
 # config bash setings
 RUN echo "conda activate nba_queries" >> /root/.bashrc && \
-    echo "export PATh=$PATH:/home/durst/ispc-v1.14.1-linux/bin"
+    echo "export PATH=$PATH:/home/durst/ispc-v1.14.1-linux/bin" >> /root/.bashrc && \
     echo "alias q='rlwrap -r ${QHOME}/l32/q'" >> /root/.bashrc
