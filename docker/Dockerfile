@@ -4,10 +4,6 @@ RUN apt clean; apt update; apt upgrade -y
 ENV DEBIAN_FRONTEND="noninteractive" TZ="America/New_York"
 RUN apt install -y curl vim neovim git g++ rlwrap openssh-server sudo make libc6-i386 gcc-multilib g++-multilib 
 
-#RUN adduser --disabled-password --gecos '' durst
-#RUN adduser durst sudo
-#RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-#USER durst
 RUN mkdir /home/durst
 WORKDIR /home/durst
 
@@ -22,7 +18,9 @@ RUN wget https://github.com/Kitware/CMake/releases/download/v3.19.2/cmake-3.19.2
     chmod u+x cmake-3.19.2-Linux-x86_64.sh && \
     ./cmake-3.19.2-Linux-x86_64.sh --skip-license
 ENV PATH="$PATH:/home/durst/cmake/bin/"
-WORKDIR /home/durst
+
+wget https://github.com/ispc/ispc/releases/download/v1.14.1/ispc-v1.14.1-linux.tar.gz
+tar -xvf ispc-v1.14.1-linux.tar.gz
 
 # setup code
 RUN conda config --prepend pkgs_dirs /home/durst/.conda/pkgs
@@ -35,4 +33,5 @@ WORKDIR /home/durst/nba_queries
 
 # config bash setings
 RUN echo "conda activate nba_queries" >> /root/.bashrc && \
+    echo "export PATh=$PATH:/home/durst/ispc-v1.14.1-linux/bin"
     echo "alias q='rlwrap -r ${QHOME}/l32/q'" >> /root/.bashrc
