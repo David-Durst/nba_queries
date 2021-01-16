@@ -1,0 +1,1 @@
+make && ./benchmark_ispc
