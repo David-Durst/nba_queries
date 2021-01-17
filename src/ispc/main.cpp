@@ -5,7 +5,7 @@
 #include <iomanip>
 #include "benchmark.h"
 #include "benchmark_ispc.h"
-#define VECTOR_LEN 50000000
+#define VECTOR_LEN 100000000
 
 using namespace ispc;
 using std::string;
