@@ -1,48 +1,57 @@
 system "l benchmark.q"
-a:rand each 100000000#1000
-b:rand each 100000000#1000
-c:rand each 100000000#1000
-d:rand each 100000000#1000
+results_file_path: "/home/durst/big_dev/nba_queries/basic_benchmark.csv" /.z.x[0]
+a:100000000?1000i
+b:100000000?1000i
+c:100000000?1000i
+d:100000000?1000i
+vector_len: 100000000.0
+
+toBW:{[bytes;sec] (((bytes % 1024.) % 1024.) % 1024.) % sec}
+toGFLOPS:{[ops;sec] (ops % 1e9) % sec};
+
+results:`sequential_square_time`sequential_square_bw`sequential_square_gops`four_ops_unfused_time`four_ops_unfused_bw`four_ops_unfused_gops`four_ops_one_input_unfused_time`four_ops_one_input_unfused_bw`four_ops_one_input_unfused_gops!(0.;0.;0.;0.;0.;0.;0.;0.;0.)
+
+show "minimum benchmark time"
+basic1_res: benchmark[4;4;{1+1}]
 
 show "running 1 operator experiments"
 show ""
 basic1_f:{a * a}
-fused1_f:{{[x] x * x}'[a]}
-parallel1_f:{{[x] x * x} peach a}
 basic1_res: benchmark[4;4;basic1_f]
-fused1_res: benchmark[4;4;fused1_f]
-parallel1_res: benchmark[4;4;parallel1_f]
-show "arg1: basic1, arg2: fused1"
-compare_times[basic1_res;fused1_res]
-show "arg1: fused1, arg2: parallel1"
-compare_times[fused1_res;parallel1_res]
-
+square_bytes_traffic: 3 * vector_len * 4
+square_total_ops: vector_len
+results[`sequential_square_time]: basic1_res[`time] * 1e3
+results[`sequential_square_bw]: toBW[square_bytes_traffic;basic1_res[`time]]
+results[`sequential_square_gops]: toGFLOPS[square_total_ops;basic1_res[`time]]
 
 show "running 4 operator experiments"
 show ""
 basic4_f:{((a * b) + c) - d}
-fused4_f:{{[x;y;z;zz] ((x * y) + z) - zz}'[a;b;c;d]}
-flipped_input: flip(a;b;c;d)
-parallel4_f:{.[{[x;y;z;zz] ((x * y) + z) - zz};] peach flipped_input}
 basic4_res: benchmark[4;4;basic4_f]
-fused4_res: benchmark[4;4;fused4_f]
-parallel4_res: benchmark[4;4;parallel4_f]
-show "arg1: basic4, arg2: fused4"
-compare_times[basic4_res;fused4_res]
-show "arg1: fused1, arg2: parallel1"
-compare_times[fused4_res;parallel4_res]
+four_ops_unfused_bytes_traffic: 10 * vector_len * 4
+four_ops_total_ops: 4 * vector_len
+results[`four_ops_unfused_time]: basic4_res[`time] * 1e3
+results[`four_ops_unfused_bw]: toBW[four_ops_unfused_bytes_traffic;basic4_res[`time]]
+results[`four_ops_unfused_gops]: toGFLOPS[four_ops_total_ops;basic4_res[`time]]
 
 show "running 1 operator repeated 4 times experiments"
 show ""
 basic4_rep_f:{((a * a) + a) - a}
-fused4_rep_f:{{[x] ((x * x) + x) - x}'[a]}
-parallel4_rep_f:{{[x] ((x * x) + x) - x} peach a}
 basic4_rep_res: benchmark[4;4;basic4_rep_f]
-fused4_rep_res: benchmark[4;4;fused4_rep_f]
-parallel4_rep_res: benchmark[4;4;parallel4_rep_f]
-show "arg1: basic4_rep, arg2: fused4_rep"
-compare_times[basic4_rep_res;fused4_rep_res]
-show "arg1: fused4_rep, arg2: parallel4_rep"
-compare_times[fused4_rep_res;parallel4_rep_res]
+four_ops_one_input_unfused_bytes_traffic: 10 * vector_len * 4;
+results[`four_ops_one_input_unfused_time]: basic4_rep_res[`time] * 1e3
+results[`four_ops_one_input_unfused_bw]: toBW[four_ops_one_input_unfused_bytes_traffic;basic4_rep_res[`time]]
+results[`four_ops_one_input_unfused_gops]: toGFLOPS[four_ops_total_ops;basic4_rep_res[`time]]
+
+nan:"nan,nan,nan"
+sequential_square_res: "," sv string (results[`sequential_square_time];results[`sequential_square_bw];results[`sequential_square_gops])
+four_ops_unfused_res: "," sv string (results[`four_ops_unfused_time];results[`four_ops_unfused_bw];results[`four_ops_unfused_gops])
+four_ops_one_input_unfused_res: "," sv string (results[`four_ops_one_input_unfused_time];results[`four_ops_one_input_unfused_bw];results[`four_ops_one_input_unfused_gops])
+final_str_res: "," sv (sequential_square_res;nan;four_ops_unfused_res;nan;four_ops_one_input_unfused_res;nan)
+
+(hsym `$results_file_path) 0: enlist final_str_res
+h:hopen (hsym `$results_file_path)
+neg[h] enlist final_str_res
+hclose h
 
 exit 0
