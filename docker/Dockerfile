@@ -35,4 +35,4 @@ WORKDIR /home/durst/nba_queries
 # config bash setings
 RUN echo "conda activate nba_queries" >> /root/.bashrc && \
     echo "export PATH=$PATH:/home/durst/ispc-v1.14.1-linux/bin" >> /root/.bashrc && \
-    echo "alias q='rlwrap -r ${QHOME}/l64/q'" >> /root/.bashrc
+    echo "alias q='taskset 1,2,3,4,5,6 rlwrap -r ${QHOME}/l64/q'" >> /root/.bashrc
