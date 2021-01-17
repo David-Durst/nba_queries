@@ -1,5 +1,5 @@
 system "l benchmark.q"
-results_file_path: "/home/durst/big_dev/nba_queries/basic_benchmark.csv" /.z.x[0]
+results_file_path: .z.x[0]
 a:100000000?1000i
 b:100000000?1000i
 c:100000000?1000i
