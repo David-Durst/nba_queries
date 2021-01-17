@@ -18,26 +18,22 @@ int main(int argc, char * argv[]) {
     vector<moment> moments;
     vector<cleaned_moment> cleaned_moments;
     vector<shot> shots;
-    if (argc != 6) {
-        std::cout << "please call this code with 5 arguments: " << std::endl;
-        std::cout << "1. path/to/moments_folder " << std::endl;
-        std::cout << "2. moments_file1.csv,moments_file2.csv,... " << std::endl;
-        std::cout << "3. path/to/cleaned_moments_file.csv " << std::endl;
-        std::cout << "4. path/to/shots_file.csv " << std::endl;
-        std::cout << "5. path/to/cleaned_shots_file.csv " << std::endl;
+    if (argc < 5) {
+        std::cout << "please call this code at least 4 arguments: " << std::endl;
+        std::cout << "1. path/to/cleaned_moments_file.csv " << std::endl;
+        std::cout << "2. path/to/shots_file.csv " << std::endl;
+        std::cout << "3. path/to/cleaned_shots_file.csv " << std::endl;
+        std::cout << "4.  path/to/moments_file1.csv optional/path/to/moments_file2.csv,... " << std::endl;
     }
-    string moments_folder_path = argv[1], moments_file_names = argv[2], cleaned_moments_file_path = argv[3],
-           shots_file_path = argv[4], cleaned_shots_file_path = argv[5];
+    string cleaned_moments_file_path = argv[1], shots_file_path = argv[2], cleaned_shots_file_path = argv[3],
+        cur_moments_file;
     std::fstream moments_file, cleaned_moments_file, shots_file, cleaned_shots_file;
     // load the moments
     std::cout << "moment size: " << sizeof(moment) << std::endl;
-    std::stringstream moment_ss(moments_file_names);
-    string moments_file_name, cur_moments_path;
-    while (moment_ss.good()) {
-        getline(moment_ss, moments_file_name, ',');
-        cur_moments_path = moments_folder_path + moments_file_name;
-        std::cout << "loading moments file: " << cur_moments_path << std::endl;
-        moments_file.open(cur_moments_path);
+    for (int i = 4; i < argc; i++) {
+        cur_moments_file = argv[i];
+        std::cout << "loading moments file: " << cur_moments_file << std::endl;
+        moments_file.open(cur_moments_file);
         load_moment_rows(moments_file, moments);
         moments_file.close();
     }
@@ -64,7 +60,7 @@ int main(int argc, char * argv[]) {
                              << ", y_loc_" << i
                              << ", radius_" << i;
     }
-    cleaned_moments_file << ", game_clock, shot_clock, quarter, game_id, events" << std::endl;
+    cleaned_moments_file << ", game_clock, shot_clock, quarter, game_id, game_num, events" << std::endl;
     for (const auto & c : cleaned_moments) {
         print_cleaned_moment_csv(cleaned_moments_file, c);
         cleaned_moments_file << std::endl;

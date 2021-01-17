@@ -155,6 +155,8 @@ void load_cleaned_moment_row(string& row, cleaned_moment& m) {
     m.quarter = stoi_with_default(col);
     std::getline(ss, col, ',');
     m.game_id = stol_with_default(col);
+    std::getline(ss, col, ',');
+    m.game_num = stol_with_default(col);
 
     // load event data
     std::getline(ss, col, ',');
@@ -175,6 +177,8 @@ void load_cleaned_moment_row(string& row, cleaned_moment& m) {
 void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst) {
     int player_in_moment = 0;
     long int last_player_id = -2;
+    int game_num = 0;
+    long int cur_game_id = src.at(0).game_id;
     for (const auto & m : src) {
         if (dst.empty() ||
             dst.at(dst.size() - 1).game_clock != clock_fixed_point(m.game_clock)) {
@@ -204,6 +208,11 @@ void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst) {
             cur_moment.ball.x_loc = m.x_loc;
             cur_moment.ball.y_loc = m.y_loc;
             cur_moment.ball.radius = m.radius;
+            if (cur_moment.game_id != cur_game_id) {
+                game_num++;
+                cur_game_id = cur_moment.game_id;
+            }
+            cur_moment.game_id = cur_game_id;
         }
         else {
             cleaned_moment& cur_moment = dst.at(dst.size() - 1);

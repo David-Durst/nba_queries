@@ -90,7 +90,8 @@ struct cleaned_moment {
     clock_fixed_point game_clock;
     double shot_clock;
     short int quarter;
-    long int game_id;
+    long int game_id; // game_id assigned by nba
+    int game_num; // game num stores game's number in vector of cleaned_moments
     vector<event_moment_data> events;
 } ;
 

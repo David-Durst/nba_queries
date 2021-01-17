@@ -110,6 +110,7 @@ bool operator==(cleaned_moment const& lhs, cleaned_moment const& rhs) {
             lhs.shot_clock == rhs.shot_clock &&
             lhs.quarter == rhs.quarter &&
             lhs.game_id == rhs.game_id &&
+            lhs.game_num == rhs.game_num &&
             lhs.events == rhs.events;
 }
 
@@ -130,6 +131,7 @@ std::ostream& operator<<(std::ostream& os, const cleaned_moment& value) {
        << ", shot_clock: " << value.shot_clock
        << ", quarter: " << value.quarter
        << ", game_id: " << value.game_id
+       << ", game_num: " << value.game_num
        << ", events: ";
     for (auto const & e : value.events) {
         os << "(" << e << ")" << ";";
@@ -146,7 +148,8 @@ void print_cleaned_moment_csv(std::ostream& os, const cleaned_moment& value) {
     os << "," << value.game_clock.to_double()
        << "," << value.shot_clock
        << "," << value.quarter
-       << "," << value.game_id << ",";
+       << "," << value.game_id
+       << "," << value.game_num << ",";
     for (auto const & e : value.events) {
         print_event_moment_data_csv(os, e);
         os << ";";
