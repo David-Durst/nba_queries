@@ -4,4 +4,4 @@ cd src/cython
 cd ../ispc
 ./run.sh
 cd ../q
-./run_basic.sh
+source ./run_basic.sh
