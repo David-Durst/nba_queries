@@ -1,8 +1,8 @@
 system "l benchmark.q"
-a:rand each 1000000#1000
-b:rand each 1000000#1000
-c:rand each 1000000#1000
-d:rand each 1000000#1000
+a:rand each 100000000#1000
+b:rand each 100000000#1000
+c:rand each 100000000#1000
+d:rand each 100000000#1000
 
 show "running 1 operator experiments"
 show ""
