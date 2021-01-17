@@ -158,7 +158,7 @@ int main(int argc, char * argv[]) {
                      print_func_header("Four Ops Fused") + "," + print_func_header("Four Ops One Input Unfused") + "," +
                      print_func_header("Four Ops One Input Fused") << std::endl;
     results_file << std::fixed << std::setprecision(2)
-                 << "CPP," << res_struct.sequential_square << "," <<
+                 << "ISPC," << res_struct.sequential_square << "," <<
                     res_struct.parallel_square << "," << res_struct.four_ops_unfused << "," <<
                     res_struct.four_ops_fused << "," << res_struct.four_ops_one_input_unfused << "," <<
                     res_struct.four_ops_one_input_fused << std::endl;
