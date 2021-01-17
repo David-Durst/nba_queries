@@ -5,3 +5,4 @@ cd ../ispc
 ./run.sh
 cd ../q
 source ./run_basic.sh
+cd ../..
