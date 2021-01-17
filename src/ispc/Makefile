@@ -1,7 +1,7 @@
 CXX=g++ -m64
-CXXFLAGS=-Icommon -I../../include/ -Iobjs/ -g -O3 -Wall -fPIC
+CXXFLAGS=-Icommon -I../../include/ -Iobjs/ -O3 -Wall -fPIC
 ISPC=ispc
-ISPCFLAGS=-O3 -g --target=avx2-i32x8 --arch=x86-64 --pic
+ISPCFLAGS=-O3 --target=avx2-i32x8 --arch=x86-64 --pic
 
 APP_NAME=benchmark_ispc
 OBJDIR=objs
