@@ -126,7 +126,7 @@ int main(int argc, char * argv[]) {
 
 
 
-    int64_t four_ops_one_input_unfused_bytes_traffic = 10 * VECTOR_LEN * sizeof(int);
+    int64_t four_ops_one_input_unfused_bytes_traffic = 9 * VECTOR_LEN * sizeof(int);
     int64_t four_ops_one_input_fused_bytes_traffic = 3 * VECTOR_LEN * sizeof(int);
 
     min_time = Halide::Tools::benchmark(10, 10, [&]() {
