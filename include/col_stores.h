@@ -69,7 +69,7 @@ public:
     string * team_name;
     string * team_vtm;
 
-    shot_col_store(vector<shot>& shots);
+    shot_col_store(vector<cleaned_shot>& shots);
 };
 
 #endif //COL_STORES_H

@@ -34,7 +34,7 @@ struct results {
 int main(int argc, char * argv[]) {
     vector<cleaned_moment> moments;
     moment_col_store * moments_col;
-    vector<shot> shots;
+    vector<cleaned_shot> shots;
     shot_col_store * shots_col;
     court_bins * bins;
     vector<shot_and_player_data> shots_and_players;
@@ -67,7 +67,7 @@ int main(int argc, char * argv[]) {
     // load the shots
     std::cout << "loading shots file: " << shots_file_path << std::endl;
     shots_file.open(shots_file_path);
-    load_shot_rows_vec(shots_file, shots);
+    load_cleaned_shot_rows_vec(shots_file, shots);
     shots_file.close();
     std::cout << "shots size: " << shots.size() << std::endl;
     // filter shots, sort by quarter than gametime

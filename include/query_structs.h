@@ -77,7 +77,11 @@ public:
 
     inline int64_t time_to_index(int game_num, int quarter) {
         // 720 seconds in a quarter
-        return 25 * (720 * (quarter - 1) + 720 - seconds) - twenty_fifths_of_second;
+        return
+            // time for multiple games
+            25 * 720 * 4 * game_num +
+            // time in game
+            (25 * (720 * (quarter - 1) + 720 - seconds) - twenty_fifths_of_second);
     }
 };
 

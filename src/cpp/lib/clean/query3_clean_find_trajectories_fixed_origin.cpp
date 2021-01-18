@@ -29,6 +29,8 @@ void find_trajectories_fixed_origin_clean(moment_col_store * moments, list<traje
                 }
                 for (int dst_player_index = 0; dst_player_index < 11; dst_player_index++) {
                     if (moments->player_id[src_player_index][src_time] == moments->player_id[dst_player_index][dst_time] &&
+                        moments->game_num[src_time] == moments->game_num[dst_time] &&
+                        moments->quarter[src_time] == moments->quarter[dst_time] &&
                         point_intersect_no_time(&destination, moments->x_loc[dst_player_index][dst_time],
                                                 moments->y_loc[dst_player_index][dst_time])) {
                         #pragma omp critical
@@ -75,7 +77,10 @@ void find_trajectories_fixed_origin_clean_rowstore(vector<cleaned_moment>& momen
             for (const auto& p : src_players) {
                 get_all_player_data(dst_players, dst_m);
                 for (const auto& q : dst_players) {
-                    if (p.get().player_id == q.get().player_id && point_intersect_no_time(destination, q)) {
+                    if (p.get().player_id == q.get().player_id &&
+                        src_m.game_num == dst_m.game_num &&
+                        src_m.quarter == dst_m.quarter &&
+                        point_intersect_no_time(destination, q)) {
                         trajectories.push_back({
                                                        p.get().team_id,
                                                        p.get().player_id,

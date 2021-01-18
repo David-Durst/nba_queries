@@ -36,7 +36,9 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
                 }
                 for (int dst_player_index = 0; dst_player_index < 11; dst_player_index++) {
                     if (moments->player_id[src_moment.player_index][src_time] == moments->player_id[dst_player_index][dst_time] &&
-                        point_intersect_no_time(&destination, moments->x_loc[dst_player_index][dst_time],
+                            moments->game_num[src_time] == moments->game_num[dst_time] &&
+                            moments->quarter[src_time] == moments->quarter[dst_time] &&
+                            point_intersect_no_time(&destination, moments->x_loc[dst_player_index][dst_time],
                                                 moments->y_loc[dst_player_index][dst_time])) {
                         #pragma omp critical
                         {
