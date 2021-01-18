@@ -69,6 +69,13 @@ int main(int argc, char * argv[]) {
         cleaned_moments_file << std::endl;
     }
     cleaned_moments_file.close();
+    for (int64_t i = 0; i < cleaned_moments.size(); i++) {
+        clock_fixed_point& c = cleaned_moments.at(i).game_clock;
+        int64_t predicted_index = c.time_to_index(cleaned_moments.at(i).game_num, cleaned_moments.at(i).quarter);
+        if (i != predicted_index) {
+            std::cout << "bad index match" << std::endl;
+        }
+    }
 
 
     std::cout << "loading shots file: " << shots_file_path << std::endl;
