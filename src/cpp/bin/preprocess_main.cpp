@@ -73,7 +73,8 @@ int main(int argc, char * argv[]) {
         clock_fixed_point& c = cleaned_moments.at(i).game_clock;
         int64_t predicted_index = c.time_to_index(cleaned_moments.at(i).game_num, cleaned_moments.at(i).quarter);
         if (i != predicted_index) {
-            std::cout << "bad index match" << std::endl;
+            std::cout << "predicted index " << predicted_index << " doesn't match actual index " << i << std::endl;
+            return 1;
         }
     }
 

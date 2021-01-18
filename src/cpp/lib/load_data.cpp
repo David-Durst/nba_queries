@@ -201,20 +201,25 @@ void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst, std::ma
     int game_num = 0;
     long int cur_game_id = src.at(0).game_id;
     for (const auto & m : src) {
+        // remove last element if no time is on the clock to simplify indexing logic
+        if (!dst.empty() && dst.at(dst.size() - 1).quarter != m.quarter &&
+            dst.at(dst.size() - 1).game_clock == clock_fixed_point(0.0)) {
+            dst.pop_back();
+        }
         if (dst.empty() ||
             dst.at(dst.size() - 1).game_clock != clock_fixed_point(m.game_clock)) {
             // fix case where skip 0.08 by reinserting last value
             size_t cur_size = dst.size();
-            // handle games that don't start with 720.0
+            // handle quarters that don't start with 720.0
             // only need to insert 1 here, as skips after first insertion will be handled by following for loop
-            if ((dst.empty() || (dst.at(dst.size() - 1).quarter == 4 && m.quarter == 1)) &&
+            if ((dst.empty() || (dst.at(dst.size() - 1).quarter != m.quarter)) &&
                                 clock_fixed_point(m.game_clock) != clock_fixed_point(720.0)) {
                 dst.push_back(cleaned_moment());
                 cleaned_moment& game_start = dst.at(dst.size() - 1);
                 cleaned_moment_from_moment(m, game_start, cur_game_id, game_num, game_id_to_num);
                 game_start.game_clock = clock_fixed_point(720.0);
             }
-            // handle skips after first time in game
+            // handle skips after first time in quarter
             while (!dst.empty() && dst.at(dst.size() - 1).quarter == m.quarter &&
                 dst.at(dst.size() - 1).game_clock.abs_diff(clock_fixed_point(m.game_clock)).gt(0.04)) {
                 cleaned_moment copied_moment = dst.at(dst.size() - 1);
