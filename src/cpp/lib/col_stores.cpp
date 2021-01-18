@@ -49,11 +49,12 @@ moment_col_store::moment_col_store(vector<cleaned_moment> &moments) {
         shot_clock[i] = m.shot_clock;
         quarter[i] = m.quarter;
         game_id[i] = m.game_id;
+        game_num[i] = m.game_num;
         events[i] = m.events;
     }
 }
 
-shot_col_store::shot_col_store(vector<shot> &shots) {
+shot_col_store::shot_col_store(vector<cleaned_shot> &shots) {
     size = shots.size();
     action_type = new string[shots.size()];
     event_time = new int[shots.size()];
@@ -61,6 +62,7 @@ shot_col_store::shot_col_store(vector<shot> &shots) {
     game_date = new string[shots.size()];
     game_event_id = new long int[shots.size()];
     game_id = new long int[shots.size()];
+    game_num = new int[shots.size()];
     grid_type = new string[shots.size()];
     htm = new string[shots.size()];
     loc_x = new float[shots.size()];
@@ -69,7 +71,7 @@ shot_col_store::shot_col_store(vector<shot> &shots) {
     period = new int[shots.size()];
     player_id = new int[shots.size()];
     player_name = new string[shots.size()];
-    quarter = new float[shots.size()];
+    quarter = new int[shots.size()];
     seconds_remaining = new int[shots.size()];
     shot_attempted_flag = new bool[shots.size()];
     shot_distance = new int[shots.size()];
@@ -84,13 +86,14 @@ shot_col_store::shot_col_store(vector<shot> &shots) {
     team_vtm = new string[shots.size()];
 
     for (int i = 0; i < shots.size(); i++) {
-        shot& s = shots.at(i);
+        cleaned_shot& s = shots.at(i);
         action_type[i] = s.action_type;
         event_time[i] = s.event_time;
         event_type[i] = s.event_type;
         game_date[i] = s.game_date;
         game_event_id[i] = s.game_event_id;
         game_id[i] = s.game_id;
+        game_num[i] = s.game_num;
         grid_type[i] = s.grid_type;
         htm[i] = s.htm;
         loc_x[i] = s.loc_x;

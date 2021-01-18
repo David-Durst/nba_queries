@@ -31,6 +31,7 @@ public:
     double * shot_clock;
     short int * quarter;
     long int * game_id;
+    int * game_num;
     vector<event_moment_data> * events;
 
     moment_col_store(vector<cleaned_moment>& moments);
@@ -45,6 +46,7 @@ public:
     string * game_date;
     long int * game_event_id;
     long int * game_id;
+    int * game_num;
     string * grid_type;
     string * htm;
     float * loc_x;
@@ -53,7 +55,7 @@ public:
     int * period;
     int * player_id;
     string * player_name;
-    float * quarter;
+    int * quarter;
     int * seconds_remaining;
     bool * shot_attempted_flag;
     int * shot_distance;

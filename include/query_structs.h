@@ -75,7 +75,7 @@ public:
         return this->to_double() > f;
     }
 
-    inline int64_t time_to_index(int quarter) {
+    inline int64_t time_to_index(int game_num, int quarter) {
         // 720 seconds in a quarter
         return 25 * (720 * (quarter - 1) + 720 - seconds) - twenty_fifths_of_second;
     }
@@ -172,6 +172,41 @@ void print_shot_csv(std::ostream& os, const shot& value);
 
 bool shot_before_moment(const shot & s, const moment & m);
 bool moment_before_shot(const moment & m, const shot & s);
+
+struct cleaned_shot {
+    string action_type;
+    int event_time;
+    string event_type;
+    string game_date;
+    long int game_event_id;
+    long int game_id;
+    int game_num;
+    string grid_type;
+    string htm;
+    float loc_x;
+    float loc_y;
+    int minutes_remaining;
+    int period;
+    int player_id;
+    string player_name;
+    int quarter;
+    int seconds_remaining;
+    bool shot_attempted_flag;
+    int shot_distance;
+    bool shot_made_flag;
+    clock_fixed_point shot_time;
+    string shot_type;
+    string shot_zone_area;
+    string shot_zone_basic;
+    string shot_zone_range;
+    long int team_id;
+    string team_name;
+    string team_vtm;
+} ;
+
+bool operator==(cleaned_shot const & lhs, shot const & rhs);
+std::ostream& operator<<(std::ostream& os, cleaned_shot const& value);
+void print_cleaned_shot_csv(std::ostream& os, const cleaned_shot& value);
 
 template <typename T>
 struct list_node {

@@ -23,6 +23,7 @@ void find_nearest_defender_at_each_shot_clean(moment_col_store * moments,
         long int shooter_team_id = shots->team_id[shot_index];
         double shooter_x_loc, shooter_y_loc;
         int quarter = shots->quarter[shot_index];
+        int game_num = moments->game_num[shooter_moment_index];
 
         // get data for shooter
         bool found_shooter = false;
@@ -44,7 +45,8 @@ void find_nearest_defender_at_each_shot_clean(moment_col_store * moments,
              defender_moment_index++) {
             // skip out of bounds indices or those in a different quarter from the shooter
             if (defender_moment_index < 0 || defender_moment_index > moments->size ||
-                moments->quarter[defender_moment_index] != quarter) {
+                moments->quarter[defender_moment_index] != quarter ||
+                moments->game_num != game_num) {
                 continue;
             }
 

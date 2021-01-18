@@ -7,6 +7,7 @@
 #include <chrono>
 #include <numeric>
 #include <sstream>
+#include <map>
 #include "benchmark.h"
 #include "load_data.h"
 #include "query_structs.h"
@@ -18,6 +19,8 @@ int main(int argc, char * argv[]) {
     vector<moment> moments;
     vector<cleaned_moment> cleaned_moments;
     vector<shot> shots;
+    vector<cleaned_shot> cleaned_shots;
+    std::map<long int, int> game_id_to_num;
     if (argc < 5) {
         std::cout << "please call this code at least 4 arguments: " << std::endl;
         std::cout << "1. path/to/cleaned_moments_file.csv " << std::endl;
@@ -49,7 +52,7 @@ int main(int argc, char * argv[]) {
                 (m0.game_id == m1.game_id && m0.quarter == m1.quarter && m0.game_clock == m1.game_clock &&
                     m0.player_id == m1.player_id && m0.event_id == m1.event_id && m0.moment_in_event < m1.moment_in_event));
     });
-    clean_moment_rows(moments, cleaned_moments);
+    clean_moment_rows(moments, cleaned_moments, game_id_to_num);
     std::cout << "writing output cleaned moments file: " << cleaned_moments_file_path << std::endl;
     cleaned_moments_file.open(cleaned_moments_file_path, std::ios::out);
     cleaned_moments_file << "team_id_ball, player_id_ball, x_loc_ball, y_loc_ball, radius_ball";
@@ -79,15 +82,16 @@ int main(int argc, char * argv[]) {
                 (s0.game_id == s1.game_id && s0.period == s1.period && s0.shot_time.to_double() > s1.shot_time.to_double()) ||
                 (s0.game_id == s1.game_id && s0.period == s1.period && s0.shot_time == s1.shot_time && s0.game_event_id < s1.game_event_id));
     });
+    clean_shot_rows(shots, cleaned_shots, game_id_to_num);
 
     std::cout << "writing output cleaned shots file: " << cleaned_shots_file_path << std::endl;
     cleaned_shots_file.open(cleaned_shots_file_path, std::ios::out);
-    cleaned_shots_file << "action_type, event_time, event_type, game_date, game_event_id, game_id, grid_type, htm,"
+    cleaned_shots_file << "action_type, event_time, event_type, game_date, game_event_id, game_id, game_num, grid_type, htm,"
                        << " loc_x, loc_y, minutes_remaining, period, player_id, player_name, quarter, seconds_remaining,"
                        << " shot_attempted_flag, shot_distance, shot_made_flag, shot_time, shot_type, shot_zone_area,"
                        << " shot_zone_basic, shot_zone_range, team_id, team_name, team_vtm" << std::endl;
-    for (const auto & s : shots) {
-        print_shot_csv(cleaned_shots_file, s);
+    for (const auto & s : cleaned_shots) {
+        print_cleaned_shot_csv(cleaned_shots_file, s);
         cleaned_shots_file << std::endl;
     }
     cleaned_shots_file.close();

@@ -174,7 +174,7 @@ void load_cleaned_moment_row(string& row, cleaned_moment& m) {
 }
 
 /* load a CSV file of cleaned_moments with a header row */
-void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst) {
+void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst, std::map<long int, int>& game_id_to_num) {
     int player_in_moment = 0;
     long int last_player_id = -2;
     int game_num = 0;
@@ -213,6 +213,7 @@ void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst) {
                 cur_game_id = cur_moment.game_id;
             }
             cur_moment.game_id = cur_game_id;
+            game_id_to_num[m.game_id] = cur_game_id;
         }
         else {
             cleaned_moment& cur_moment = dst.at(dst.size() - 1);
@@ -384,4 +385,99 @@ void load_shot_row(string& row, shot& sh) {
     sh.team_id = std::round(stod_with_default(col));
     std::getline(ss, sh.team_name, ',');
     std::getline(ss, sh.team_vtm, ',');
+}
+
+
+void load_cleaned_shot_rows_vec(istream& rows, vector<cleaned_shot>& shs) {
+    string row;
+    std::getline(rows, row);
+    while(std::getline(rows, row)) {
+        cleaned_shot sh;
+        load_cleaned_shot_row(row, sh);
+        shs.push_back(sh);
+    }
+}
+
+void load_cleaned_shot_row(string& row, cleaned_shot& sh) {
+    string col;
+    stringstream ss(row);
+
+    std::getline(ss, sh.action_type, ',');
+    std::getline(ss, col, ',');
+    sh.event_time = stoi_with_default(col);
+    std::getline(ss, sh.event_type, ',');
+    std::getline(ss, sh.game_date, ',');
+    std::getline(ss, col, ',');
+    sh.game_event_id = stol_with_default(col);
+    sh.game_num = stoi_with_default(col);
+    std::getline(ss, col, ',');
+    sh.game_id = stol_with_default(col);
+    std::getline(ss, sh.grid_type, ',');
+    std::getline(ss, sh.htm, ',');
+    std::getline(ss, col, ',');
+    sh.loc_x = stod_with_default(col);
+    std::getline(ss, col, ',');
+    sh.loc_y = stod_with_default(col);
+    std::getline(ss, col, ',');
+    sh.minutes_remaining = stoi_with_default(col);
+    std::getline(ss, col, ',');
+    sh.period = stoi_with_default(col);
+    std::getline(ss, col, ',');
+    sh.player_id = stoi_with_default(col);
+    std::getline(ss, sh.player_name, ',');
+    std::getline(ss, col, ',');
+    sh.quarter = stod_with_default(col);
+    std::getline(ss, col, ',');
+    sh.seconds_remaining = stoi_with_default(col);
+    std::getline(ss, col, ',');
+    sh.shot_attempted_flag = stoi_with_default(col);
+    std::getline(ss, col, ',');
+    sh.shot_distance = stoi_with_default(col);
+    std::getline(ss, col, ',');
+    sh.shot_made_flag = stoi_with_default(col);
+    std::getline(ss, col, ',');
+    sh.shot_time = clock_fixed_point(stod_with_default(col));
+    std::getline(ss, sh.shot_type, ',');
+    std::getline(ss, sh.shot_zone_area, ',');
+    std::getline(ss, sh.shot_zone_basic, ',');
+    std::getline(ss, sh.shot_zone_range, ',');
+    std::getline(ss, col, ',');
+    sh.team_id = std::round(stod_with_default(col));
+    std::getline(ss, sh.team_name, ',');
+    std::getline(ss, sh.team_vtm, ',');
+}
+
+void clean_shot_rows(vector<shot>& src, vector<cleaned_shot>& dst, std::map<long int, int>& game_id_to_num) {
+    for (const auto & s : src) {
+        cleaned_shot cs;
+        cs.action_type = s.action_type;
+        cs.event_time = s.event_time;
+        cs.event_type = s.event_type;
+        cs.game_date = s.game_date;
+        cs.game_event_id = s.game_event_id;
+        cs.game_id = s.game_id;
+        cs.game_num = game_id_to_num.at(s.game_id);
+        cs.grid_type = s.grid_type;
+        cs.htm = s.htm;
+        cs.loc_x = s.loc_x;
+        cs.loc_y = s.loc_y;
+        cs.minutes_remaining = s.minutes_remaining;
+        cs.period = s.period;
+        cs.player_id = s.player_id;
+        cs.player_name = s.player_name;
+        cs.quarter = std::round(s.quarter);
+        cs.seconds_remaining = s.seconds_remaining;
+        cs.shot_attempted_flag = s.shot_attempted_flag;
+        cs.shot_distance = s.shot_distance;
+        cs.shot_made_flag = s.shot_made_flag;
+        cs.shot_time = s.shot_time;
+        cs.shot_type = s.shot_type;
+        cs.shot_zone_area = s.shot_zone_area;
+        cs.shot_zone_basic = s.shot_zone_basic;
+        cs.shot_zone_range = s.shot_zone_range;
+        cs.team_id = s.team_id;
+        cs.team_name = s.team_name;
+        cs.team_vtm = s.team_vtm;
+        dst.push_back(cs);
+    }
 }
