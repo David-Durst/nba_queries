@@ -37,7 +37,7 @@ int main(int argc, char * argv[]) {
     vector<cleaned_shot> shots;
     shot_col_store * shots_col;
     court_bins * bins;
-    vector<shot_and_player_data> shots_and_players;
+    vector<shot_and_player_data> shots_and_players_seq, shots_and_players_par;
     list<shot_and_player_data> shots_and_players_list;
     vector<trajectory_data> trajectories;
     list<trajectory_data> trajectories_list;
@@ -79,16 +79,16 @@ int main(int argc, char * argv[]) {
         shots_and_players_list.clear();
         find_nearest_defender_at_each_shot_clean(moments_col, shots_col, &shots_and_players_list, 50, false);
     });
-    shots_and_players_list.to_vector(shots_and_players);
+    shots_and_players_list.to_vector(shots_and_players_seq);
     printf("compute time: %gms\n", min_time * 1e3);
-    std::cout << "shot_and_players size: " << shots_and_players.size() << std::endl;
-    vector<shot_distance_bucket> buckets = bucket_shots_by_distance(shots_and_players);
+    std::cout << "shot_and_players size: " << shots_and_players_seq.size() << std::endl;
+    vector<shot_distance_bucket> buckets = bucket_shots_by_distance(shots_and_players_seq);
     std::cout << "distance,num_shot_made,num_shot_attempt,percent_made" << std::endl;
     for (const auto & b : buckets) {
         print_shot_distance_bucket_csv(std::cout, b);
         std::cout << std::endl;
     }
-    std::cout << "first nearest at shot: " << shots_and_players.at(0) << std::endl;
+    std::cout << "first nearest at shot: " << shots_and_players_seq.at(0) << std::endl;
     res.query1_colstore_sequential_time = min_time;
 
     std::cout << "running query 1 cleaned, parallel" << std::endl;
@@ -96,16 +96,16 @@ int main(int argc, char * argv[]) {
         shots_and_players_list.clear();
         find_nearest_defender_at_each_shot_clean(moments_col, shots_col, &shots_and_players_list, 50, true);
     });
-    shots_and_players_list.to_vector(shots_and_players);
+    shots_and_players_list.to_vector(shots_and_players_par);
     printf("compute time: %gms\n", min_time * 1e3);
-    std::cout << "shot_and_players size: " << shots_and_players.size() << std::endl;
-    buckets = bucket_shots_by_distance(shots_and_players);
+    std::cout << "shot_and_players size: " << shots_and_players_par.size() << std::endl;
+    buckets = bucket_shots_by_distance(shots_and_players_par);
     std::cout << "distance,num_shot_made,num_shot_attempt,percent_made" << std::endl;
     for (const auto & b : buckets) {
         print_shot_distance_bucket_csv(std::cout, b);
         std::cout << std::endl;
     }
-    std::cout << "first nearest at shot: " << shots_and_players.at(0) << std::endl;
+    std::cout << "first nearest at shot: " << shots_and_players_par.at(0) << std::endl;
     res.query1_colstore_parallel_time = min_time;
 
     std::cout << "running query 3 cleaned with colstore, sequential" << std::endl;

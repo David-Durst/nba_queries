@@ -37,6 +37,7 @@ void find_nearest_defender_at_each_shot_clean(moment_col_store * moments,
         }
         // skip this shot if shooter not in the game at the time, which would be bad data
         if (!found_shooter) {
+            tmp[shot_index].shot_valid = false;
             continue;
         }
 
@@ -65,6 +66,7 @@ void find_nearest_defender_at_each_shot_clean(moment_col_store * moments,
         }
         // after all time steps for this shot, append the nearest defender
         tmp[shot_index] = {
+            true,
             shooter_team_id,
             shooter_player_id,
             shooter_x_loc,

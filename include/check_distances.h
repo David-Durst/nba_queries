@@ -6,6 +6,7 @@
 using std::vector;
 
 struct shot_and_player_data {
+    bool shot_valid;
     long int offense_team_id;
     int offense_player_id;
     double offense_x_loc;

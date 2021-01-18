@@ -250,10 +250,15 @@ vector<shot_distance_bucket> bucket_shots_by_distance(vector<shot_and_player_dat
     for (int i = 0; i < max_distance; i++) {
         buckets.push_back(shot_distance_bucket{i, 0, 0});
     }
+    buckets.push_back(shot_distance_bucket{-1, 0, 0});
 
 
     // fill out the buckets
     for (const shot_and_player_data & d : shots_and_players) {
+        if (!d.shot_valid) {
+            buckets.at(buckets.size()-1).num_shot_attempts++;
+            continue;
+        }
         // if max_distance, put in bucket max_distance - 1
         int cur_distance = std::min((int) floor(d.defender_distance), max_distance-1);
         shot_distance_bucket & b = buckets.at(cur_distance);
