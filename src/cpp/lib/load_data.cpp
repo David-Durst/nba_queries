@@ -252,6 +252,11 @@ void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst, std::ma
             }
         }
     }
+    // remove last element if no time is on the clock to simplify indexing logic
+    // need to repeat this check since last time step is never checked
+    if (!dst.empty() && dst.at(dst.size() - 1).game_clock == clock_fixed_point(0.0)) {
+        dst.pop_back();
+    }
 }
 
 /* load a CSV file of events with a header row */

@@ -53,6 +53,7 @@ int main(int argc, char * argv[]) {
                     m0.player_id == m1.player_id && m0.event_id == m1.event_id && m0.moment_in_event < m1.moment_in_event));
     });
     clean_moment_rows(moments, cleaned_moments, game_id_to_num);
+    std::cout << "cleaned moments size: " << cleaned_moments.size() << std::endl;
     std::cout << "writing output cleaned moments file: " << cleaned_moments_file_path << std::endl;
     cleaned_moments_file.open(cleaned_moments_file_path, std::ios::out);
     cleaned_moments_file << "team_id_ball, player_id_ball, x_loc_ball, y_loc_ball, radius_ball";
