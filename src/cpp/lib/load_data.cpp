@@ -212,8 +212,8 @@ void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst, std::ma
                 game_num++;
                 cur_game_id = cur_moment.game_id;
             }
-            cur_moment.game_id = cur_game_id;
-            game_id_to_num[m.game_id] = cur_game_id;
+            cur_moment.game_num = game_num;
+            game_id_to_num[m.game_id] = game_num;
         }
         else {
             cleaned_moment& cur_moment = dst.at(dst.size() - 1);
@@ -409,9 +409,10 @@ void load_cleaned_shot_row(string& row, cleaned_shot& sh) {
     std::getline(ss, sh.game_date, ',');
     std::getline(ss, col, ',');
     sh.game_event_id = stol_with_default(col);
-    sh.game_num = stoi_with_default(col);
     std::getline(ss, col, ',');
     sh.game_id = stol_with_default(col);
+    std::getline(ss, col, ',');
+    sh.game_num = stoi_with_default(col);
     std::getline(ss, sh.grid_type, ',');
     std::getline(ss, sh.htm, ',');
     std::getline(ss, col, ',');
@@ -449,6 +450,9 @@ void load_cleaned_shot_row(string& row, cleaned_shot& sh) {
 
 void clean_shot_rows(vector<shot>& src, vector<cleaned_shot>& dst, std::map<long int, int>& game_id_to_num) {
     for (const auto & s : src) {
+        if (game_id_to_num.count(s.game_id) == 0) {
+            continue;
+        }
         cleaned_shot cs;
         cs.action_type = s.action_type;
         cs.event_time = s.event_time;

@@ -70,13 +70,6 @@ int main(int argc, char * argv[]) {
     load_cleaned_shot_rows_vec(shots_file, shots);
     shots_file.close();
     std::cout << "shots size: " << shots.size() << std::endl;
-    // filter shots, sort by quarter than gametime
-    long int target_game_id = moments.at(0).game_id;
-    std::cout << "filtering shots: " << std::endl;
-    shots.erase(std::remove_if(shots.begin(), shots.end(), [target_game_id](shot s){
-        return s.game_id != target_game_id;
-    }), shots.end());
-    std::cout << "new shots size: " << shots.size() << std::endl;
     shots_col = new shot_col_store(shots);
 
     res.query1_rowstore_sequential_time = std::numeric_limits<double>::quiet_NaN();

@@ -33,6 +33,7 @@ moment_col_store::moment_col_store(vector<cleaned_moment> &moments) {
     shot_clock = new double[moments.size()];
     quarter = new short int[moments.size()];
     game_id = new long int[moments.size()];
+    game_num = new int[moments.size()];
     events = new vector<event_moment_data>[moments.size()];
     vector<std::reference_wrapper<player_data>> data;
     for (int i = 0; i < moments.size(); i++) {
