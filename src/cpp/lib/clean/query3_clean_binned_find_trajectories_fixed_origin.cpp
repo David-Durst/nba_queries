@@ -108,6 +108,9 @@ court_bins::court_bins(moment_col_store * moments) {
         for (int64_t i = 0; i < moments->size; i++) {
             int64_t player_num = players_indices_in_bins.at(moments->player_id[player][i]);
             int64_t bin_index = get_bin_index(moments->x_loc[player][i], moments->y_loc[player][i]);
+            if (bin_index >= NUM_BINS) {
+                std::cout << "problem with " << moments->x_loc[player][i] << "," << moments->y_loc[player][i] << std::endl;
+            }
             bin_data_in_lists.at(players_indices_in_bins.at(moments->player_id[player][i]))
                 .at(get_bin_index(moments->x_loc[player][i], moments->y_loc[player][i])).push_back({i, player});
         }
