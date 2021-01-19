@@ -81,6 +81,7 @@ int main(int argc, char * argv[]) {
     }
     cleaned_moments_file.close();
 
+    std::cout << "writing output extra game data file: " << extra_data_file_path << std::endl;
     extra_data_file.open(extra_data_file_path, std::ios::out);
     extra_data_file << "game_id, game_num, num_ot_periods" << std::endl;
     for (const auto & e : extra_data) {

@@ -1,6 +1,7 @@
 #include "clean_queries.h"
 #include <set>
 #include <utility>
+#include <iostream>
 
 void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, court_bins * moment_bins,
                                                  list<trajectory_data> * trajectories, coordinate_range origin,
@@ -90,11 +91,19 @@ court_bins::court_bins(moment_col_store * moments) {
 
     // now create the bins with a data structure that is efficient insert, but inefficient lookup (lists)
     // this will store the locations of all player in each bin in lists before inserting into array
-    std::list<player_pointer> bin_data_in_lists[players_indices_in_bins.size()][NUM_BINS];
+    std::vector<std::vector<std::list<player_pointer>>> bin_data_in_lists;
+    for (int64_t i = 0; i < players_indices_in_bins.size(); i++) {
+        bin_data_in_lists.push_back(std::vector<std::list<player_pointer>>());
+        for (int64_t j = 0; j < NUM_BINS; j++) {
+            bin_data_in_lists[i].push_back(std::list<player_pointer>());
+        }
+    }
 
     int64_t total_sum = 0;
     for (int player = 0; player < NUM_PLAYERS_AND_BALL; player++) {
         for (int64_t i = 0; i < moments->size; i++) {
+            int64_t player_num = players_indices_in_bins.at(moments->player_id[player][i]);
+            int64_t bin_index = get_bin_index(moments->x_loc[player][i], moments->y_loc[player][i]);
             bin_data_in_lists[players_indices_in_bins.at(moments->player_id[player][i])]
                 [get_bin_index(moments->x_loc[player][i], moments->y_loc[player][i])].push_back({i, player});
             total_sum++;

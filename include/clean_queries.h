@@ -62,13 +62,13 @@ public:
             x = 0;
         }
         if (x > MAX_X) {
-            x = MAX_X;
+            x = MAX_X-0.001;
         }
         if (y < 0) {
             y = 0;
         }
         if (y > MAX_Y) {
-            y = MAX_Y;
+            y = MAX_Y-0.001;
         }
         return floor(y)*MAX_X + floor(x);
     }
