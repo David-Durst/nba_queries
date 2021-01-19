@@ -34,6 +34,7 @@ int main(int argc, char * argv[]) {
     std::fstream moments_file, cleaned_moments_file, shots_file, cleaned_shots_file, extra_data_file;
     // load the moments
     std::cout << "moment size: " << sizeof(moment) << std::endl;
+    std::cout << "cleaned_moment size: " << sizeof(moment) << std::endl;
     std::vector<string> moments_files;
     for (int i = 5; i < argc; i++) {
         moments_files.push_back(argv[i]);
@@ -46,15 +47,16 @@ int main(int argc, char * argv[]) {
         load_moment_rows(moments_file, moments);
         std::cout << "sorting moments: " << std::endl;
         std::sort(moments.begin(), moments.end(), [](moment m0, moment m1) {
-            return (m0.game_id < m1.game_id || (m0.game_id == m1.game_id && m0.quarter < m1.quarter) ||
-                    (m0.game_id == m1.game_id && m0.quarter == m1.quarter && m0.game_clock > m1.game_clock) ||
-                    (m0.game_id == m1.game_id && m0.quarter == m1.quarter && m0.game_clock == m1.game_clock &&
-                     m0.player_id < m1.player_id) ||
-                    (m0.game_id == m1.game_id && m0.quarter == m1.quarter && m0.game_clock == m1.game_clock &&
-                     m0.player_id == m1.player_id && m0.event_id < m1.event_id) ||
-                    (m0.game_id == m1.game_id && m0.quarter == m1.quarter && m0.game_clock == m1.game_clock &&
-                     m0.player_id == m1.player_id && m0.event_id == m1.event_id && m0.moment_in_event < m1.moment_in_event));
+            return (m0.quarter < m1.quarter || (m0.quarter == m1.quarter && m0.game_clock > m1.game_clock) ||
+                    (m0.quarter == m1.quarter && m0.game_clock == m1.game_clock && m0.player_id < m1.player_id) ||
+                    (m0.quarter == m1.quarter && m0.game_clock == m1.game_clock && m0.player_id == m1.player_id &&
+                        m0.event_id < m1.event_id) ||
+                    (m0.quarter == m1.quarter && m0.game_clock == m1.game_clock && m0.player_id == m1.player_id &&
+                        m0.event_id == m1.event_id && m0.moment_in_event < m1.moment_in_event) ||
+                    (m0.quarter == m1.quarter && m0.game_clock == m1.game_clock && m0.player_id == m1.player_id &&
+                        m0.event_id == m1.event_id && m0.moment_in_event == m1.moment_in_event && m0.internal_id < m1.internal_id));
         });
+        std::cout << "cleaning moments: " << std::endl;
         clean_moment_rows(moments, cleaned_moments, game_id_to_num, extra_data);
         moments_file.close();
     }

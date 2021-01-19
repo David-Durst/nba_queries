@@ -42,16 +42,16 @@ double stod_with_default(string& s) {
 void load_moment_rows(istream& rows, vector<moment>& ms) {
     string row;
     std::getline(rows, row);
-    int row_num = 0;
+    int64_t row_num = 0;
     while(std::getline(rows, row)) {
         moment m;
-        load_moment_row(row, m);
+        load_moment_row(row, m, row_num);
         ms.push_back(m);
         row_num++;
     }
 }
 
-void load_moment_row(string& row, moment& m) {
+void load_moment_row(string& row, moment& m, int64_t row_num) {
     string col;
     stringstream ss(row);
 
@@ -77,6 +77,7 @@ void load_moment_row(string& row, moment& m) {
     m.event_id = stol_with_default(col);
     std::getline(ss, col, ',');
     m.moment_in_event = stoi_with_default(col);
+    m.internal_id = row_num;
 }
 
 /* load a CSV file of cleaned_moments with a header row */
@@ -218,11 +219,16 @@ void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst, std::ma
         }
         if (dst.empty() ||
             dst.at(dst.size() - 1).game_clock != clock_fixed_point(m.game_clock)) {
+            // drop moments before quarter starts
+            if ((m.quarter < 5 && clock_fixed_point(m.game_clock).gt(clock_fixed_point(720.0))) ||
+                    (m.quarter >= 5 && clock_fixed_point(m.game_clock).gt(clock_fixed_point(300.0)))) {
+                continue;
+            }
             // handle quarters that don't end with 0.04
             if (!dst.empty() && dst.at(dst.size() - 1).quarter != m.quarter) {
                 fill_repeated_moments(dst, clock_fixed_point(0.0));
             }
-            // handle quarters that don't start with 720.0
+            // handle quarters that start after 720 or 300 (regulation or ot)
             // only need to insert 1 here, as skips after first insertion will be handled by following for loop
             if ((dst.empty() || dst.at(dst.size() - 1).quarter != m.quarter) &&
                     ((m.quarter < 5 && clock_fixed_point(m.game_clock) != clock_fixed_point(720.0)) ||

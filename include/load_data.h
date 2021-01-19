@@ -9,7 +9,7 @@ using std::istream;
 using std::vector;
 
 void load_moment_rows(istream& rows, vector<moment>& ms);
-void load_moment_row(string& row, moment& m);
+void load_moment_row(string& row, moment& m, int64_t row_num);
 size_t load_cleaned_moment_rows(string filepath, cleaned_moment * ms[]);
 void load_cleaned_moment_rows_vec(istream& rows, vector<cleaned_moment>& ms);
 void load_cleaned_moment_row(string& row, cleaned_moment& m);

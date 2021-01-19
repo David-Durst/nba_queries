@@ -20,6 +20,7 @@ struct moment {
     long int game_id;
     long int event_id;
     int moment_in_event;
+    int64_t internal_id;
 } ;
 
 bool operator==(moment const & lhs, moment const & rhs);
@@ -83,6 +84,10 @@ public:
 
     bool gt(double f) const {
         return this->to_double() > f;
+    }
+
+    bool gt(clock_fixed_point c) const {
+        return this->seconds > c.seconds || (this->seconds == c.seconds && this->twenty_fifths_of_second > c.twenty_fifths_of_second);
     }
 
     inline int64_t time_to_index(vector<extra_game_data>& extra_data, int game_num, int quarter) {
