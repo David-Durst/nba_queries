@@ -74,6 +74,7 @@ court_bins::court_bins(moment_col_store * moments) {
             player_ids_set.insert(moments->player_id[player_in_game][moment_index]);
         }
     }
+    std::cout << "creating player_id map" << std::endl;
     // for each player, track the id and map it to the bin index
     player_ids = new long int[player_ids_set.size()];
     int bin_index = 0;
@@ -89,6 +90,8 @@ court_bins::court_bins(moment_col_store * moments) {
     num_player_moments = moments->size * NUM_PLAYERS_AND_BALL;
     player_moment_bins = new player_pointer[num_player_moments];
 
+    std::cout << "creating lists" << std::endl;
+
     // now create the bins with a data structure that is efficient insert, but inefficient lookup (lists)
     // this will store the locations of all player in each bin in lists before inserting into array
     std::vector<std::vector<std::list<player_pointer>>> bin_data_in_lists;
@@ -99,14 +102,14 @@ court_bins::court_bins(moment_col_store * moments) {
         }
     }
 
-    int64_t total_sum = 0;
+    std::cout << "moving bin lists to arrays" << std::endl;
+
     for (int player = 0; player < NUM_PLAYERS_AND_BALL; player++) {
         for (int64_t i = 0; i < moments->size; i++) {
             int64_t player_num = players_indices_in_bins.at(moments->player_id[player][i]);
             int64_t bin_index = get_bin_index(moments->x_loc[player][i], moments->y_loc[player][i]);
-            bin_data_in_lists[players_indices_in_bins.at(moments->player_id[player][i])]
-                [get_bin_index(moments->x_loc[player][i], moments->y_loc[player][i])].push_back({i, player});
-            total_sum++;
+            bin_data_in_lists.at(players_indices_in_bins.at(moments->player_id[player][i]))
+                .at(get_bin_index(moments->x_loc[player][i], moments->y_loc[player][i])).push_back({i, player});
         }
     }
 
