@@ -17,7 +17,7 @@ string one_moment = "1610612738,101161,45.50782,26.43745,0.0,720.0,24.0,1,002150
 
 TEST_CASE( "one row of load_moment_row", "[load_moment_row, loading]" ) {
     moment m;
-    load_moment_row(one_moment, m);
+    load_moment_row(one_moment, m, 0);
     SECTION( "team_id" ) {
         REQUIRE( m.team_id == 1610612738);
     }
