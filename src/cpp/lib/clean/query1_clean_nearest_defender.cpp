@@ -9,11 +9,13 @@
 void find_nearest_defender_at_each_shot_clean(moment_col_store * moments,
                                               shot_col_store * shots,
                                               list<shot_and_player_data> * shots_and_players,
+                                              vector<extra_game_data>& extra_data,
                                               int time_delta_ticks, bool parallel) {
     shot_and_player_data * tmp = new shot_and_player_data[shots->size];
 #pragma omp parallel for schedule(dynamic, 20) if(parallel)
     for (int64_t shot_index = 0; shot_index < shots->size; shot_index++) {
-        int64_t shooter_moment_index = shots->shot_time[shot_index].time_to_index(shots->game_num[shot_index], shots->period[shot_index]);
+        int64_t shooter_moment_index = shots->shot_time[shot_index].time_to_index(extra_data, shots->game_num[shot_index],
+                                                                                  shots->period[shot_index]);
 
         // variables for tracking nearest defender to this shot
         double nearest_defender_distance = 1000000.0;

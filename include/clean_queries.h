@@ -18,6 +18,7 @@
 void find_nearest_defender_at_each_shot_clean(moment_col_store * moments,
                                               shot_col_store * shots,
                                               list<shot_and_player_data> * shots_and_players,
+                                              vector<extra_game_data>& extra_data,
                                               int time_delta_ticks, bool parallel);
 
 // query 3

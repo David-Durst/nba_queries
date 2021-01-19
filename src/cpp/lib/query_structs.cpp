@@ -196,7 +196,7 @@ bool operator==(shot const &lhs, shot const &rhs) {
 }
 
 std::ostream &operator<<(std::ostream &os, const shot &value) {
-    os << ", action_type: " << value.action_type
+    os << "action_type: " << value.action_type
        << ", event_time: " << value.event_time
        << ", event_type: " << value.event_type
        << ", game_date: " << value.game_date
@@ -296,7 +296,7 @@ bool operator==(cleaned_shot const &lhs, cleaned_shot const &rhs) {
 }
 
 std::ostream &operator<<(std::ostream &os, const cleaned_shot &value) {
-    os << ", action_type: " << value.action_type
+    os << "action_type: " << value.action_type
        << ", event_time: " << value.event_time
        << ", event_type: " << value.event_type
        << ", game_date: " << value.game_date
@@ -355,4 +355,24 @@ void print_cleaned_shot_csv(std::ostream& os, const cleaned_shot& value) {
        << "," << value.team_id
        << "," << value.team_name
        << "," << value.team_vtm;
+}
+
+bool operator==(extra_game_data const & lhs, extra_game_data const & rhs) {
+    return
+            lhs.game_id == rhs.game_id &&
+            lhs.game_num == rhs.game_num &&
+            lhs.num_ot_periods == rhs.num_ot_periods;
+}
+
+std::ostream& operator<<(std::ostream& os, extra_game_data const& value) {
+    os << "game_id: " << value.game_id
+       << ", game_num: " << value.game_num
+       << ", num_ot_periods: " << value.num_ot_periods;
+   return os;
+}
+
+void print_extra_game_data_csv(std::ostream& os, const extra_game_data& value) {
+    os << value.game_id
+       << "," << value.game_num
+       << "," << value.num_ot_periods;
 }

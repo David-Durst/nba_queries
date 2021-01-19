@@ -41,17 +41,20 @@ int main(int argc, char * argv[]) {
     list<shot_and_player_data> shots_and_players_list;
     vector<trajectory_data> trajectories;
     list<trajectory_data> trajectories_list;
+    vector<extra_game_data> extra_data;
     results res;
-    if (argc != 5) {
+    if (argc != 6) {
         std::cout << "please call this code with 4 arguments: " << std::endl;
         std::cout << "1. path/to/cleaned_moments_file.csv " << std::endl;
         std::cout << "2. path/to/shots_file.csv " << std::endl;
         std::cout << "3. debug/measure " << std::endl;
-        std::cout << "4. path/to/output/timing/file.csv " << std::endl;
+        std::cout << "4. path/to/extra_data_file.csv " << std::endl;
+        std::cout << "5. path/to/output/timing/file.csv " << std::endl;
     }
-    string moments_file_path = argv[1], shots_file_path = argv[2], run_type = argv[3], timing_file_path = argv[4];
+    string moments_file_path = argv[1], shots_file_path = argv[2], run_type = argv[3], extra_data_file_path = argv[4],
+        timing_file_path = argv[5];
     int num_samples_and_iterations = (run_type.compare("debug") == 0) ? 1 : 10;
-    std::fstream moments_file, shots_file, timing_file;
+    std::fstream moments_file, shots_file, timing_file, extra_data_file;
 
     // load the cleaned moments
     std::cout << "loading cleaned moments file: " << moments_file_path << std::endl;
@@ -72,12 +75,20 @@ int main(int argc, char * argv[]) {
     std::cout << "shots size: " << shots.size() << std::endl;
     shots_col = new shot_col_store(shots);
 
+    // load the extra game data
+    std::cout << "loading extra game data file: " << extra_data_file_path << std::endl;
+    extra_data_file.open(extra_data_file_path);
+    load_extra_game_data_rows(extra_data_file, extra_data);
+    extra_data_file.close();
+    std::cout << "extra game data size: " << extra_data.size() << std::endl;
+
+
     res.query1_rowstore_sequential_time = std::numeric_limits<double>::quiet_NaN();
 
     std::cout << "running query 1 cleaned, sequential" << std::endl;
     double min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         shots_and_players_list.clear();
-        find_nearest_defender_at_each_shot_clean(moments_col, shots_col, &shots_and_players_list, 50, false);
+        find_nearest_defender_at_each_shot_clean(moments_col, shots_col, &shots_and_players_list, extra_data, 50, false);
     });
     shots_and_players_list.to_vector(shots_and_players_seq);
     printf("compute time: %gms\n", min_time * 1e3);
@@ -94,7 +105,7 @@ int main(int argc, char * argv[]) {
     std::cout << "running query 1 cleaned, parallel" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         shots_and_players_list.clear();
-        find_nearest_defender_at_each_shot_clean(moments_col, shots_col, &shots_and_players_list, 50, true);
+        find_nearest_defender_at_each_shot_clean(moments_col, shots_col, &shots_and_players_list, extra_data, 50, true);
     });
     shots_and_players_list.to_vector(shots_and_players_par);
     printf("compute time: %gms\n", min_time * 1e3);

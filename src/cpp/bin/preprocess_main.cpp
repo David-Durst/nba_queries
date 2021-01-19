@@ -21,16 +21,18 @@ int main(int argc, char * argv[]) {
     vector<shot> shots;
     vector<cleaned_shot> cleaned_shots;
     std::map<long int, int> game_id_to_num;
-    if (argc < 5) {
-        std::cout << "please call this code at least 4 arguments: " << std::endl;
+    vector<extra_game_data> extra_data;
+    if (argc < 6) {
+        std::cout << "please call this code at least 5 arguments: " << std::endl;
         std::cout << "1. path/to/cleaned_moments_file.csv " << std::endl;
         std::cout << "2. path/to/shots_file.csv " << std::endl;
         std::cout << "3. path/to/cleaned_shots_file.csv " << std::endl;
-        std::cout << "4.  path/to/moments_file1.csv optional/path/to/moments_file2.csv,... " << std::endl;
+        std::cout << "4. path/to/extra_data_file.csv " << std::endl;
+        std::cout << "5.  path/to/moments_file1.csv optional/path/to/moments_file2.csv,... " << std::endl;
     }
     string cleaned_moments_file_path = argv[1], shots_file_path = argv[2], cleaned_shots_file_path = argv[3],
-        cur_moments_file;
-    std::fstream moments_file, cleaned_moments_file, shots_file, cleaned_shots_file;
+        extra_data_file_path = argv[4], cur_moments_file;
+    std::fstream moments_file, cleaned_moments_file, shots_file, cleaned_shots_file, extra_data_file;
     // load the moments
     std::cout << "moment size: " << sizeof(moment) << std::endl;
     for (int i = 4; i < argc; i++) {
@@ -52,8 +54,16 @@ int main(int argc, char * argv[]) {
                 (m0.game_id == m1.game_id && m0.quarter == m1.quarter && m0.game_clock == m1.game_clock &&
                     m0.player_id == m1.player_id && m0.event_id == m1.event_id && m0.moment_in_event < m1.moment_in_event));
     });
-    clean_moment_rows(moments, cleaned_moments, game_id_to_num);
+    clean_moment_rows(moments, cleaned_moments, game_id_to_num, extra_data);
     std::cout << "cleaned moments size: " << cleaned_moments.size() << std::endl;
+    for (int64_t i = 0; i < cleaned_moments.size(); i++) {
+        clock_fixed_point& c = cleaned_moments.at(i).game_clock;
+        int64_t predicted_index = c.time_to_index(extra_data, cleaned_moments.at(i).game_num, cleaned_moments.at(i).quarter);
+        if (i != predicted_index) {
+            std::cout << "predicted index " << predicted_index << " doesn't match actual index " << i << std::endl;
+            return 1;
+        }
+    }
     std::cout << "writing output cleaned moments file: " << cleaned_moments_file_path << std::endl;
     cleaned_moments_file.open(cleaned_moments_file_path, std::ios::out);
     cleaned_moments_file << "team_id_ball, player_id_ball, x_loc_ball, y_loc_ball, radius_ball";
@@ -70,15 +80,14 @@ int main(int argc, char * argv[]) {
         cleaned_moments_file << std::endl;
     }
     cleaned_moments_file.close();
-    for (int64_t i = 0; i < cleaned_moments.size(); i++) {
-        clock_fixed_point& c = cleaned_moments.at(i).game_clock;
-        int64_t predicted_index = c.time_to_index(cleaned_moments.at(i).game_num, cleaned_moments.at(i).quarter);
-        if (i != predicted_index) {
-            std::cout << "predicted index " << predicted_index << " doesn't match actual index " << i << std::endl;
-            return 1;
-        }
-    }
 
+    extra_data_file.open(extra_data_file_path, std::ios::out);
+    extra_data_file << "game_id, game_num, num_ot_periods" << std::endl;
+    for (const auto & e : extra_data) {
+        print_extra_game_data_csv(extra_data_file, e);
+        extra_data_file << std::endl;
+    }
+    extra_data_file.close();
 
     std::cout << "loading shots file: " << shots_file_path << std::endl;
     shots_file.open(shots_file_path);

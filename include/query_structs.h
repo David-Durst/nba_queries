@@ -47,6 +47,16 @@ bool operator==(event_moment_data const & lhs, event_moment_data const & rhs);
 std::ostream& operator<<(std::ostream& os, event_moment_data const& value);
 void print_event_moment_data_csv(std::ostream& os, const event_moment_data& value);
 
+struct extra_game_data {
+    long int game_id;
+    int game_num;
+    int num_ot_periods;
+};
+
+bool operator==(extra_game_data const & lhs, extra_game_data const & rhs);
+std::ostream& operator<<(std::ostream& os, extra_game_data const& value);
+void print_extra_game_data_csv(std::ostream& os, const extra_game_data& value);
+
 class clock_fixed_point {
 public:
     long int seconds;
@@ -75,11 +85,17 @@ public:
         return this->to_double() > f;
     }
 
-    inline int64_t time_to_index(int game_num, int quarter) {
+    inline int64_t time_to_index(vector<extra_game_data>& extra_data, int game_num, int quarter) {
+        int ot_quarters = 0;
+        for (int i = 0; i < game_num; i++) {
+            ot_quarters += extra_data.at(i).num_ot_periods;
+        }
         // 720 seconds in a quarter
         return
             // time for multiple games
             25 * 720 * 4 * game_num +
+            // time for Ot
+            25 * 300 * ot_quarters +
             // time in game
             (25 * (720 * (quarter - 1) + 720 - seconds) - twenty_fifths_of_second);
     }

@@ -204,7 +204,8 @@ void fill_repeated_moments(vector<cleaned_moment>& dst, clock_fixed_point target
 }
 
 /* load a CSV file of cleaned_moments with a header row */
-void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst, std::map<long int, int>& game_id_to_num) {
+void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst, std::map<long int, int>& game_id_to_num,
+                       vector<extra_game_data>& extra_data) {
     int player_in_moment = 0;
     long int last_player_id = -2;
     int game_num = 0;
@@ -224,7 +225,9 @@ void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst, std::ma
             // handle quarters that don't start with 720.0
             // only need to insert 1 here, as skips after first insertion will be handled by following for loop
             if ((dst.empty() || dst.at(dst.size() - 1).quarter != m.quarter) &&
-                                clock_fixed_point(m.game_clock) != clock_fixed_point(720.0)) {
+                    (m.quarter < 5 && clock_fixed_point(m.game_clock) != clock_fixed_point(720.0)) &&
+                    // ot starts at 5 minutes, not 12
+                    (m.quarter >= 5 && clock_fixed_point(m.game_clock) != clock_fixed_point(300.0))) {
                 dst.push_back(cleaned_moment());
                 cleaned_moment& game_start = dst.at(dst.size() - 1);
                 cleaned_moment_from_moment(m, game_start, cur_game_id, game_num, game_id_to_num);
@@ -241,6 +244,12 @@ void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst, std::ma
             dst.push_back(cleaned_moment());
             cleaned_moment& cur_moment = dst.at(dst.size() - 1);
             cleaned_moment_from_moment(m, cur_moment, cur_game_id, game_num, game_id_to_num);
+
+            // track extra data for this game, like how many ot periods see so far
+            if (extra_data.size() == game_num) {
+                extra_data.push_back({m.game_id, game_num, 0});
+            }
+            extra_data.at(game_num).num_ot_periods = std::max(extra_data.at(game_num).num_ot_periods, m.quarter - 4);
         }
         else {
             cleaned_moment& cur_moment = dst.at(dst.size() - 1);
@@ -261,10 +270,15 @@ void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst, std::ma
         }
     }
     // remove last element if no time is on the clock to simplify indexing logic
-    // need to repeat this check since last time step is never checked
+    // need to repeat this and next check since last time step is never checked
     if (!dst.empty() && dst.at(dst.size() - 1).game_clock == clock_fixed_point(0.0)) {
         dst.pop_back();
     }
+    // fill last quarter of last game
+    if (!dst.empty()) {
+        fill_repeated_moments(dst, clock_fixed_point(0.0));
+    }
+
 }
 
 /* load a CSV file of events with a header row */
@@ -516,4 +530,26 @@ void clean_shot_rows(vector<shot>& src, vector<cleaned_shot>& dst, std::map<long
         cs.team_vtm = s.team_vtm;
         dst.push_back(cs);
     }
+}
+
+void load_extra_game_data_rows(istream& rows, vector<extra_game_data>& shs) {
+    string row;
+    std::getline(rows, row);
+    while(std::getline(rows, row)) {
+        extra_game_data sh;
+        load_extra_game_data_row(row, sh);
+        shs.push_back(sh);
+    }
+}
+
+void load_extra_game_data_row(string& row, extra_game_data& sh) {
+    string col;
+    stringstream ss(row);
+
+    std::getline(ss, col, ',');
+    sh.game_id = stol_with_default(col);
+    std::getline(ss, col, ',');
+    sh.game_num = stoi_with_default(col);
+    std::getline(ss, col, ',');
+    sh.num_ot_periods = stoi_with_default(col);
 }
