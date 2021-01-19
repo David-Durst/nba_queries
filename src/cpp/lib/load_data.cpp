@@ -194,6 +194,15 @@ void cleaned_moment_from_moment(const moment& m, cleaned_moment& cm, long int& c
 
 }
 
+// insert until filled up to (and including) 0.04 before target
+void fill_repeated_moments(vector<cleaned_moment>& dst, clock_fixed_point target) {
+    while (dst.at(dst.size() - 1).game_clock.abs_diff(clock_fixed_point(target)).gt(0.04)) {
+        cleaned_moment copied_moment = dst.at(dst.size() - 1);
+        copied_moment.game_clock = clock_fixed_point(copied_moment.game_clock.to_double() - 0.04);
+        dst.push_back(copied_moment);
+    }
+}
+
 /* load a CSV file of cleaned_moments with a header row */
 void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst, std::map<long int, int>& game_id_to_num) {
     int player_in_moment = 0;
@@ -208,23 +217,22 @@ void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst, std::ma
         }
         if (dst.empty() ||
             dst.at(dst.size() - 1).game_clock != clock_fixed_point(m.game_clock)) {
-            // fix case where skip 0.08 by reinserting last value
-            size_t cur_size = dst.size();
+            // handle quarters that don't end with 0.04
+            if (!dst.empty() && dst.at(dst.size() - 1).quarter != m.quarter) {
+                fill_repeated_moments(dst, clock_fixed_point(0.0));
+            }
             // handle quarters that don't start with 720.0
             // only need to insert 1 here, as skips after first insertion will be handled by following for loop
-            if ((dst.empty() || (dst.at(dst.size() - 1).quarter != m.quarter)) &&
+            if ((dst.empty() || dst.at(dst.size() - 1).quarter != m.quarter) &&
                                 clock_fixed_point(m.game_clock) != clock_fixed_point(720.0)) {
                 dst.push_back(cleaned_moment());
                 cleaned_moment& game_start = dst.at(dst.size() - 1);
                 cleaned_moment_from_moment(m, game_start, cur_game_id, game_num, game_id_to_num);
                 game_start.game_clock = clock_fixed_point(720.0);
             }
-            // handle skips after first time in quarter
-            while (!dst.empty() && dst.at(dst.size() - 1).quarter == m.quarter &&
-                dst.at(dst.size() - 1).game_clock.abs_diff(clock_fixed_point(m.game_clock)).gt(0.04)) {
-                cleaned_moment copied_moment = dst.at(dst.size() - 1);
-                copied_moment.game_clock = clock_fixed_point(copied_moment.game_clock.to_double() - 0.04);
-                dst.push_back(copied_moment);
+            // handle skips after first time in the middle of a quarter
+            if (!dst.empty() && dst.at(dst.size() - 1).quarter == m.quarter) {
+                fill_repeated_moments(dst, m.game_clock);
             }
 
             player_in_moment = 0;
