@@ -225,13 +225,18 @@ void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst, std::ma
             // handle quarters that don't start with 720.0
             // only need to insert 1 here, as skips after first insertion will be handled by following for loop
             if ((dst.empty() || dst.at(dst.size() - 1).quarter != m.quarter) &&
-                    (m.quarter < 5 && clock_fixed_point(m.game_clock) != clock_fixed_point(720.0)) &&
+                    ((m.quarter < 5 && clock_fixed_point(m.game_clock) != clock_fixed_point(720.0)) ||
                     // ot starts at 5 minutes, not 12
-                    (m.quarter >= 5 && clock_fixed_point(m.game_clock) != clock_fixed_point(300.0))) {
+                    (m.quarter >= 5 && clock_fixed_point(m.game_clock) != clock_fixed_point(300.0)))) {
                 dst.push_back(cleaned_moment());
                 cleaned_moment& game_start = dst.at(dst.size() - 1);
                 cleaned_moment_from_moment(m, game_start, cur_game_id, game_num, game_id_to_num);
-                game_start.game_clock = clock_fixed_point(720.0);
+                if (m.quarter < 5) {
+                    game_start.game_clock = clock_fixed_point(720.0);
+                }
+                else {
+                    game_start.game_clock = clock_fixed_point(300.0);
+                }
             }
             // handle skips after first time in the middle of a quarter
             if (!dst.empty() && dst.at(dst.size() - 1).quarter == m.quarter) {

@@ -90,6 +90,9 @@ public:
         for (int i = 0; i < game_num; i++) {
             ot_quarters += extra_data.at(i).num_ot_periods;
         }
+        int non_ot_quarters_finished_this_game = std::min(4, quarter - 1);
+        int ot_quarters_finished_this_game = std::max(0, quarter - 5);
+        int seconds_elapsed_this_quarter = quarter >= 5 ? 300 - seconds : 720 - seconds;
         // 720 seconds in a quarter
         return
             // time for multiple games
@@ -97,7 +100,7 @@ public:
             // time for Ot
             25 * 300 * ot_quarters +
             // time in game
-            (25 * (720 * (quarter - 1) + 720 - seconds) - twenty_fifths_of_second);
+            (25 * (720 * non_ot_quarters_finished_this_game + 300 * ot_quarters_finished_this_game + seconds_elapsed_this_quarter) - twenty_fifths_of_second);
     }
 };
 

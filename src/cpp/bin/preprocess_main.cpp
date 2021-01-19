@@ -28,14 +28,14 @@ int main(int argc, char * argv[]) {
         std::cout << "2. path/to/shots_file.csv " << std::endl;
         std::cout << "3. path/to/cleaned_shots_file.csv " << std::endl;
         std::cout << "4. path/to/extra_data_file.csv " << std::endl;
-        std::cout << "5.  path/to/moments_file1.csv optional/path/to/moments_file2.csv,... " << std::endl;
+        std::cout << "5. path/to/moments_file1.csv optional/path/to/moments_file2.csv,... " << std::endl;
     }
     string cleaned_moments_file_path = argv[1], shots_file_path = argv[2], cleaned_shots_file_path = argv[3],
         extra_data_file_path = argv[4], cur_moments_file;
     std::fstream moments_file, cleaned_moments_file, shots_file, cleaned_shots_file, extra_data_file;
     // load the moments
     std::cout << "moment size: " << sizeof(moment) << std::endl;
-    for (int i = 4; i < argc; i++) {
+    for (int i = 5; i < argc; i++) {
         cur_moments_file = argv[i];
         std::cout << "loading moments file: " << cur_moments_file << std::endl;
         moments_file.open(cur_moments_file);
