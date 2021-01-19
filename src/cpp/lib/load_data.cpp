@@ -208,7 +208,7 @@ void clean_moment_rows(vector<moment>& src, vector<cleaned_moment>& dst, std::ma
                        vector<extra_game_data>& extra_data) {
     int player_in_moment = 0;
     long int last_player_id = -2;
-    int game_num = 0;
+    int game_num = dst.empty() ? 0 : dst.at(dst.size() - 1).game_num + 1;
     long int cur_game_id = src.at(0).game_id;
     for (const auto & m : src) {
         // remove last element if no time is on the clock to simplify indexing logic

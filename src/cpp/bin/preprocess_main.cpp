@@ -16,7 +16,6 @@
 #endif
 using std::string;
 int main(int argc, char * argv[]) {
-    vector<moment> moments;
     vector<cleaned_moment> cleaned_moments;
     vector<shot> shots;
     vector<cleaned_shot> cleaned_shots;
@@ -35,26 +34,30 @@ int main(int argc, char * argv[]) {
     std::fstream moments_file, cleaned_moments_file, shots_file, cleaned_shots_file, extra_data_file;
     // load the moments
     std::cout << "moment size: " << sizeof(moment) << std::endl;
+    std::vector<string> moments_files;
     for (int i = 5; i < argc; i++) {
-        cur_moments_file = argv[i];
+        moments_files.push_back(argv[i]);
+    }
+    std::sort(moments_files.begin(), moments_files.end());
+    for (auto const & cur_moments_file : moments_files) {
+        vector<moment> moments;
         std::cout << "loading moments file: " << cur_moments_file << std::endl;
         moments_file.open(cur_moments_file);
         load_moment_rows(moments_file, moments);
+        std::cout << "sorting moments: " << std::endl;
+        std::sort(moments.begin(), moments.end(), [](moment m0, moment m1) {
+            return (m0.game_id < m1.game_id || (m0.game_id == m1.game_id && m0.quarter < m1.quarter) ||
+                    (m0.game_id == m1.game_id && m0.quarter == m1.quarter && m0.game_clock > m1.game_clock) ||
+                    (m0.game_id == m1.game_id && m0.quarter == m1.quarter && m0.game_clock == m1.game_clock &&
+                     m0.player_id < m1.player_id) ||
+                    (m0.game_id == m1.game_id && m0.quarter == m1.quarter && m0.game_clock == m1.game_clock &&
+                     m0.player_id == m1.player_id && m0.event_id < m1.event_id) ||
+                    (m0.game_id == m1.game_id && m0.quarter == m1.quarter && m0.game_clock == m1.game_clock &&
+                     m0.player_id == m1.player_id && m0.event_id == m1.event_id && m0.moment_in_event < m1.moment_in_event));
+        });
+        clean_moment_rows(moments, cleaned_moments, game_id_to_num, extra_data);
         moments_file.close();
     }
-    std::cout << "moments size: " << moments.size() << std::endl;
-    std::cout << "sorting moments: " << std::endl;
-    std::sort(moments.begin(), moments.end(), [](moment m0, moment m1) {
-        return (m0.game_id < m1.game_id || (m0.game_id == m1.game_id && m0.quarter < m1.quarter) ||
-                (m0.game_id == m1.game_id && m0.quarter == m1.quarter && m0.game_clock > m1.game_clock) ||
-                (m0.game_id == m1.game_id && m0.quarter == m1.quarter && m0.game_clock == m1.game_clock &&
-                    m0.player_id < m1.player_id) ||
-                (m0.game_id == m1.game_id && m0.quarter == m1.quarter && m0.game_clock == m1.game_clock &&
-                    m0.player_id == m1.player_id && m0.event_id < m1.event_id) ||
-                (m0.game_id == m1.game_id && m0.quarter == m1.quarter && m0.game_clock == m1.game_clock &&
-                    m0.player_id == m1.player_id && m0.event_id == m1.event_id && m0.moment_in_event < m1.moment_in_event));
-    });
-    clean_moment_rows(moments, cleaned_moments, game_id_to_num, extra_data);
     std::cout << "cleaned moments size: " << cleaned_moments.size() << std::endl;
     for (int64_t i = 0; i < cleaned_moments.size(); i++) {
         clock_fixed_point& c = cleaned_moments.at(i).game_clock;
