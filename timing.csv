@@ -1,2 +1,2 @@
-lge,Query1 Rowstore Sequential Time (ms),Query1 Colstore Sequential Time (ms),Query1 Colstore Parallel Time (ms),Query3 Rowstore Sequential Time (ms),Query3 Colstore Sequential Time (ms),Query3 Colstore Parallel Time (ms),Query3 Binned Colstore Sequential Time (ms),Query3 Binned Colstore Parallel Time
-CPP,nan,976.32,87.38,92392.64,58099.06,2542.82,79380.60,12398.71
+Language,Query1 Rowstore Sequential Time (ms),Query1 Colstore Sequential Time (ms),Query1 Colstore Parallel Time (ms),Query3 Rowstore Sequential Time (ms),Query3 Colstore Sequential Time (ms),Query3 Colstore Parallel Time (ms),Query3 Binned Colstore Sequential Time (ms),Query3 Binned Colstore Parallel Time
+CPP,nan,26.29,15.70,-1000.00,-1000.00,52.98,-1000.00,4.21

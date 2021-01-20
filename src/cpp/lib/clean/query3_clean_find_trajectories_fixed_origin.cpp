@@ -36,6 +36,8 @@ void find_trajectories_fixed_origin_clean(moment_col_store * moments, list<traje
                         #pragma omp critical
                         {
                             trajectories->append_node({
+                                                              moments->game_id[src_time],
+                                                              moments->game_num[src_time],
                                                               moments->team_id[src_player_index][src_time],
                                                               moments->player_id[src_player_index][src_time],
                                                               moments->x_loc[src_player_index][src_time],
@@ -82,15 +84,17 @@ void find_trajectories_fixed_origin_clean_rowstore(vector<cleaned_moment>& momen
                         src_m.quarter == dst_m.quarter &&
                         point_intersect_no_time(destination, q)) {
                         trajectories.push_back({
-                                                       p.get().team_id,
-                                                       p.get().player_id,
-                                                       p.get().x_loc,
-                                                       p.get().y_loc,
-                                                       src_m.game_clock.to_double(),
-                                                       q.get().x_loc,
-                                                       q.get().y_loc,
-                                                       dst_m.game_clock.to_double(),
-                                                       src_m.quarter
+                                                    src_m.game_id,
+                                                    src_m.game_num,
+                                                    p.get().team_id,
+                                                    p.get().player_id,
+                                                    p.get().x_loc,
+                                                    p.get().y_loc,
+                                                    src_m.game_clock.to_double(),
+                                                    q.get().x_loc,
+                                                    q.get().y_loc,
+                                                    dst_m.game_clock.to_double(),
+                                                    src_m.quarter
                                                });
                         continue;
                     }

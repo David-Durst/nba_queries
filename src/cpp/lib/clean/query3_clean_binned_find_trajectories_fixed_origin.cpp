@@ -44,6 +44,8 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
                         #pragma omp critical
                         {
                             trajectories->append_node({
+                                                              moments->game_id[src_time],
+                                                              moments->game_num[src_time],
                                                               moments->team_id[src_moment.player_index][src_time],
                                                               moments->player_id[src_moment.player_index][src_time],
                                                               moments->x_loc[src_moment.player_index][src_time],

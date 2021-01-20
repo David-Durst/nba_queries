@@ -22,7 +22,7 @@ void find_trajectories_no_fixed_origin(vector<moment>& moments, vector<trajector
             cur_moment.player_id == future_moment.player_id) {
             if (std::abs(cur_moment.x_loc + x_offset - future_moment.x_loc) < space_delta &&
                 std::abs(cur_moment.y_loc + y_offset - future_moment.y_loc) < space_delta) {
-                trajectory_data result = {cur_moment.team_id, cur_moment.player_id, cur_moment.x_loc, cur_moment.y_loc,
+                trajectory_data result = {0, 0, cur_moment.team_id, cur_moment.player_id, cur_moment.x_loc, cur_moment.y_loc,
                                           cur_moment.game_clock, future_moment.x_loc, future_moment.y_loc, future_moment.game_clock,
                                           cur_moment.quarter};
                 // filter out repeated entries due to multiple events at same time step
@@ -55,7 +55,9 @@ void find_trajectories_no_fixed_origin(vector<moment>& moments, vector<trajector
 }
 
 std::ostream& operator<<(std::ostream& os, trajectory_data const& value) {
-    os << "team_id: " << value.team_id
+    os << "game_id: " << value.game_id
+       << ", game_num:" << value.game_num
+       << ", team_id: " << value.team_id
        << ", player_id: " << value.player_id
        << ", start_x_loc: " << value.start_x_loc
        << ", start_y_loc: " << value.start_y_loc
@@ -68,7 +70,9 @@ std::ostream& operator<<(std::ostream& os, trajectory_data const& value) {
 }
 
 void print_trajectory_csv(std::ostream& os, const trajectory_data& value) {
-    os << value.team_id
+    os << value.game_id
+       << "," << value.game_num
+       << "," << value.team_id
        << "," << value.player_id
        << "," << value.start_x_loc
        << "," << value.start_y_loc
@@ -256,7 +260,7 @@ void find_trajectories_fixed_origin(vector<moment>& moments, vector<trajectory_d
             moment& start_moment = moments.at(trajectory_start);
             moment& end_moment = moments.at(trajectory_end);
             if (start_moment.player_id == end_moment.player_id && start_moment.quarter == end_moment.quarter) {
-                trajectories.push_back({start_moment.team_id, start_moment.player_id, start_moment.x_loc, start_moment.y_loc,
+                trajectories.push_back({0, 0, start_moment.team_id, start_moment.player_id, start_moment.x_loc, start_moment.y_loc,
                                         start_moment.game_clock, end_moment.x_loc, end_moment.y_loc, end_moment.game_clock,
                                         start_moment.quarter});
                 break;

@@ -10,6 +10,8 @@ using std::shared_ptr;
 using std::reference_wrapper;
 
 struct trajectory_data {
+    long int game_id;
+    int game_num;
     long int team_id;
     int player_id;
     double start_x_loc;
