@@ -75,8 +75,8 @@ public:
 
     static inline std::list<int> get_bins_in_region(const coordinate_range& r) {
         std::list<int> result;
-        for (int x = floor(r.start.x); x < floor(r.end.x); x++) {
-            for (int y = floor(r.start.y); y < floor(r.end.y); y++) {
+        for (int x = floor(r.start.x); x < ceil(r.end.x); x++) {
+            for (int y = floor(r.start.y); y < ceil(r.end.y); y++) {
                 result.push_back(get_bin_index(x, y));
             }
         }

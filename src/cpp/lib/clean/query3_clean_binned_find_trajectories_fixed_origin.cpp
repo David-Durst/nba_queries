@@ -8,7 +8,6 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
                                                  coordinate_range destination, int t_offset, int t_delta_ticks,
                                                  bool parallel) {
     std::list<int> origin_bins = court_bins::get_bins_in_region(origin);
-    std::list<int> destination_bins = court_bins::get_bins_in_region(destination);
     int t_index_offset = t_offset * 25;
 
     #pragma omp parallel for if(parallel)
@@ -108,8 +107,6 @@ court_bins::court_bins(moment_col_store * moments) {
 
     for (int player = 0; player < NUM_PLAYERS_AND_BALL; player++) {
         for (int64_t i = 0; i < moments->size; i++) {
-            int64_t player_num = players_indices_in_bins.at(moments->player_id[player][i]);
-            int64_t bin_index = get_bin_index(moments->x_loc[player][i], moments->y_loc[player][i]);
             if (bin_index >= NUM_BINS) {
                 std::cout << "problem with " << moments->x_loc[player][i] << "," << moments->y_loc[player][i] << std::endl;
             }

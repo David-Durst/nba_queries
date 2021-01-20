@@ -151,6 +151,7 @@ int main(int argc, char * argv[]) {
     printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "trajectories size: " << trajectories.size() << std::endl;
     std::cout << "first trajectory: " << trajectories.at(0) << std::endl;
+    std::cout << "first trajectory starting index" << clock_fixed_point(trajectories.at(0).start_game_clock).time_to_index(extra_data, trajectories.at(0).game_num, trajectories.at(0).quarter) << std::endl;
     res.query3_colstore_parallel_time = min_time;
 
     /*
