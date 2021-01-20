@@ -47,7 +47,7 @@ nan:"nan,nan,nan"
 sequential_square_res: "," sv string (results[`sequential_square_time];results[`sequential_square_bw];results[`sequential_square_gops])
 four_ops_unfused_res: "," sv string (results[`four_ops_unfused_time];results[`four_ops_unfused_bw];results[`four_ops_unfused_gops])
 four_ops_one_input_unfused_res: "," sv string (results[`four_ops_one_input_unfused_time];results[`four_ops_one_input_unfused_bw];results[`four_ops_one_input_unfused_gops])
-final_str_res: "," sv (enlist "Q";sequential_square_res;nan;four_ops_unfused_res;nan;four_ops_one_input_unfused_res;nan)
+final_str_res: "," sv (enlist "Q";sequential_square_res;nan;four_ops_unfused_res;nan;nan;four_ops_one_input_unfused_res;nan)
 
 h:hopen (hsym `$results_file_path)
 neg[h] enlist final_str_res

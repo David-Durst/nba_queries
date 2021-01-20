@@ -19,6 +19,20 @@ export void square_parallel(uniform int N, uniform int input[], uniform int resu
     launch[N/span] square_task(N, span, input, result);
 }
 
+export void four_ops_unfused_sequential(uniform int N, uniform int a[], uniform int b[], uniform int c[], 
+                           uniform int d[], uniform int result[]) {
+    foreach (i = 0 ... N) {
+        result[i] = a[i] * b[i];
+    }
+
+    foreach (i = 0 ... N) {
+        result[i] += c[i];
+    }
+
+    foreach (i = 0 ... N) {
+        result[i] -= d[i];
+    }
+}
 
 
 task void four_ops_unfused_task(uniform int N, uniform int span, uniform int a[], uniform int b[], 

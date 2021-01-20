@@ -37,6 +37,7 @@ std::ostream& operator<<(std::ostream& os, func_result const& res) {
 struct results {
     func_result sequential_square;
     func_result parallel_square;
+    func_result four_ops_unfused_sequential;
     func_result four_ops_unfused;
     func_result four_ops_fused;
     func_result four_ops_one_input_unfused;
@@ -103,6 +104,17 @@ int main(int argc, char * argv[]) {
     int64_t four_ops_total_ops = 4*VECTOR_LEN;
 
     min_time = Halide::Tools::benchmark(10, 10, [&]() {
+        four_ops_unfused_sequential(VECTOR_LEN, a, b, c, d, res);
+    });
+
+    res_struct.four_ops_unfused_sequential.time = min_time * 1e3;
+    res_struct.four_ops_unfused_sequential.bw = toBW(four_ops_unfused_bytes_traffic, min_time);
+    res_struct.four_ops_unfused_sequential.gops = toGFLOPS(four_ops_total_ops, min_time);
+    std::cout << "four ops unfused sequential time (s): " << min_time << std::endl;
+    std::cout << "four ops unfused sequential BW: " << toBW(four_ops_unfused_bytes_traffic, min_time) << std::endl;
+    std::cout << "four ops unfused sequential GOPS: " << toGFLOPS(four_ops_total_ops, min_time) << std::endl;
+
+    min_time = Halide::Tools::benchmark(10, 10, [&]() {
         four_ops_unfused(VECTOR_LEN, a, b, c, d, res);
     });
 
@@ -153,13 +165,13 @@ int main(int argc, char * argv[]) {
 
     std::cout << "writing to file: " << results_file_path << std::endl;
     results_file.open(results_file_path, std::fstream::out);
-    results_file << "Language," + print_func_header("Sequential Square") + "," +
-                     print_func_header("Parallel Square") + "," + print_func_header("Four Ops Unfused") + "," +
+    results_file << "Language," + print_func_header("Sequential Square") + "," + print_func_header("Parallel Square") + "," + 
+                     print_func_header("Four Ops Unfused Sequential") + "," + print_func_header("Four Ops Unfused") + "," +
                      print_func_header("Four Ops Fused") + "," + print_func_header("Four Ops One Input Unfused") + "," +
                      print_func_header("Four Ops One Input Fused") << std::endl;
     results_file << std::fixed << std::setprecision(2)
-                 << "ISPC," << res_struct.sequential_square << "," <<
-                    res_struct.parallel_square << "," << res_struct.four_ops_unfused << "," <<
+                 << "ISPC," << res_struct.sequential_square << "," << res_struct.parallel_square << "," << 
+                    res_struct.four_ops_unfused_sequential << "," << res_struct.four_ops_unfused << "," <<
                     res_struct.four_ops_fused << "," << res_struct.four_ops_one_input_unfused << "," <<
                     res_struct.four_ops_one_input_fused << std::endl;
     results_file.close();
