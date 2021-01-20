@@ -53,7 +53,7 @@ int main(int argc, char * argv[]) {
     }
     string moments_file_path = argv[1], shots_file_path = argv[2], run_type = argv[3], extra_data_file_path = argv[4],
         timing_file_path = argv[5];
-    int num_samples_and_iterations = (run_type.compare("debug") == 0) ? 1 : 10;
+    int num_samples_and_iterations = (run_type.compare("debug") == 0) ? 1 : 3;
     std::fstream moments_file, shots_file, timing_file, extra_data_file;
 
     // load the cleaned moments
@@ -95,9 +95,14 @@ int main(int argc, char * argv[]) {
     std::cout << "shot_and_players size: " << shots_and_players_seq.size() << std::endl;
     vector<shot_distance_bucket> buckets = bucket_shots_by_distance(shots_and_players_seq);
     std::cout << "distance,num_shot_made,num_shot_attempt,percent_made" << std::endl;
+    int num_buckets = 0;
     for (const auto & b : buckets) {
         print_shot_distance_bucket_csv(std::cout, b);
         std::cout << std::endl;
+        if (num_buckets > 30) {
+            break;
+        }
+        num_buckets++;
     }
     std::cout << "first nearest at shot: " << shots_and_players_seq.at(0) << std::endl;
     res.query1_colstore_sequential_time = min_time;
@@ -112,9 +117,14 @@ int main(int argc, char * argv[]) {
     std::cout << "shot_and_players size: " << shots_and_players_par.size() << std::endl;
     buckets = bucket_shots_by_distance(shots_and_players_par);
     std::cout << "distance,num_shot_made,num_shot_attempt,percent_made" << std::endl;
+    num_buckets = 0;
     for (const auto & b : buckets) {
         print_shot_distance_bucket_csv(std::cout, b);
         std::cout << std::endl;
+        if (num_buckets > 30) {
+            break;
+        }
+        num_buckets++;
     }
     std::cout << "first nearest at shot: " << shots_and_players_par.at(0) << std::endl;
     res.query1_colstore_parallel_time = min_time;
