@@ -46,6 +46,10 @@ target_link_libraries(nba_queries_lib PRIVATE OpenMP::OpenMP_CXX)
 # add this to enable debug printing statements
 #target_compile_definitions(nba_queries PRIVATE DEBUG)
 #target_compile_definitions(nba_queries PRIVATE CALLGRIND)
+OPTION(ENABLE_CALLGRIND "enable CALLGRIND preprocessor" OFF) # Enabled by default
+IF(ENABLE_CALLGRIND)
+    target_compile_definitions(cleaned_nba_queries PRIVATE CALLGRIND)
+ENDIF(ENABLE_CALLGRIND)
 
 set_target_properties(nba_queries_lib PROPERTIES VERSION ${PROJECT_VERSION})
 

@@ -1,0 +1,1610 @@
+# callgrind format
+version: 1
+creator: callgrind-3.13.0
+pid: 10017
+cmd:  ./cleaned_nba_queries /home/durst/big_dev/nba-movement-data/data/csv/cleaned_debug_games.csv /home/durst/big_dev/nba-movement-data/data/shots/cleaned_shots_fixed.csv debug /home/durst/big_dev/nba-movement-data/data/csv/debug_extra_game_data.csv /home/durst/big_dev/nba_queries/timing.csv
+part: 1
+
+
+desc: I1 cache: 
+desc: D1 cache: 
+desc: LL cache: 
+
+desc: Timerange: Basic block 0 - 1966607380
+desc: Trigger: Program termination
+
+positions: line
+events: Ir
+summary: 0
+
+
+ob=(3) /usr/lib/x86_64-linux-gnu/libgomp.so.1.0.0
+fl=(31) ???
+fn=(302) 0x0000000000018fe0
+0 72158
+
+fn=(316) 0x0000000000018f22
+0 10
+
+fn=(354) omp_get_thread_num
+0 9
+
+fn=(318) 0x0000000000019113
+0 32
+
+fn=(554) 0x0000000000019210
+0 4512949
+
+fn=(326) 0x000000000001697a
+0 4
+cfn=(302)
+calls=2 0 
+0 72158
+0 18
+cob=(1) /home/durst/big_dev/nba_queries/build/cleaned_nba_queries
+cfi=(21) /home/durst/big_dev/nba_queries/src/cpp/lib/clean/query3_clean_binned_find_trajectories_fixed_origin.cpp
+cfn=(342) find_trajectories_fixed_origin_clean_binned(moment_col_store*, court_bins*, list<trajectory_data>*, coordinate_range, coordinate_range, int, int, bool) [clone ._omp_fn.0]
+calls=2 14 
+0 4729788395
+0 4
+cfn=(554)
+calls=2 0 
+0 4200054
+cfn=(318)
+calls=2 0 
+0 32
+0 6
+
+fn=(550) GOMP_critical_end
+0 4340
+
+fn=(338) 0x0000000000016948
+cfn=(316)
+calls=1 0 
+0 10
+0 9
+cob=(1)
+cfi=(21)
+cfn=(342)
+calls=1 14 
+0 2734558163
+0 2
+cfn=(554)
+calls=1 0 
+0 312895
+
+fn=(350) omp_get_num_threads
+0 21
+
+fn=(542) GOMP_critical_start
+0 4340
+
+ob=(2) /lib/x86_64-linux-gnu/libc-2.27.so
+fl=(16) /build/glibc-S9d2JN/glibc-2.27/malloc/malloc.c
+fn=(482) malloc_consolidate
+4433 12
++19 12
+-19 12
++30 12
+-30 24
++29 12
+-29 12
++32 12
+-15 12
++15 24
++1 24
+-1 216
++1 216
++3 79368
++1 105824
++8 26456
+-3 26456
++3 26456
++1 26456
++1 79368
++2 52912
++1 5974
++2 5974
+-1 5974
++2 102122
++3 52912
++1 26456
++2 52912
++1 20463
++1 245556
++4 26456
++4 26456
+-3 26456
++1 26456
++2 26456
++1 10736
++1 10736
++3 10736
++1 10736
++1 10736
+-2 21472
++3 10736
++9 32208
+-12 15720
++1 15720
++1 15720
+-2 31440
++3 15720
++9 47167
++3 480
++1 72
+-27 17979
+-2 22779
+
+fn=(484) sysmalloc
+2274 2960
++20 370
++11 370
+-11 370
++11 370
++1 1480
+fi=(35) /build/glibc-S9d2JN/glibc-2.27/malloc/arena.c
+535 370
+fe=(16)
+2321 740
+fi=(35)
+535 370
+fe=(16)
+2321 740
++66 370
++1 1110
++10 370
+-9 370
++9 2960
++6 1480
++3 1110
++8 370
+-2 740
++2 1110
+-1 370
+fi=(35)
+535 740
++1 370
++1 740
++3 1110
++10 370
++1 370
+fe=(16)
+2418 1110
++1 370
+-1 370
++1 370
+-1 370
++1 370
+-1 370
++1 370
+2724 740
++1 370
++5 740
++3 740
++5 370
+-3 370
++3 370
+-2 370
++2 1110
++1 370
+-1 370
+-1 370
++4 370
+-3 740
++1 370
++2 370
++6 3330
+fi=(35)
+542 3700
+cfi=(19) /build/glibc-S9d2JN/glibc-2.27/misc/../sysdeps/unix/syscall-template.S
+cfn=(488) mprotect
+calls=370 78 
+* 1850
+* 2590
++5 740
+fe=(16)
+
+fn=(224) _int_malloc
+3531 570468
++32 95078
+-32 95078
++32 855702
++4 570468
++24 190156
++2 285234
++3 95078
++2 190156
++2 30661
+-6 61322
++6 91983
++6 91983
++1 61322
++7 122644
+-1 61322
++1 61322
++5 91983
++1 122644
++2 858452
+2933 429226
++4 214613
+-5 429226
++5 214613
++2 429226
+-7 214613
++9 643839
+3619 643839
++1 551876
+1887 5
+3692 5
+1887 30667
+3692 30657
+1887 61314
+4141 855702
+3732 64416
+-1 128832
++1 64416
+-1 64416
++1 128832
+-2 322080
++6 193248
++66 64416
+-40 128832
+3889 64416
+3741 64416
++1 64416
++20 128832
++40 128832
+-60 128832
++60 12
+-40 24
+3889 12
+3741 12
++1 12
++20 24
++40 24
+-60 98
++3 81522
++1 54348
++3 27174
++10 27174
+-15 27174
++15 81522
++34 37
+-5 37
++1 37
++4 37
++29 40
++8 60
++1 45
++1 15
+-1 15
++4 15
+-3 15
++3 15
++43 40
++9 20
+-9 80
++10 20
+-9 20
++1 20
++1 20
++1 20
++6 20
++9 40
+3603 183966
++49 193251
++2 64417
+-2 64417
++2 128834
++2 1
++1 2
++6 1
+-4 1
++1 1
++1 1
++2 2
++1 1
++6 4
+-1 2
++1 3
++5 5
++1 3
+3824 10
++1 20
++1 10
+3626 1287678
++87 1288320
+-62 837408
+3796 17
+-1 17
++1 34
++1 17
++4 51
++1 68
++95 60
++17 74548
++73 74548
++1 74548
++1 74548
++1 74548
++1 74548
++5 74616
++14 1012
++2 469
++2 938
+3830 116
+2933 34
+3761 27162
+-1 54324
++1 54310
++4 27137
++1 27137
+-1 27137
++2 54274
++3 27137
+-2 27137
++1 54274
++1 27137
++2 26838
++1 26838
++3 161028
++6 26838
+-6 80514
++2 80514
+1887 26838
+3779 26838
+1887 53676
+3776 1794
++6 299
+-6 897
++2 897
+1887 299
+3779 299
+1887 598
+3875 60
+-45 6
+2939 17
++2 17
+-4 17
++2 34
++1 17
+3806 17
+2941 17
+3805 17
++1 17
++24 44
++73 74582
+2950 51
+-1 51
++2 34
++1 34
++1 17
++1 17
+3905 17
+-75 14
+4000 111828
++3 149080
+-3 111810
++3 149080
+-3 74540
++3 111810
++97 37255
++3 37255
+-2 74510
++2 74892
++17 1146
++2 24
+cfn=(482)
+calls=12 4433 
+* 1375412
++3 12
+-1 24
++1 12
+-1 12
++3 36
+4018 37
++3 74
++2 18
++1 18
++1 18
+-2 72
+-27 18
++9 84
++1 42
++24 57
++3 38
++5 19
+-3 38
++3 273
++3 38
+1887 36892
+4113 36892
+1887 73784
+4003 42
+4135 1110
+cfn=(484)
+calls=370 2274 
+* 46250
++1 370
+-1 370
++1 370
+1887 1110
+4056 19
+-5 19
++6 38
++8 19
+-6 19
++1 19
++1 19
++1 19
++3 19
++1 19
++1 38
++2 15
++1 15
++2 135
++2 45
++1 30
+-3 36
++2 12
++1 8
++30 36873
++3 73746
+-3 36873
++1 36873
++2 110619
++2 36873
+-2 73746
+-1 36873
++1 73746
++2 73746
+-72 165
+
+fn=(104) malloc
+3038 929841
++5 619894
++1 619894
++5 2169629
++3 309947
+-2 929841
++2 929841
++3 619894
++10 380312
+-16 1239788
++8 309947
++1 929841
+2950 429738
++2 429738
++1 214869
++1 214869
+3091 1549735
+-18 1045858
++2 285234
+cfn=(224)
+calls=143348 3531 
+* 20059320
++3 95078
+-3 95078
++3 95078
++8 475390
++2 1236014
+
+fn=(142) free
+3096 3399869
++5 618158
++1 618158
++6 618158
++5 309079
+-2 309079
++2 618158
++18 927237
++2 927237
+4159 618158
++6 1236316
++1 618158
++4 1236316
++8 927237
+-1 618158
++1 618158
++9 618158
++13 1236316
++14 617604
++11 1235208
++2 926406
+1894 926406
+4248 308802
++7 308802
+-6 617604
++6 617604
+-2 308802
++2 617604
+3135 3399869
+-2 1236316
+2933 831
++8 277
+-4 277
++2 554
++1 277
++1 554
+4269 617604
+-19 308802
++21 308802
++2 1235208
++1 308802
+-1 308802
++1 617604
+
+fl=(19)
+fn=(488)
+78 1480
++1 370
+
+ob=(1)
+fl=(28) /usr/include/c++/7/bits/alloc_traits.h
+fn=(504) void std::allocator_traits<std::allocator<std::_List_node<player_pointer> > >::destroy<player_pointer>(std::allocator<std::_List_node<player_pointer> >&, player_pointer*)
+486 1545395
++1 1545395
+cfi=(25) /usr/include/c++/7/ext/new_allocator.h
+cfn=(506) void __gnu_cxx::new_allocator<std::_List_node<player_pointer> >::destroy<player_pointer>(player_pointer*)
+calls=445616 140 
+* 2163553
+* 927237
+
+fn=(452) std::allocator_traits<std::allocator<std::_List_node<player_pointer> > >::allocate(std::allocator<std::_List_node<player_pointer> >&, unsigned long)
+435 1545395
++1 1854474
+cfi=(25)
+cfn=(454) __gnu_cxx::new_allocator<std::_List_node<player_pointer> >::allocate(unsigned long, void const*)
+calls=445616 99 
+* 46417757
+* 618158
+
+fn=(470) void std::allocator_traits<std::allocator<std::_List_node<player_pointer> > >::construct<player_pointer, player_pointer const&>(std::allocator<std::_List_node<player_pointer> >&, player_pointer*, player_pointer const&)
+474 1854474
++1 927237
+cfi=(15) /usr/include/c++/7/bits/move.h
+cfn=(446) player_pointer const& std::forward<player_pointer const&>(std::remove_reference<player_pointer const&>::type&)
+calls=445616 73 
+* 1854474
+* 1854474
+cfi=(25)
+cfn=(472) void __gnu_cxx::new_allocator<std::_List_node<player_pointer> >::construct<player_pointer, player_pointer const&>(player_pointer*, player_pointer const&)
+calls=445616 135 
+* 11745002
+* 927237
+
+fn=(510) std::allocator_traits<std::allocator<std::_List_node<player_pointer> > >::deallocate(std::allocator<std::_List_node<player_pointer> >&, std::_List_node<player_pointer>*, unsigned long)
+461 1854474
++1 1854474
+cfi=(25)
+cfn=(512) __gnu_cxx::new_allocator<std::_List_node<player_pointer> >::deallocate(std::_List_node<player_pointer>*, unsigned long)
+calls=445616 116 
+* 35228635
+* 927237
+
+fl=(24) /usr/include/c++/7/bits/allocator.h
+fn=(362) std::allocator<std::_List_node<player_pointer> >::allocator()
+131 455
+cfi=(25)
+cfn=(364) __gnu_cxx::new_allocator<std::_List_node<player_pointer> >::new_allocator()
+calls=87 -52 
+* 390
+* 195
+
+fn=(522) std::allocator<std::_List_node<player_pointer> >::~allocator()
+139 455
+cfi=(25)
+cfn=(524) __gnu_cxx::new_allocator<std::_List_node<player_pointer> >::~new_allocator()
+calls=87 -53 
+* 390
+* 195
+
+fl=(22) /home/durst/big_dev/nba_queries/include/clean_queries.h
+fn=(376) court_bins::bin_start(long, int)
+86 124800
++1 104000
+cfi=(32) /usr/include/c++/7/bits/stl_map.h
+cfn=(378) std::map<long, int, std::less<long>, std::allocator<std::pair<long const, int> > >::at(long const&)
+calls=27840 529 
+* 20576640
+* 41600
++1 208000
++1 124800
++1 41600
+
+fn=(436) point_intersect_no_time(coordinate_range*, double, double)
+39 79053340
++1 144159392
++1 77274875
+-1 355693
++1 63187101
++1 30733360
+-1 443988
++1 17719977
++1 31621336
+
+fn=(434) court_bins::bin_end(long, int)
+91 2309153
++1 1649395
+cfi=(32)
+cfn=(378)
+calls=473456 529 
+* 323198884
+* 659758
++1 659758
++4 1649395
+cfi=(32)
+cfn=(344) std::map<long, int, std::less<long>, std::allocator<std::pair<long const, int> > >::size() const
+calls=473456 462 
+* 5278064
++1 4288427
++1 1979274
++1 1319516
+
+fl=(1) /home/durst/big_dev/nba_queries/src/cpp/bin/cleaned_query_main.cpp
+fn=(0) main
+179 10
+
+fl=(26) /usr/include/c++/7/ext/aligned_buffer.h
+fn=(432) __gnu_cxx::__aligned_membuf<std::pair<long const, int> >::_M_addr()
+62 2104074
++1 2104074
+
+fn=(466) __gnu_cxx::__aligned_membuf<player_pointer>::_M_ptr()
+70 3708948
++1 2781711
+cfn=(468) __gnu_cxx::__aligned_membuf<player_pointer>::_M_addr()
+calls=1336848 -9 
+* 5563422
+* 1854474
+
+fn=(468)
+62 2781711
++1 2781711
+
+fn=(206) __gnu_cxx::__aligned_membuf<int>::_M_addr()
+62 62400
++1 62400
+
+fn=(164) __gnu_cxx::__aligned_membuf<unsigned long>::_M_ptr()
+70 1236576
++1 927432
+cfn=(166) __gnu_cxx::__aligned_membuf<unsigned long>::_M_addr()
+calls=446026 -9 
+* 1854864
+* 618288
+
+fn=(166)
+62 927432
++1 927432
+
+fn=(430) __gnu_cxx::__aligned_membuf<std::pair<long const, int> >::_M_ptr()
+70 2805432
++1 2104074
+cfn=(432)
+calls=1002592 -9 
+* 4208148
+* 1402716
+
+fn=(204) __gnu_cxx::__aligned_membuf<int>::_M_ptr()
+70 83200
++1 62400
+cfn=(206)
+calls=28482 -9 
+* 124800
+* 41600
+
+fn=(402) __gnu_cxx::__aligned_membuf<std::pair<long const, int> >::_M_addr() const
+66 7157304
++1 7157304
+
+fl=(29) /usr/include/c++/7/bits/allocated_ptr.h
+fn=(460) std::__allocated_ptr<std::allocator<std::_List_node<player_pointer> > >::__allocated_ptr(std::allocator<std::_List_node<player_pointer> >&, std::_List_node<player_pointer>*)
+52 1854474
++1 927237
+cfi=(15)
+cfn=(462) std::allocator<std::_List_node<player_pointer> >* std::__addressof<std::allocator<std::_List_node<player_pointer> > >(std::allocator<std::_List_node<player_pointer> >&)
+calls=445616 -6 
+* 1854474
+* 1854474
++1 927237
+
+fn=(474) std::__allocated_ptr<std::allocator<std::_List_node<player_pointer> > >::operator=(decltype(nullptr))
+78 1236316
++2 618158
++1 309079
++1 618158
+
+fn=(476) std::__allocated_ptr<std::allocator<std::_List_node<player_pointer> > >::~__allocated_ptr()
+70 1236316
++2 1236316
++2 927237
+
+fl=(33) /usr/include/c++/7/bits/stl_tree.h
+fn=(410) std::_Rb_tree<long, std::pair<long const, int>, std::_Select1st<std::pair<long const, int> >, std::less<long>, std::allocator<std::pair<long const, int> > >::_S_right(std::_Rb_tree_node_base*)
+771 4431198
++1 5908264
+
+fn=(412) std::_Rb_tree<long, std::pair<long const, int>, std::_Select1st<std::pair<long const, int> >, std::less<long>, std::allocator<std::pair<long const, int> > >::_S_left(std::_Rb_tree_node_base*)
+763 2726106
++1 3634808
+
+fn=(428) std::_Rb_tree_node<std::pair<long const, int> >::_M_valptr()
+234 2805432
++1 2805432
+cfi=(26)
+cfn=(430)
+calls=1002592 70 
+* 10520370
+* 1402716
+
+fn=(382) std::_Rb_tree<long, std::pair<long const, int>, std::_Select1st<std::pair<long const, int> >, std::less<long>, std::allocator<std::pair<long const, int> > >::lower_bound(long const&)
+1186 2104074
++1 1052037
+cfn=(384) std::_Rb_tree<long, std::pair<long const, int>, std::_Select1st<std::pair<long const, int> >, std::less<long>, std::allocator<std::pair<long const, int> > >::_M_end()
+calls=501296 747 
+* 2454753
+* 1402716
+cfn=(386) std::_Rb_tree<long, std::pair<long const, int>, std::_Select1st<std::pair<long const, int> >, std::less<long>, std::allocator<std::pair<long const, int> > >::_M_begin()
+calls=501296 736 
+* 2454753
+* 2454753
+cfn=(388) std::_Rb_tree<long, std::pair<long const, int>, std::_Select1st<std::pair<long const, int> >, std::less<long>, std::allocator<std::pair<long const, int> > >::_M_lower_bound(std::_Rb_tree_node<std::pair<long const, int> >*, std::_Rb_tree_node_base*, long const&)
+calls=501296 1867 
+* 255404416
+* 1402716
+
+fn=(384)
+747 1052037
++1 1402716
+
+fn=(386)
+736 1052037
++1 1402716
+
+fn=(414) std::_Rb_tree_iterator<std::pair<long const, int> >::_Rb_tree_iterator(std::_Rb_tree_node_base*)
+273 2805432
++1 4208148
+
+fn=(420) std::_Rb_tree_iterator<std::pair<long const, int> >::operator==(std::_Rb_tree_iterator<std::pair<long const, int> > const&) const
+315 1402716
++1 2805432
+
+fn=(426) std::_Rb_tree_iterator<std::pair<long const, int> >::operator*() const
+277 2805432
++1 2805432
+cfn=(428)
+calls=1002592 -44 
+* 17533950
+* 1402716
+
+fn=(388)
+1867 3857469
++4 5472894
++1 9543072
+cfn=(390) std::_Rb_tree<long, std::pair<long const, int>, std::_Select1st<std::pair<long const, int> >, std::less<long>, std::allocator<std::pair<long const, int> > >::_S_key(std::_Rb_tree_node<std::pair<long const, int> > const*)
+calls=3289470 759 
+* 145531848
+* 14314608
+cfi=(34) /usr/include/c++/7/bits/stl_function.h
+cfn=(408) std::less<long>::operator()(long const&, long const&) const
+calls=3289470 385 
+* 31014984
+* 7157304
++1 4543510
+cfn=(412)
+calls=1561376 763 
+* 6360914
+* 1817404
++2 4431198
+cfn=(410)
+calls=1728094 771 
+* 10339462
+* 1477066
+-4 1477066
++5 1753395
+cfn=(414)
+calls=501296 273 
+* 3506790
+* 350679
++1 2454753
+
+fn=(394) std::_Rb_tree_node<std::pair<long const, int> >::_M_valptr() const
+238 9543072
++1 9543072
+cfi=(15)
+cfn=(396) __gnu_cxx::__aligned_membuf<std::pair<long const, int> >::_M_ptr() const
+calls=3289470 74 
+* 35786520
+* 4771536
+
+fn=(424) std::_Rb_tree<long, std::pair<long const, int>, std::_Select1st<std::pair<long const, int> >, std::less<long>, std::allocator<std::pair<long const, int> > >::key_comp() const
+956 1052037
++1 701358
+
+fn=(346) std::_Rb_tree<long, std::pair<long const, int>, std::_Select1st<std::pair<long const, int> >, std::less<long>, std::allocator<std::pair<long const, int> > >::size() const
+996 989646
++1 1319528
+
+fn=(392) std::_Rb_tree<long, std::pair<long const, int>, std::_Select1st<std::pair<long const, int> >, std::less<long>, std::allocator<std::pair<long const, int> > >::_S_value(std::_Rb_tree_node<std::pair<long const, int> > const*)
+755 9543072
++1 7157304
+cfn=(394)
+calls=3289470 238 
+* 59644200
+* 4771536
+
+fn=(418) std::_Rb_tree<long, std::pair<long const, int>, std::_Select1st<std::pair<long const, int> >, std::less<long>, std::allocator<std::pair<long const, int> > >::end()
+968 2454753
++1 2104074
+cfn=(414)
+calls=501296 273 
+* 3506790
+* 2104074
+
+fn=(390)
+759 16700376
++1 7157304
+cfn=(392)
+calls=3289470 -5 
+* 81116112
+* 11928840
+cfi=(34)
+cfn=(406) std::_Select1st<std::pair<long const, int> >::operator()(std::pair<long const, int> const&) const
+calls=3289470 890 
+* 16700376
+* 11928840
+
+fl=(30) /usr/include/c++/7/new
+fn=(212) operator new(unsigned long, void*)
+169 2163553
+
+fl=(32)
+fn=(422) std::map<long, int, std::less<long>, std::allocator<std::pair<long const, int> > >::key_comp() const
+1135 1753395
++1 1052037
+cfi=(33)
+cfn=(424)
+calls=501296 956 
+* 1753395
+* 1753395
+
+fn=(378)
+529 2805432
++2 1753395
+cfn=(380) std::map<long, int, std::less<long>, std::allocator<std::pair<long const, int> > >::lower_bound(long const&)
+calls=501296 1232 
+* 272938366
+* 350679
++1 1052037
+cfn=(416) std::map<long, int, std::less<long>, std::allocator<std::pair<long const, int> > >::end()
+calls=501296 366 
+* 13325802
+* 2104074
+cfi=(33)
+cfn=(420)
+calls=501296 315 
+* 4208148
+* 1753395
+cfn=(422)
+calls=501296 1135 
+* 6312222
+* 1052037
+cfi=(33)
+cfn=(426)
+calls=501296 277 
+* 12273765
+* 2104074
+cfi=(34)
+cfn=(408)
+calls=501296 385 
+* 4558827
+* 1753395
++2 1052037
+cfi=(33)
+cfn=(426)
+calls=501296 277 
+* 12273765
+* 350679
++1 1753395
+
+fn=(380)
+1232 1753395
++1 1753395
+cfi=(33)
+cfn=(382)
+calls=501296 -47 
+* 268730218
+* 701358
+
+fn=(344)
+462 1319528
++1 989646
+cfi=(33)
+cfn=(346)
+calls=473460 996 
+* 2309174
+* 659764
+
+fn=(416)
+366 1402716
++1 1052037
+cfi=(33)
+cfn=(418)
+calls=501296 968 
+* 10169691
+* 701358
+
+fl=(20) /home/durst/big_dev/nba_queries/include/query_structs.h
+fn=(546) list<trajectory_data>::append_node(trajectory_data)
+260 3472
++1 3472
++1 2
+cob=(7) /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25
+cfi=(3) ???
+cfn=(100) operator new(unsigned long)
+calls=1 0 
+* 255
+* 1
+* 12
++1 4
++1 21
++3 1734
+cob=(7)
+cfi=(3)
+cfn=(100)
+calls=1007 0 
+* 1552074
+* 867
+* 9537
++1 16473
++1 3468
++1 4335
++2 4335
++1 2601
+-1 5
++1 3
+
+fn=(544) clock_fixed_point::to_double() const
+77 5208
++1 15624
++1 3472
+
+fl=(34)
+fn=(406)
+890 9543072
++1 7157304
+
+fn=(408)
+385 13682235
++1 21891576
+
+fl=(36) /usr/include/c++/7/bits/list.tcc
+fn=(502) std::__cxx11::_List_base<player_pointer, std::allocator<player_pointer> >::_M_clear()
+65 260
++4 195
++1 927432
++2 618158
++1 927237
++1 927237
+cfi=(23) /usr/include/c++/7/bits/stl_list.h
+cfn=(464) std::_List_node<player_pointer>::_M_valptr()
+calls=445616 +39 
+* 7726975
+* 309079
++2 927237
+cfi=(23)
+cfn=(458) std::__cxx11::_List_base<player_pointer, std::allocator<player_pointer> >::_M_get_Node_allocator()
+calls=445616 393 
+* 1854474
+* 1545395
+cfi=(28)
+cfn=(504)
+calls=445616 486 
+* 6181580
++4 1545395
+cfi=(23)
+cfn=(508) std::__cxx11::_List_base<player_pointer, std::allocator<player_pointer> >::_M_put_node(std::_List_node<player_pointer>*)
+calls=445616 386 
+* 44191926
+-10 309079
++12 195
+
+fl=(21)
+fn=(342)
+14 72
++1 9
+cfi=(32)
+cfn=(344)
+calls=4 462 
+* 48
+* 6
+cob=(3)
+cfi=(31)
+cfn=(350)
+calls=4 -15 
+* 21
+* 3
+* 6
+cob=(3)
+cfi=(31)
+cfn=(354)
+calls=4 -15 
+* 9
+* 3
+* 54
++1 24
++1 9
+cfi=(23)
+cfn=(356) std::__cxx11::list<player_pointer, std::allocator<player_pointer> >::list()
+calls=4 589 
+* 333
+-1 496
++1 186
+cfi=(23)
+cfn=(356)
+calls=83 589 
+* 6882
++2 390
+cfi=(23)
+cfn=(370) std::__cxx11::list<int, std::allocator<int> >::begin()
+calls=87 851 
+* 1885
+* 260
+cfi=(23)
+cfn=(178) std::__cxx11::list<int, std::allocator<int> >::end()
+calls=87 869 
+* 1820
+* 390
+cfi=(23)
+cfn=(372) std::_List_iterator<int>::operator!=(std::_List_iterator<int> const&) const
+calls=87 194 
+* 780
+* 104000
+cfi=(23)
+cfn=(372)
+calls=27840 194 
+* 249600
+* 41730
++11 325
+cfi=(23)
+cfn=(490) std::__cxx11::list<player_pointer, std::allocator<player_pointer> >::begin()
+calls=87 851 
+* 1885
+* 260
+cfi=(23)
+cfn=(440) std::__cxx11::list<player_pointer, std::allocator<player_pointer> >::end()
+calls=87 869 
+* 1820
+* 390
+cfi=(23)
+cfn=(492) std::_List_iterator<player_pointer>::operator!=(std::_List_iterator<player_pointer> const&) const
+calls=87 194 
+* 780
+* 1545395
+cfi=(23)
+cfn=(492)
+calls=445616 194 
+* 3708948
+* 618288
+-13 195
+cfi=(23)
+cfn=(498) std::__cxx11::list<player_pointer, std::allocator<player_pointer> >::~list()
+calls=87 733 
+* 67995039
+* 198
++13 927237
+cfi=(23)
+cfn=(494) std::_List_iterator<player_pointer>::operator*() const
+calls=445616 152 
+* 10817765
+* 309079
++1 927237
++2 2781711
++1 160721080
+-4 927237
+cfi=(23)
+cfn=(496) std::_List_iterator<player_pointer>::operator++()
+calls=445616 160 
+* 3399869
+* 309079
++5 31526058
+-2 31526058
++2 78815145
++3 394075725
++1 3294473061
++2 504652515
+-2 346786638
+-1 346786638
++6 868
+cob=(3)
+cfi=(31)
+cfn=(542)
+calls=1008 -44 
+* 4340
+* 868
++3 7812
+-1 868
++2 8680
+-2 868
++3 8680
+-3 868
++4 8680
+-4 868
++5 6076
+cfi=(20)
+cfn=(544)
+calls=1008 +26 
+* 12152
+* 868
+-5 868
++6 7812
+-6 868
++7 7812
+-7 868
++8 6076
+cfi=(20)
+cfn=(544)
+calls=1008 +23 
+* 12152
+* 868
+-8 868
++9 5208
+-9 12152
+cfi=(20)
+cfn=(546)
+calls=1008 260 
+* 1602671
+* 868
+-2 868
+cob=(3)
+cfi=(31)
+cfn=(550)
+calls=1008 -44 
+* 4340
+* 868
++14 868
+-17 346784902
+-1 186329304
+-1 31054884
++2 186329304
+-1 31054884
++3 124012712
+-1 263527013
+cfi=(22)
+cfn=(436)
+calls=22333010 -3 
+* 433113139
+-1 31004914
+-22 62400
+cfi=(23)
+cfn=(374) std::_List_iterator<int>::operator*() const
+calls=27840 152 
+* 728000
+* 20800
++1 145600
+cfi=(22)
+cfn=(376)
+calls=27840 +66 
+* 21221440
+* 20800
++1 145600
+cfi=(22)
+cfn=(434)
+calls=27840 +70 
+* 21824640
+* 2163553
+cfi=(22)
+cfn=(434)
+calls=445616 +70 
+* 321166984
+* 1319516
+-2 62400
+cfi=(23)
+cfn=(480) std::_List_iterator<int>::operator++()
+calls=27840 160 
+* 228800
+* 20800
++4 3090790
+-1 5872501
+cfi=(22)
+cfn=(436)
+calls=445616 +17 
+* 11435923
+* 618158
+-2 618158
++4 1545395
+cfi=(23)
+cfn=(438) std::__cxx11::list<player_pointer, std::allocator<player_pointer> >::push_back(player_pointer const&)
+calls=445616 1117 
+* 152740933
+* 309085
+-10 24
+
+fl=(23)
+fn=(356)
+589 260
++4 195
+cfn=(358) std::__cxx11::_List_base<player_pointer, std::allocator<player_pointer> >::_List_base()
+calls=87 400 
+* 6565
+* 195
+
+fn=(450) std::__cxx11::_List_base<player_pointer, std::allocator<player_pointer> >::_M_get_node()
+382 1236316
++1 1236316
+cfi=(28)
+cfn=(452)
+calls=445616 +52 
+* 50435784
+* 618158
+
+fn=(500) std::__cxx11::_List_base<player_pointer, std::allocator<player_pointer> >::~_List_base()
+441 260
++1 195
+cfi=(36)
+cfn=(502)
+calls=87 65 
+* 67991854
+* 195
+cfn=(520) std::__cxx11::_List_base<player_pointer, std::allocator<player_pointer> >::_List_impl::~_List_impl()
+calls=87 323 
+* 1690
+* 195
+
+fn=(366) std::__cxx11::_List_base<player_pointer, std::allocator<player_pointer> >::_M_init()
+448 260
++2 195
++1 195
++1 260
+cfn=(368) std::__cxx11::_List_base<player_pointer, std::allocator<player_pointer> >::_M_set_size(unsigned long)
+calls=87 352 
+* 2665
++1 195
+
+fn=(478) std::__cxx11::_List_base<player_pointer, std::allocator<player_pointer> >::_M_inc_size(unsigned long)
+354 2472632
+cfn=(162) std::_List_node<unsigned long>::_M_valptr()
+calls=445616 113 
+* 7726975
+* 2163553
+
+fn=(498)
+733 455
+cfn=(500)
+calls=87 441 
+* 67994389
+* 195
+
+fn=(162)
+113 2473152
+cfi=(26)
+cfn=(164)
+calls=446026 -43 
+* 4637160
+* 618288
+
+fn=(180) std::_List_iterator<int>::_List_iterator(std::__detail::_List_node_base*)
+143 520
++1 780
+
+fn=(360) std::__cxx11::_List_base<player_pointer, std::allocator<player_pointer> >::_List_impl::_List_impl()
+332 260
++1 195
+cfi=(24)
+cfn=(362)
+calls=87 131 
+* 1040
+* 260
++1 195
+
+fn=(444) void std::__cxx11::list<player_pointer, std::allocator<player_pointer> >::_M_insert<player_pointer const&>(std::_List_iterator<player_pointer>, player_pointer const&)
+1799 1854474
++2 927237
+cfi=(15)
+cfn=(446)
+calls=445616 73 
+* 1854474
+* 1545395
+cfn=(448) std::_List_node<player_pointer>* std::__cxx11::list<player_pointer, std::allocator<player_pointer> >::_M_create_node<player_pointer const&>(player_pointer const&)
+calls=445616 570 
+* 113796979
+* 309079
++1 1545395
+cob=(7)
+cfi=(3)
+cfn=(220) std::__detail::_List_node_base::_M_hook(std::__detail::_List_node_base*)
+calls=445616 0 
+* 2163553
+* 309079
++1 1236316
+cfn=(478)
+calls=445616 354 
+* 12363160
++1 927237
+
+fn=(458)
+393 1854474
++1 1854474
+
+fn=(494)
+152 1236316
++1 1236316
+cfn=(464)
+calls=445616 -40 
+* 7726975
+* 618158
+
+fn=(370)
+851 455
++1 390
+cfn=(180)
+calls=87 143 
+* 650
+* 390
+
+fn=(438)
+1117 1545395
++1 927237
+cfn=(440)
+calls=445616 869 
+* 8654212
+* 1854474
+cfn=(444)
+calls=445616 1799 
+* 138832378
+* 927237
+
+fn=(464)
+113 7417896
+cfi=(26)
+cfn=(466)
+calls=1336848 -43 
+* 13908555
+* 1854474
+
+fn=(480)
+160 62400
++2 104000
++1 20800
++1 41600
+
+fn=(496)
+160 927237
++2 1545395
++1 309079
++1 618158
+
+fn=(508)
+386 1545395
++1 1854474
+cfi=(28)
+cfn=(510)
+calls=445616 +74 
+* 39864820
+* 927237
+
+fn=(490)
+851 455
++1 390
+cfn=(442) std::_List_iterator<player_pointer>::_List_iterator(std::__detail::_List_node_base*)
+calls=87 143 
+* 650
+* 390
+
+fn=(492)
+194 1236576
++1 2473152
+
+fn=(178)
+869 455
++1 325
+cfn=(180)
+calls=408 143 
+* 650
+* 390
+
+fn=(448)
+570 2781711
++2 927237
+cfn=(450)
+calls=445616 382 
+* 53526574
+* 309079
++1 927237
+cfn=(458)
+calls=445616 393 
+* 1854474
+* 309079
++1 1854474
+cfi=(29)
+cfn=(460)
+calls=445616 52 
+* 7417896
++1 927237
+cfi=(15)
+cfn=(446)
+calls=445616 73 
+* 1854474
+* 1236316
+cfn=(464)
+calls=445616 113 
+* 7726975
+* 1854474
+cfi=(28)
+cfn=(470)
+calls=445616 474 
+* 19162898
++2 1236316
+cfi=(29)
+cfn=(474)
+calls=445616 78 
+* 2781711
++1 309079
+-4 927237
+cfi=(29)
+cfn=(476)
+calls=445616 70 
+* 3399869
++4 309079
++1 2163553
+
+fn=(368)
+352 650
+cfn=(162)
+calls=87 113 
+* 1625
+* 390
+
+fn=(440)
+869 2164008
++1 1545720
+cfn=(442)
+calls=445703 143 
+* 3091440
+* 1854864
+
+fn=(520)
+323 455
+cfi=(24)
+cfn=(522)
+calls=87 139 
+* 1040
+* 195
+
+fn=(374)
+152 83200
++1 83200
+cfn=(202) std::_List_node<int>::_M_valptr()
+calls=27840 -40 
+* 520000
+* 41600
+
+fn=(442)
+143 1236836
++1 1855254
+
+fn=(358)
+400 260
++1 195
+cfn=(360)
+calls=87 -69 
+* 1950
++1 195
+cfn=(366)
+calls=87 +46 
+* 3770
+* 195
+
+fn=(372)
+194 83460
++1 166920
+
+fn=(202)
+113 166400
+cfi=(26)
+cfn=(204)
+calls=28482 -43 
+* 312000
+* 41600
+
+fl=(25)
+fn=(364)
+79 390
+
+fn=(454)
+99 1854474
++2 927237
+cfn=(456) __gnu_cxx::new_allocator<std::_List_node<player_pointer> >::max_size() const
+calls=445616 +28 
+* 1854474
+* 1236316
++10 1236316
+cob=(7)
+cfi=(3)
+cfn=(100)
+calls=445616 0 
+* 38381703
+* 309079
++1 618158
+
+fn=(506)
+140 2163553
+
+fn=(512)
+116 1854474
++9 927237
+cob=(7)
+cfi=(3)
+cfn=(516) operator delete(void*)
+calls=445616 0 
+* 31519687
+* 309079
++1 618158
+
+fn=(524)
+86 390
+
+fn=(472)
+135 2163553
++1 927237
+cfi=(15)
+cfn=(446)
+calls=445616 -63 
+* 1854474
+* 1545395
+cfi=(30)
+cfn=(212)
+calls=445616 +33 
+* 2163553
+* 3090790
+
+fn=(456)
+129 927237
++1 927237
+
+fl=(15)
+fn=(446)
+73 3708948
++1 3708948
+
+fn=(396)
+74 9543072
+fi=(26)
++1 7157304
+cfn=(402)
+calls=3289470 -9 
+* 14314608
+* 4771536
+fe=(15)
+
+fn=(462)
+47 927237
++1 927237
+
+ob=(7)
+fl=(3)
+fn=(100)
+0 2169629
+cob=(2)
+cfi=(16)
+cfn=(104)
+calls=446946 3038 
+0 36214668
+0 309947
+0 1239788
+
+fn=(220)
+0 2163553
+
+fn=(516)
+0 309079
+cob=(2)
+cfi=(16)
+cfn=(142)
+calls=445938 3096 
+0 30901529
+0 309079
+
+totals: 7468931760

@@ -1,4 +1,2 @@
 Language,Query1 Rowstore Sequential Time (ms),Query1 Colstore Sequential Time (ms),Query1 Colstore Parallel Time (ms),Query3 Rowstore Sequential Time (ms),Query3 Colstore Sequential Time (ms),Query3 Colstore Parallel Time (ms),Query3 Binned Colstore Sequential Time (ms),Query3 Binned Colstore Parallel Time
-CPP,nan,0.94,4.16,98.74,56.47,4.02,65.59,9.64
-Cython,4.96,nan,nan,825.71,nan,nan,nan,nan
-
+CPP,nan,93.64,175.08,-1000.00,-1000.00,15439.02,-1000.00,286224.55
