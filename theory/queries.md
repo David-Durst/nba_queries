@@ -27,8 +27,8 @@ For the reference part of the taxonomy, I also state which entity is the referen
         1. C++: 0.07s - yet to run on DGX
         2. Q: 0.164s - yet to run on DGX
         3. Cython: 0.38s - yet to run on DGX
-3. Query 3: find all trajectories of a player or the ball that start in the range ((70, 16, t) <-> (90, 32, t)) and end in the range ((71.9, 24.9, t+4) <-> (72.1, 25.1, t+6)). 
-   The starting range is the paint on one side of the court. The destination is a point at the top of the key on that same side of the court.
+3. Query 3: find all trajectories of a player or the ball that start in the range ((64.5, 24.9, t) <-> (65.5, 25.1, t)) and end in the range ((70, 16, t+1) <-> (90, 32, t+3)). 
+   The starting range is top of the key on one side of the courrt. THe destination is the paint on that side of the court. 
     1. Place in Taxonomy:
         1. reference - region of court - static, single (using region of court as reference, not players)
         2. comparison - range in space, point in time
