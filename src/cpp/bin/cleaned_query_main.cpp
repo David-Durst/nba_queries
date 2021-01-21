@@ -186,6 +186,14 @@ int main(int argc, char * argv[]) {
     std::cout << "trajectories size: " << trajectories.size() << std::endl;
     std::cout << "first trajectory: " << trajectories.at(0) << std::endl;
     res.query3_binned_colstore_parallel_time = min_time;
+
+    std::cout << "running partial query 3 cleaned and binned with colstore, parallel" << std::endl;
+
+    min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
+        trajectories_list.clear();
+        find_trajectories_fixed_origin_clean_binned_part(moments_col, bins, &trajectories_list, origin, destination, 2, 25, true);
+    });
+    printf("compute time: %gms\n", min_time * 1e3);
     /*
     std::cout << "running query 3 cleaned with row store, sequential" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {

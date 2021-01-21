@@ -25,8 +25,6 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
         }
     }
 
-    std::cout << "src_moments size: " << src_moments.size() << std::endl;
-
     #pragma omp parallel for if(parallel)
     for (int src_moment_index = 0; src_moment_index < src_moments.size(); src_moment_index++) {
         const player_pointer_and_id& src_moment = src_moments.at(src_moment_index);
@@ -69,6 +67,28 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
 
 }
 
+void find_trajectories_fixed_origin_clean_binned_part(moment_col_store * moments, court_bins * moment_bins,
+                                                 list<trajectory_data> * trajectories, coordinate_range origin,
+                                                 coordinate_range destination, int t_offset, int t_delta_ticks,
+                                                 bool parallel) {
+    const std::list<int> &origin_bins = court_bins::get_bins_in_region(origin);
+    int t_index_offset = t_offset * 25;
+    std::vector<player_pointer_and_id> src_moments;
+
+    for (int player_num = 0; player_num < moment_bins->players_indices_in_bins.size(); player_num++) {
+        long int player_id = moment_bins->player_ids[player_num];
+        // all trajectory starts for the current player
+        for (const auto &src_bin : origin_bins) {
+            for (const player_pointer *src_moment = moment_bins->bin_start(player_id, src_bin);
+                 src_moment != moment_bins->bin_end(player_id, src_bin); src_moment++) {
+                if (point_intersect_no_time(&origin, moments->x_loc[src_moment->player_index][src_moment->moment_index],
+                                            moments->y_loc[src_moment->player_index][src_moment->moment_index])) {
+                    src_moments.push_back({src_moment->moment_index, src_moment->player_index, player_id});
+                }
+            }
+        }
+    }
+}
 court_bins::court_bins(moment_col_store * moments) {
     // first need to collect all the players, as moments just track 10 on the floor and ball
     // and for each player, track how many moments they are in
