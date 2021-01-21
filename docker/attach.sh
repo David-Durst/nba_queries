@@ -1,1 +1,1 @@
-docker attach durst_st_db
+docker attach durst_st_db_${USER}
