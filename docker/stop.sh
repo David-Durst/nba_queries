@@ -1,1 +1,1 @@
-docker kill durst_st_db
+docker kill durst_st_db_${USER}
