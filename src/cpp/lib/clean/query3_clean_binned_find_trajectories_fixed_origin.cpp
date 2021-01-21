@@ -25,6 +25,8 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
         }
     }
 
+    std::cout << "src_moments size: " << src_moments.size() << std::endl;
+
     #pragma omp parallel for if(parallel)
     for (int src_moment_index = 0; src_moment_index < src_moments.size(); src_moment_index++) {
         const player_pointer_and_id& src_moment = src_moments.at(src_moment_index);
