@@ -53,6 +53,12 @@ struct player_pointer {
     int player_index;
 };
 
+struct player_pointer_and_id {
+    int64_t moment_index;
+    int player_index;
+    long int player_id;
+};
+
 class court_bins {
 public:
     court_bins(moment_col_store * moments);
