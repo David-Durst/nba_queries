@@ -2,7 +2,7 @@ FROM continuumio/anaconda3:latest
 
 RUN apt clean; apt update; apt upgrade -y
 ENV DEBIAN_FRONTEND="noninteractive" TZ="America/New_York"
-RUN apt install -y curl vim neovim git g++ rlwrap openssh-server sudo make libc6-i386 gcc-multilib g++-multilib valgrind
+RUN apt install -y curl vim neovim git g++ rlwrap openssh-server sudo make libc6-i386 gcc-multilib g++-multilib valgrind perf-tools-unstable
 
 RUN mkdir /home/durst
 WORKDIR /home/durst
@@ -35,4 +35,5 @@ WORKDIR /home/durst/nba_queries
 # config bash setings
 RUN echo "conda activate nba_queries" >> /root/.bashrc && \
     echo "export PATH=$PATH:/home/durst/ispc-v1.14.1-linux/bin" >> /root/.bashrc && \
-    echo "alias q='taskset 1,2,3,4,5,6 rlwrap -r ${QHOME}/l64/q'" >> /root/.bashrc
+    echo "alias q='taskset 1,2,3,4,5,6 rlwrap -r ${QHOME}/l64/q'" >> /root/.bashrc && \
+    echo "alias perf='perf_4.19'" >> /root/.bashrc
