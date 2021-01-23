@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+#include <cstdlib>
 #include "query_structs.h"
 #include "load_data.h"
 using std::vector;
@@ -121,56 +122,52 @@ void load_cleaned_moment_rows_vec(istream& rows, vector<cleaned_moment>& ms) {
 void load_cleaned_moment_row(string& row, cleaned_moment& m) {
     string col;
     stringstream ss(row);
+    const char * c = row.c_str();
+    size_t next_sep;
 
     // load ball
-    std::getline(ss, col, ',');
-    m.ball.team_id = stol_with_default(col);
-    std::getline(ss, col, ',');
-    m.ball.player_id = stoi_with_default(col);
-    std::getline(ss, col, ',');
-    m.ball.x_loc = stod_with_default(col);
-    std::getline(ss, col, ',');
-    m.ball.y_loc = stod_with_default(col);
-    std::getline(ss, col, ',');
-    m.ball.radius = stod_with_default(col);
+    m.ball.team_id  = std::atol(c);
+    next_sep = row.find(',') + 1;
+    m.ball.player_id = std::atoi(c + next_sep);
+    next_sep = row.find(',', next_sep) + 1;
+    m.ball.x_loc = std::atof(c + next_sep);
+    next_sep = row.find(',', next_sep) + 1;
+    m.ball.y_loc = std::atof(c + next_sep);
+    next_sep = row.find(',', next_sep) + 1;
+    m.ball.radius = std::atof(c + next_sep);
 
     // load players
     for (int i = 0; i < 10; i++) {
-        std::getline(ss, col, ',');
-        m.players[i].team_id = stol_with_default(col);
-        std::getline(ss, col, ',');
-        m.players[i].player_id = stoi_with_default(col);
-        std::getline(ss, col, ',');
-        m.players[i].x_loc = stod_with_default(col);
-        std::getline(ss, col, ',');
-        m.players[i].y_loc = stod_with_default(col);
-        std::getline(ss, col, ',');
-        m.players[i].radius = stod_with_default(col);
+        next_sep = row.find(',', next_sep) + 1;
+        m.players[i].team_id = std::atol(c + next_sep);
+        next_sep = row.find(',', next_sep) + 1;
+        m.players[i].player_id = std::atoi(c + next_sep);
+        next_sep = row.find(',', next_sep) + 1;
+        m.players[i].x_loc = std::atof(c + next_sep);
+        next_sep = row.find(',', next_sep) + 1;
+        m.players[i].y_loc = std::atof(c + next_sep);
+        next_sep = row.find(',', next_sep) + 1;
+        m.players[i].radius = std::atof(c + next_sep);
     }
 
-    std::getline(ss, col, ',');
-    m.game_clock = clock_fixed_point(stod_with_default(col));
-    std::getline(ss, col, ',');
-    m.shot_clock = stod_with_default(col);
-    std::getline(ss, col, ',');
-    m.quarter = stoi_with_default(col);
-    std::getline(ss, col, ',');
-    m.game_id = stol_with_default(col);
-    std::getline(ss, col, ',');
-    m.game_num = stol_with_default(col);
+    next_sep = row.find(',', next_sep) + 1;
+    m.game_clock = clock_fixed_point(std::atof(c + next_sep));
+    next_sep = row.find(',', next_sep) + 1;
+    m.shot_clock = std::atof(c + next_sep);
+    next_sep = row.find(',', next_sep) + 1;
+    m.quarter = std::atoi(c + next_sep);
+    next_sep = row.find(',', next_sep) + 1;
+    m.game_id = std::atol(c + next_sep);
+    next_sep = row.find(',', next_sep) + 1;
+    m.game_num = std::atol(c + next_sep);
 
-    // load event data
-    std::getline(ss, col, ',');
-    stringstream es(col);
-    string event_subcol;
-    while (std::getline(es, event_subcol, ';')) {
-        string without_parens = event_subcol.substr(1, event_subcol.size()-2);
-        size_t colon_loc = without_parens.find(':');
-        string event_id_str = without_parens.substr(0, colon_loc);
-        string moment_in_event_str = without_parens.substr(colon_loc+1,without_parens.size()-colon_loc-1);
-        event_moment_data emd {stol_with_default(event_id_str),
-                               stoi_with_default(moment_in_event_str)};
-        m.events.push_back(emd);
+    // load event data, add 1 after for check so npos is valid comparison
+    for (next_sep = row.find(',', next_sep); next_sep != std::string::npos; next_sep = row.find(';', next_sep)) {
+        next_sep += 2;
+        long int event_id = std::atol(c + next_sep);
+        next_sep += 2;
+        int moment_in_event = std::atol(c + next_sep);
+        m.events.push_back({event_id, moment_in_event});
     }
 }
 
