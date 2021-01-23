@@ -4,4 +4,5 @@ docker run \
     --mount type=bind,source="$(pwd)"/q,target=/home/durst/q \
     --mount type=bind,source="$(pwd)"/data,target=/home/durst/big_dev/nba-movement-data/data \
     --cap-add=SYS_PTRACE \
+    --cap-add=SYS_ADMIN \
     durst/space-time-db:0.1 bash
