@@ -2,6 +2,7 @@
 #include <set>
 #include <utility>
 #include <iostream>
+#include <omp.h>
 
 void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, court_bins * moment_bins,
                                                  list<trajectory_data> * trajectories, coordinate_range origin,
@@ -25,8 +26,12 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
         }
     }
 
+    int num_threads = omp_get_max_threads();
+    vector<trajectory_data> temp_trajs[num_threads];
+
     #pragma omp parallel for if(parallel)
     for (int src_moment_index = 0; src_moment_index < src_moments.size(); src_moment_index++) {
+        int thread_num = omp_get_thread_num();
         const player_pointer_and_id& src_moment = src_moments.at(src_moment_index);
         long int player_id = src_moment.player_id;
         int64_t src_time = src_moment.moment_index;
@@ -42,9 +47,8 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
                         moments->quarter[src_time] == moments->quarter[dst_time] &&
                         point_intersect_no_time(&destination, moments->x_loc[dst_player_index][dst_time],
                                             moments->y_loc[dst_player_index][dst_time])) {
-                    #pragma omp critical
                     {
-                        trajectories->append_node({
+                        temp_trajs[thread_num].push_back({
                                                           moments->game_id[src_time],
                                                           moments->game_num[src_time],
                                                           moments->team_id[src_moment.player_index][src_time],
@@ -63,6 +67,12 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
             }
         }
 
+    }
+
+    for (int i = 0; i < num_threads; i++) {
+        for (const auto & elem : temp_trajs[i]) {
+            trajectories->append_node(elem);
+        }
     }
 
 }

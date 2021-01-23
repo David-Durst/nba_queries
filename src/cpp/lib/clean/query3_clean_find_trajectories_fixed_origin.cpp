@@ -1,13 +1,17 @@
 #include "clean_queries.h"
 #include <functional>
 #include <iostream>
+#include <omp.h>
 
 void find_trajectories_fixed_origin_clean(moment_col_store * moments, list<trajectory_data> * trajectories,
                                           coordinate_range origin, coordinate_range destination,
                                           int t_offset, int t_delta_ticks, bool parallel) {
     int t_index_offset = t_offset * 25;
+    int num_threads = omp_get_max_threads();
+    vector<trajectory_data> temp_trajs[num_threads];
     #pragma omp parallel for if(parallel)
     for (int64_t src_time = 0; src_time < moments->size - t_index_offset + t_delta_ticks; src_time++) {
+        int thread_num = omp_get_thread_num();
         bool players_match_src[] = {false,false,false,false,false,false,false,false,false,false,false,false};
         bool any_match = false;
         for (int j = 0; j < 11; j++) {
@@ -33,9 +37,8 @@ void find_trajectories_fixed_origin_clean(moment_col_store * moments, list<traje
                         moments->quarter[src_time] == moments->quarter[dst_time] &&
                         point_intersect_no_time(&destination, moments->x_loc[dst_player_index][dst_time],
                                                 moments->y_loc[dst_player_index][dst_time])) {
-                        #pragma omp critical
                         {
-                            trajectories->append_node({
+                            temp_trajs[thread_num].push_back({
                                                               moments->game_id[src_time],
                                                               moments->game_num[src_time],
                                                               moments->team_id[src_player_index][src_time],
@@ -53,6 +56,12 @@ void find_trajectories_fixed_origin_clean(moment_col_store * moments, list<traje
                     }
                 }
             }
+        }
+    }
+
+    for (int i = 0; i < num_threads; i++) {
+        for (const auto & elem : temp_trajs[i]) {
+            trajectories->append_node(elem);
         }
     }
 }

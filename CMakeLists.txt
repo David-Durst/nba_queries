@@ -64,6 +64,7 @@ install (TARGETS nba_queries_lib
 # ADDING TESTS
 # add executable
 add_executable(tests ${NBA_TESTS_SOURCES} ${NBA_TESTS})
+target_link_libraries(tests PRIVATE OpenMP::OpenMP_CXX)
 target_include_directories(tests PUBLIC ${PROJECT_SOURCE_DIR}/catch)
 target_include_directories(tests PUBLIC ${PROJECT_BINARY_DIR}/catch)
 
