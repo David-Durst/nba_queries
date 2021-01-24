@@ -123,18 +123,21 @@ void load_cleaned_moment_row(string& row, cleaned_moment& m) {
     string col;
     stringstream ss(row);
     const char * c = row.c_str();
-    size_t next_sep;
+    size_t next_sep, frac_start;
 
     // load ball
     m.ball.team_id  = std::atol(c);
     next_sep = row.find(',') + 1;
     m.ball.player_id = std::atoi(c + next_sep);
     next_sep = row.find(',', next_sep) + 1;
-    m.ball.x_loc = std::atof(c + next_sep);
-    next_sep = row.find(',', next_sep) + 1;
-    m.ball.y_loc = std::atof(c + next_sep);
-    next_sep = row.find(',', next_sep) + 1;
-    m.ball.radius = std::atof(c + next_sep);
+    frac_start = row.find('.', next_sep) + 1;
+    m.ball.x_loc = std::atoi(c + next_sep) + (std::atoi(c + frac_start) / 10000.0);
+    next_sep = row.find(',', frac_start) + 1;
+    frac_start = row.find('.', next_sep) + 1;
+    m.ball.y_loc = std::atoi(c + next_sep) + (std::atoi(c + frac_start) / 10000.0);
+    next_sep = row.find(',', frac_start) + 1;
+    frac_start = row.find('.', next_sep) + 1;
+    m.ball.radius = std::atoi(c + next_sep) + (std::atoi(c + frac_start) / 10000.0);
 
     // load players
     for (int i = 0; i < 10; i++) {
@@ -143,17 +146,22 @@ void load_cleaned_moment_row(string& row, cleaned_moment& m) {
         next_sep = row.find(',', next_sep) + 1;
         m.players[i].player_id = std::atoi(c + next_sep);
         next_sep = row.find(',', next_sep) + 1;
-        m.players[i].x_loc = std::atof(c + next_sep);
-        next_sep = row.find(',', next_sep) + 1;
-        m.players[i].y_loc = std::atof(c + next_sep);
-        next_sep = row.find(',', next_sep) + 1;
-        m.players[i].radius = std::atof(c + next_sep);
+        frac_start = row.find('.', next_sep) + 1;
+        m.players[i].x_loc = std::atoi(c + next_sep) + (std::atoi(c + frac_start) / 10000.0);
+        next_sep = row.find(',', frac_start) + 1;
+        frac_start = row.find('.', next_sep) + 1;
+        m.players[i].y_loc = std::atoi(c + next_sep) + (std::atoi(c + frac_start) / 10000.0);
+        next_sep = row.find(',', frac_start) + 1;
+        frac_start = row.find('.', next_sep) + 1;
+        m.players[i].radius = std::atoi(c + next_sep) + (std::atoi(c + frac_start) / 10000.0);
     }
 
     next_sep = row.find(',', next_sep) + 1;
-    m.game_clock = clock_fixed_point(std::atof(c + next_sep));
+    frac_start = row.find('.', next_sep) + 1;
+    m.game_clock = clock_fixed_point(std::atoi(c + next_sep) + (std::atoi(c + frac_start) / 10000.0));
     next_sep = row.find(',', next_sep) + 1;
-    m.shot_clock = std::atof(c + next_sep);
+    frac_start = row.find('.', next_sep) + 1;
+    m.shot_clock = std::atoi(c + next_sep) + (std::atoi(c + frac_start) / 10000.0);
     next_sep = row.find(',', next_sep) + 1;
     m.quarter = std::atoi(c + next_sep);
     next_sep = row.find(',', next_sep) + 1;

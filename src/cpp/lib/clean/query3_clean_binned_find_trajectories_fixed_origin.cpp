@@ -128,11 +128,11 @@ court_bins::court_bins(moment_col_store * moments) {
 
     // now create the bins with a data structure that is efficient insert, but inefficient lookup (lists)
     // this will store the locations of all player in each bin in lists before inserting into array
-    std::vector<std::vector<std::list<player_pointer>>> bin_data_in_lists;
+    std::vector<std::vector<std::vector<player_pointer>>> bin_data_in_lists;
     for (int64_t i = 0; i < players_indices_in_bins.size(); i++) {
-        bin_data_in_lists.push_back(std::vector<std::list<player_pointer>>());
+        bin_data_in_lists.push_back(std::vector<std::vector<player_pointer>>());
         for (int64_t j = 0; j < NUM_BINS; j++) {
-            bin_data_in_lists[i].push_back(std::list<player_pointer>());
+            bin_data_in_lists[i].push_back(std::vector<player_pointer>());
         }
     }
 
