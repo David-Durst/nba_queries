@@ -4,8 +4,8 @@
 #include <iostream>
 #include <omp.h>
 
-void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, court_bins * moment_bins,
-                                                 vector<trajectory_data> & trajectories, coordinate_range origin,
+int64_t find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, court_bins * moment_bins,
+                                                 trajectory_data ** trajectories, coordinate_range origin,
                                                  coordinate_range destination, int t_offset, int t_delta_ticks,
                                                  bool parallel) {
     const std::list<int>& origin_bins = court_bins::get_bins_in_region(origin);
@@ -81,14 +81,15 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
     for (int i = 1; i < num_threads; i++) {
         starts[i] = starts[i-1] + temp_trajs[i-1].size();
     }
-    trajectories.resize(starts[num_threads - 1] + temp_trajs[num_threads -1].size());
+    int64_t total_size = starts[num_threads - 1] + temp_trajs[num_threads -1].size();
+    *trajectories = new trajectory_data[total_size];
     #pragma omp parallel for if(parallel)
     for (int i = 0; i < num_threads; i++) {
         for (int j = 0; j < temp_trajs[i].size(); j++) {
-            trajectories[starts[i] + j] = temp_trajs[i].at(j);
+            (*trajectories)[starts[i] + j] = temp_trajs[i].at(j);
         }
     }
-
+    return total_size;
 }
 
 void find_trajectories_fixed_origin_clean_binned_part(moment_col_store * moments, court_bins * moment_bins,

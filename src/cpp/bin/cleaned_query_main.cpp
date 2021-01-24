@@ -42,6 +42,7 @@ int main(int argc, char * argv[]) {
     vector<shot_and_player_data> shots_and_players_seq, shots_and_players_par;
     list<shot_and_player_data> shots_and_players_list;
     vector<trajectory_data> trajectories;
+    trajectory_data * trajectories_arr = new trajectory_data[1];
     vector<extra_game_data> extra_data;
     results res;
     if (argc != 6) {
@@ -175,17 +176,18 @@ int main(int argc, char * argv[]) {
     CALLGRIND_TOGGLE_COLLECT;
     std::cout << "starting collect" << std::endl;
 #endif
+    int64_t total_size;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
-        trajectories.clear();
-        find_trajectories_fixed_origin_clean_binned(moments_col, bins, trajectories, origin, destination, 2, 25, true);
+        delete[] trajectories_arr;
+        total_size = find_trajectories_fixed_origin_clean_binned(moments_col, bins, &trajectories_arr, origin, destination, 2, 25, true);
     });
 #ifdef CALLGRIND
     CALLGRIND_TOGGLE_COLLECT;
     CALLGRIND_STOP_INSTRUMENTATION;
 #endif
     printf("compute time: %gms\n", min_time * 1e3);
-    std::cout << "trajectories size: " << trajectories.size() << std::endl;
-    std::cout << "first trajectory: " << trajectories.at(0) << std::endl;
+    std::cout << "trajectories size: " << total_size << std::endl;
+    std::cout << "first trajectory: " << trajectories_arr[0] << std::endl;
     res.query3_binned_colstore_parallel_time = min_time;
 
     std::cout << "running partial query 3 cleaned and binned with colstore, parallel" << std::endl;

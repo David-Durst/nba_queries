@@ -32,8 +32,8 @@ void find_trajectories_fixed_origin_clean_rowstore(vector<cleaned_moment>& momen
                                                int t_offset, int t_delta_ticks);
 
 class court_bins;
-void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, court_bins * moment_bins,
-                                                 vector<trajectory_data>& trajectories, coordinate_range origin,
+int64_t find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, court_bins * moment_bins,
+                                                 trajectory_data ** trajectories, coordinate_range origin,
                                                  coordinate_range destination, int t_offset, int t_delta_ticks, bool parallel);
 
 void find_trajectories_fixed_origin_clean_binned_part(moment_col_store * moments, court_bins * moment_bins,
