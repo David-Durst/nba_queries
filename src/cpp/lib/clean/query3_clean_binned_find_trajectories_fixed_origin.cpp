@@ -4,8 +4,8 @@
 #include <iostream>
 #include <omp.h>
 
-int64_t find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, court_bins * moment_bins,
-                                                 trajectory_data ** trajectories, coordinate_range origin,
+void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, court_bins * moment_bins,
+                                                 vector<trajectory_data>& trajectories, coordinate_range origin,
                                                  coordinate_range destination, int t_offset, int t_delta_ticks,
                                                  bool parallel) {
     const std::list<int>& origin_bins = court_bins::get_bins_in_region(origin);
@@ -77,49 +77,14 @@ int64_t find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, 
 
     }
 
-    int starts[num_threads];
-    starts[0] = 0;
-    for (int i = 1; i < num_threads; i++) {
-        starts[i] = starts[i-1] + temp_trajs[i-1].size();
-    }
-    int64_t total_size = starts[num_threads - 1] + temp_trajs[num_threads -1].size();
-    *trajectories = new trajectory_data[total_size];
     for (int i = 0; i < num_threads; i++) {
-        for (int j = 0; j < temp_trajs[i].size(); j++) {
-            (*trajectories)[starts[i] + j] = temp_trajs[i].at(j);
-        }
-    }
-    return total_size;
-}
-
-void find_trajectories_fixed_origin_clean_binned_part(moment_col_store * moments, court_bins * moment_bins,
-                                                 vector<trajectory_data>& trajectories, coordinate_range origin,
-                                                 coordinate_range destination, int t_offset, int t_delta_ticks,
-                                                 bool parallel) {
-    const std::list<int>& origin_bins = court_bins::get_bins_in_region(origin);
-    int t_index_offset = t_offset * 25;
-    std::vector<player_pointer_and_id> src_moments;
-    int num_threads = omp_get_max_threads();
-    vector<player_pointer_and_id> temp_srcs[num_threads];
-
-    #pragma omp parallel for if(parallel)
-    for (int player_num = 0; player_num < moment_bins->players_indices_in_bins.size(); player_num++) {
-        int thread_num = omp_get_thread_num();
-        long int player_id = moment_bins->player_ids[player_num];
-        // all trajectory starts for the current player
-        for (const auto &src_bin : origin_bins) {
-            for (const player_pointer *src_moment = moment_bins->bin_start(player_id, src_bin);
-                 src_moment != moment_bins->bin_end(player_id, src_bin); src_moment++) {
-                if (point_intersect_no_time(&origin, moments->x_loc[src_moment->player_index][src_moment->moment_index],
-                                            moments->y_loc[src_moment->player_index][src_moment->moment_index])) {
-                    temp_srcs[thread_num].push_back({src_moment->moment_index, src_moment->player_index, player_id});
-                }
-            }
+        for (const auto & elem : temp_trajs[i]) {
+            trajectories.push_back(elem);
         }
     }
 }
 
-void find_trajectories_fixed_origin_clean_binned_part_par(moment_col_store * moments, court_bins * moment_bins,
+void find_trajectories_fixed_origin_clean_binned_part_just_outer(moment_col_store * moments, court_bins * moment_bins,
                                                       vector<trajectory_data>& trajectories, coordinate_range origin,
                                                       coordinate_range destination, int t_offset, int t_delta_ticks,
                                                       bool parallel) {

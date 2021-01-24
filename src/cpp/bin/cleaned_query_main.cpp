@@ -169,21 +169,19 @@ int main(int argc, char * argv[]) {
 
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         trajectories.clear();
-        moments_col->inner_loop_time = 0;
         find_trajectories_fixed_origin_clean(moments_col, trajectories, origin, destination, 2, 25, true);
     });
     printf("compute time: %gms\n", min_time * 1e3);
-    printf("inner_loop_time: %gms\n", moments_col->inner_loop_time * 1e3);
     std::cout << "trajectories size: " << trajectories.size() << std::endl;
     std::cout << "first trajectory: " << trajectories.at(0) << std::endl;
     std::cout << "first trajectory starting index" << clock_fixed_point(trajectories.at(0).start_game_clock).time_to_index(extra_data, trajectories.at(0).game_num, trajectories.at(0).quarter) << std::endl;
     res.query3_colstore_parallel_time = min_time;
 
-    std::cout << "running partial query 3 cleaned with colstore, parallel" << std::endl;
+    std::cout << "running just outer loop of query 3 cleaned with colstore, parallel" << std::endl;
 
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         trajectories.clear();
-        find_trajectories_fixed_origin_clean_part(moments_col, trajectories, origin, destination, 2, 25, true);
+        find_trajectories_fixed_origin_clean_just_outer(moments_col, trajectories, origin, destination, 2, 25, true);
     });
     printf("compute time: %gms\n", min_time * 1e3);
     /*
@@ -205,35 +203,27 @@ int main(int argc, char * argv[]) {
     CALLGRIND_TOGGLE_COLLECT;
     std::cout << "starting collect" << std::endl;
 #endif
-    int64_t total_size;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
-        delete[] trajectories_arr;
-        total_size = find_trajectories_fixed_origin_clean_binned(moments_col, bins, &trajectories_arr, origin, destination, 2, 25, true);
+        trajectories.clear();
+        find_trajectories_fixed_origin_clean_binned(moments_col, bins, trajectories, origin, destination, 2, 25, true);
     });
 #ifdef CALLGRIND
     CALLGRIND_TOGGLE_COLLECT;
     CALLGRIND_STOP_INSTRUMENTATION;
 #endif
     printf("compute time: %gms\n", min_time * 1e3);
-    std::cout << "trajectories size: " << total_size << std::endl;
-    std::cout << "first trajectory: " << trajectories_arr[0] << std::endl;
+    std::cout << "trajectories size: " << trajectories.size() << std::endl;
+    std::cout << "first trajectory: " << trajectories.at(0) << std::endl;
     res.query3_binned_colstore_parallel_time = min_time;
 
-    std::cout << "running partial query 3 cleaned and binned with colstore, parallel" << std::endl;
+    std::cout << "running just outer loop of query 3 cleaned and binned with colstore, parallel" << std::endl;
 
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         trajectories.clear();
-        find_trajectories_fixed_origin_clean_binned_part(moments_col, bins, trajectories, origin, destination, 2, 25, true);
+        find_trajectories_fixed_origin_clean_binned_just_outer(moments_col, bins, trajectories, origin, destination, 2, 25, true);
     });
     printf("compute time: %gms\n", min_time * 1e3);
 
-    std::cout << "running partial parallel query 3 cleaned and binned with colstore, parallel" << std::endl;
-
-    min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
-        trajectories.clear();
-        find_trajectories_fixed_origin_clean_binned_part_par(moments_col, bins, trajectories, origin, destination, 2, 25, true);
-    });
-    printf("compute time: %gms\n", min_time * 1e3);
     /*
     std::cout << "running query 3 cleaned with row store, sequential" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {

@@ -20,7 +20,6 @@ public:
 
 class moment_col_store {
 public:
-    double inner_loop_time;
     size_t size;
     // the first player is always the ball
     long int * team_id[NUM_PLAYERS_AND_BALL];

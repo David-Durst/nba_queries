@@ -26,7 +26,7 @@ void find_trajectories_fixed_origin_clean(moment_col_store * moments, vector<tra
                                           coordinate_range origin, coordinate_range destination,
                                           int t_offset, int t_delta_ticks, bool parallel);
 
-void find_trajectories_fixed_origin_clean_part(moment_col_store * moments, vector<trajectory_data>& trajectories,
+void find_trajectories_fixed_origin_clean_just_outer(moment_col_store * moments, vector<trajectory_data>& trajectories,
                                           coordinate_range origin, coordinate_range destination,
                                           int t_offset, int t_delta_ticks, bool parallel);
 
@@ -36,16 +36,13 @@ void find_trajectories_fixed_origin_clean_rowstore(vector<cleaned_moment>& momen
                                                int t_offset, int t_delta_ticks);
 
 class court_bins;
-int64_t find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, court_bins * moment_bins,
-                                                 trajectory_data ** trajectories, coordinate_range origin,
-                                                 coordinate_range destination, int t_offset, int t_delta_ticks, bool parallel);
-
-void find_trajectories_fixed_origin_clean_binned_part(moment_col_store * moments, court_bins * moment_bins,
+void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, court_bins * moment_bins,
                                                  vector<trajectory_data>& trajectories, coordinate_range origin,
                                                  coordinate_range destination, int t_offset, int t_delta_ticks, bool parallel);
-void find_trajectories_fixed_origin_clean_binned_part_par(moment_col_store * moments, court_bins * moment_bins,
-                                                      vector<trajectory_data>& trajectories, coordinate_range origin,
-                                                      coordinate_range destination, int t_offset, int t_delta_ticks, bool parallel);
+
+void find_trajectories_fixed_origin_clean_binned_just_outer(moment_col_store * moments, court_bins * moment_bins,
+                                                 vector<trajectory_data>& trajectories, coordinate_range origin,
+                                                 coordinate_range destination, int t_offset, int t_delta_ticks, bool parallel);
 
 inline bool point_intersect_no_time(coordinate_range * r, double x_loc, double y_loc) {
     bool x_intersects = x_loc >= r->start.x && x_loc <= r->end.x;
