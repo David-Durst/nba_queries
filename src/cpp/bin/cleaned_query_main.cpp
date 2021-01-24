@@ -177,6 +177,13 @@ int main(int argc, char * argv[]) {
     std::cout << "first trajectory starting index" << clock_fixed_point(trajectories.at(0).start_game_clock).time_to_index(extra_data, trajectories.at(0).game_num, trajectories.at(0).quarter) << std::endl;
     res.query3_colstore_parallel_time = min_time;
 
+    std::cout << "running partial query 3 cleaned with colstore, parallel" << std::endl;
+
+    min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
+        trajectories.clear();
+        find_trajectories_fixed_origin_clean_part(moments_col, trajectories, origin, destination, 2, 25, true);
+    });
+    printf("compute time: %gms\n", min_time * 1e3);
     /*
     std::cout << "running query 3 cleaned and binned with colstore, sequential" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {

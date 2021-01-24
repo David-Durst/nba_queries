@@ -26,6 +26,10 @@ void find_trajectories_fixed_origin_clean(moment_col_store * moments, vector<tra
                                           coordinate_range origin, coordinate_range destination,
                                           int t_offset, int t_delta_ticks, bool parallel);
 
+void find_trajectories_fixed_origin_clean_part(moment_col_store * moments, vector<trajectory_data>& trajectories,
+                                          coordinate_range origin, coordinate_range destination,
+                                          int t_offset, int t_delta_ticks, bool parallel);
+
 
 void find_trajectories_fixed_origin_clean_rowstore(vector<cleaned_moment>& moments, vector<trajectory_data>& trajectories,
                                                coordinate_range origin, coordinate_range destination,

@@ -66,6 +66,29 @@ void find_trajectories_fixed_origin_clean(moment_col_store * moments, vector<tra
     }
 }
 
+
+void find_trajectories_fixed_origin_clean_part(moment_col_store * moments, vector<trajectory_data> & trajectories,
+                                          coordinate_range origin, coordinate_range destination,
+                                          int t_offset, int t_delta_ticks, bool parallel) {
+    int t_index_offset = t_offset * 25;
+    int num_threads = omp_get_max_threads();
+    vector<trajectory_data> temp_trajs[num_threads];
+    #pragma omp parallel for if(parallel)
+    for (int64_t src_time = 0; src_time < moments->size - t_index_offset + t_delta_ticks; src_time++) {
+        int thread_num = omp_get_thread_num();
+        bool players_match_src[] = {false,false,false,false,false,false,false,false,false,false,false,false};
+        bool any_match = false;
+        for (int j = 0; j < 11; j++) {
+            players_match_src[j] =
+                    point_intersect_no_time(&origin, moments->x_loc[j][src_time], moments->y_loc[j][src_time]);
+            any_match |= players_match_src[j];
+        }
+        if (!any_match) {
+            continue;
+        }
+    }
+}
+
 void find_trajectories_fixed_origin_clean_rowstore(vector<cleaned_moment>& moments, vector<trajectory_data>& trajectories,
                                                    coordinate_range origin, coordinate_range destination,
                                                    int t_offset, int t_delta_ticks) {
