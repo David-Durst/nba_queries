@@ -8,6 +8,8 @@
 #include <chrono>
 #include <numeric>
 #include <limits>
+#include <sys/types.h>
+#include <unistd.h>
 #include "check_distances.h"
 #include "find_trajectories.h"
 #include "clean_queries.h"
@@ -143,6 +145,8 @@ int main(int argc, char * argv[]) {
     res.query3_colstore_sequential_time = -1; //min_time
 
     std::cout << "running query 3 cleaned with colstore, parallel" << std::endl;
+    pid_t pid = getpid();
+
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         trajectories_list.clear();
         find_trajectories_fixed_origin_clean(moments_col, &trajectories_list, origin, destination, 2, 25, true);
@@ -192,6 +196,14 @@ int main(int argc, char * argv[]) {
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         trajectories_list.clear();
         find_trajectories_fixed_origin_clean_binned_part(moments_col, bins, &trajectories_list, origin, destination, 2, 25, true);
+    });
+    printf("compute time: %gms\n", min_time * 1e3);
+
+    std::cout << "running partial parallel query 3 cleaned and binned with colstore, parallel" << std::endl;
+
+    min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
+        trajectories_list.clear();
+        find_trajectories_fixed_origin_clean_binned_part_par(moments_col, bins, &trajectories_list, origin, destination, 2, 25, true);
     });
     printf("compute time: %gms\n", min_time * 1e3);
     /*
