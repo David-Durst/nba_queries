@@ -3,7 +3,7 @@
 #include <iostream>
 #include <omp.h>
 
-void find_trajectories_fixed_origin_clean(moment_col_store * moments, list<trajectory_data> * trajectories,
+void find_trajectories_fixed_origin_clean(moment_col_store * moments, vector<trajectory_data> & trajectories,
                                           coordinate_range origin, coordinate_range destination,
                                           int t_offset, int t_delta_ticks, bool parallel) {
     int t_index_offset = t_offset * 25;
@@ -61,7 +61,7 @@ void find_trajectories_fixed_origin_clean(moment_col_store * moments, list<traje
 
     for (int i = 0; i < num_threads; i++) {
         for (const auto & elem : temp_trajs[i]) {
-            trajectories->append_node(elem);
+            trajectories.push_back(elem);
         }
     }
 }

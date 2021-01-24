@@ -42,7 +42,6 @@ int main(int argc, char * argv[]) {
     vector<shot_and_player_data> shots_and_players_seq, shots_and_players_par;
     list<shot_and_player_data> shots_and_players_list;
     vector<trajectory_data> trajectories;
-    list<trajectory_data> trajectories_list;
     vector<extra_game_data> extra_data;
     results res;
     if (argc != 6) {
@@ -148,10 +147,9 @@ int main(int argc, char * argv[]) {
     pid_t pid = getpid();
 
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
-        trajectories_list.clear();
-        find_trajectories_fixed_origin_clean(moments_col, &trajectories_list, origin, destination, 2, 25, true);
+        trajectories.clear();
+        find_trajectories_fixed_origin_clean(moments_col, trajectories, origin, destination, 2, 25, true);
     });
-    trajectories_list.to_vector(trajectories);
     printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "trajectories size: " << trajectories.size() << std::endl;
     std::cout << "first trajectory: " << trajectories.at(0) << std::endl;
@@ -178,14 +176,13 @@ int main(int argc, char * argv[]) {
     std::cout << "starting collect" << std::endl;
 #endif
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
-        trajectories_list.clear();
-        find_trajectories_fixed_origin_clean_binned(moments_col, bins, &trajectories_list, origin, destination, 2, 25, true);
+        trajectories.clear();
+        find_trajectories_fixed_origin_clean_binned(moments_col, bins, trajectories, origin, destination, 2, 25, true);
     });
 #ifdef CALLGRIND
     CALLGRIND_TOGGLE_COLLECT;
     CALLGRIND_STOP_INSTRUMENTATION;
 #endif
-    trajectories_list.to_vector(trajectories);
     printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "trajectories size: " << trajectories.size() << std::endl;
     std::cout << "first trajectory: " << trajectories.at(0) << std::endl;
@@ -194,16 +191,16 @@ int main(int argc, char * argv[]) {
     std::cout << "running partial query 3 cleaned and binned with colstore, parallel" << std::endl;
 
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
-        trajectories_list.clear();
-        find_trajectories_fixed_origin_clean_binned_part(moments_col, bins, &trajectories_list, origin, destination, 2, 25, true);
+        trajectories.clear();
+        find_trajectories_fixed_origin_clean_binned_part(moments_col, bins, trajectories, origin, destination, 2, 25, true);
     });
     printf("compute time: %gms\n", min_time * 1e3);
 
     std::cout << "running partial parallel query 3 cleaned and binned with colstore, parallel" << std::endl;
 
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
-        trajectories_list.clear();
-        find_trajectories_fixed_origin_clean_binned_part_par(moments_col, bins, &trajectories_list, origin, destination, 2, 25, true);
+        trajectories.clear();
+        find_trajectories_fixed_origin_clean_binned_part_par(moments_col, bins, trajectories, origin, destination, 2, 25, true);
     });
     printf("compute time: %gms\n", min_time * 1e3);
     /*

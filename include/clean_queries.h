@@ -22,7 +22,7 @@ void find_nearest_defender_at_each_shot_clean(moment_col_store * moments,
                                               int time_delta_ticks, bool parallel);
 
 // query 3
-void find_trajectories_fixed_origin_clean(moment_col_store * moments, list<trajectory_data> * trajectories,
+void find_trajectories_fixed_origin_clean(moment_col_store * moments, vector<trajectory_data>& trajectories,
                                           coordinate_range origin, coordinate_range destination,
                                           int t_offset, int t_delta_ticks, bool parallel);
 
@@ -33,14 +33,14 @@ void find_trajectories_fixed_origin_clean_rowstore(vector<cleaned_moment>& momen
 
 class court_bins;
 void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, court_bins * moment_bins,
-                                                 list<trajectory_data> * trajectories, coordinate_range origin,
+                                                 vector<trajectory_data>& trajectories, coordinate_range origin,
                                                  coordinate_range destination, int t_offset, int t_delta_ticks, bool parallel);
 
 void find_trajectories_fixed_origin_clean_binned_part(moment_col_store * moments, court_bins * moment_bins,
-                                                 list<trajectory_data> * trajectories, coordinate_range origin,
+                                                 vector<trajectory_data>& trajectories, coordinate_range origin,
                                                  coordinate_range destination, int t_offset, int t_delta_ticks, bool parallel);
 void find_trajectories_fixed_origin_clean_binned_part_par(moment_col_store * moments, court_bins * moment_bins,
-                                                      list<trajectory_data> * trajectories, coordinate_range origin,
+                                                      vector<trajectory_data>& trajectories, coordinate_range origin,
                                                       coordinate_range destination, int t_offset, int t_delta_ticks, bool parallel);
 
 inline bool point_intersect_no_time(coordinate_range * r, double x_loc, double y_loc) {
