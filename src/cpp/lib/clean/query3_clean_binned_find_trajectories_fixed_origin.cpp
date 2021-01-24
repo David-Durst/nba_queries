@@ -86,7 +86,7 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
 }
 
 void find_trajectories_fixed_origin_clean_binned_part(moment_col_store * moments, court_bins * moment_bins,
-                                                 list<trajectory_data> * trajectories, coordinate_range origin,
+                                                 vector<trajectory_data>& trajectories, coordinate_range origin,
                                                  coordinate_range destination, int t_offset, int t_delta_ticks,
                                                  bool parallel) {
     const std::list<int> &origin_bins = court_bins::get_bins_in_region(origin);
@@ -109,7 +109,7 @@ void find_trajectories_fixed_origin_clean_binned_part(moment_col_store * moments
 }
 
 void find_trajectories_fixed_origin_clean_binned_part_par(moment_col_store * moments, court_bins * moment_bins,
-                                                      list<trajectory_data> * trajectories, coordinate_range origin,
+                                                      vector<trajectory_data>& trajectories, coordinate_range origin,
                                                       coordinate_range destination, int t_offset, int t_delta_ticks,
                                                       bool parallel) {
     const std::list<int> &origin_bins = court_bins::get_bins_in_region(origin);
