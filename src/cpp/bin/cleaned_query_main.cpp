@@ -132,6 +132,8 @@ int main(int argc, char * argv[]) {
     res.query1_colstore_parallel_time = min_time;
     coordinate_range origin{{64.5f,24.9f,0}, {65.5f,25.1f, 0}};
     coordinate_range destination{{70.0f,16.0f,0}, {90.0f,32.0f, 0}};
+    std::cout << "player_pointers pairs in region: " << bins->get_elems_in_region(origin) << std::endl;
+    std::cout << "size of player_pointers: " << sizeof(player_pointer) << std::endl;
     /*
     std::cout << "running query 3 cleaned with colstore, sequential" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
@@ -145,7 +147,7 @@ int main(int argc, char * argv[]) {
     res.query3_colstore_sequential_time = -1; //min_time
 
     std::cout << "running query 3 cleaned with colstore, parallel" << std::endl;
-    pid_t pid = getpid();
+    std::cout << "trajectory data size: " << sizeof(trajectory_data) << std::endl;
 
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         trajectories.clear();

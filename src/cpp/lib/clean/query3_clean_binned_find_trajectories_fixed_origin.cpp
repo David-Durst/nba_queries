@@ -76,6 +76,7 @@ int64_t find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, 
         }
 
     }
+
     int starts[num_threads];
     starts[0] = 0;
     for (int i = 1; i < num_threads; i++) {
@@ -83,7 +84,6 @@ int64_t find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, 
     }
     int64_t total_size = starts[num_threads - 1] + temp_trajs[num_threads -1].size();
     *trajectories = new trajectory_data[total_size];
-    #pragma omp parallel for if(parallel)
     for (int i = 0; i < num_threads; i++) {
         for (int j = 0; j < temp_trajs[i].size(); j++) {
             (*trajectories)[starts[i] + j] = temp_trajs[i].at(j);

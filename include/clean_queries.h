@@ -112,6 +112,19 @@ public:
         return &player_moment_bins[offset];
     }
 
+    int64_t get_elems_in_region(const coordinate_range& r) {
+        const std::list<int>& bins = get_bins_in_region(r);
+        int64_t num_bins = 0;
+        for (int player_num = 0; player_num < this->players_indices_in_bins.size(); player_num++) {
+            long int player_id = this->player_ids[player_num];
+            // all trajectory starts for the current player
+            for (const auto &src_bin : bins) {
+                num_bins += this->bin_end(player_id, src_bin) - this->bin_start(player_id, src_bin);
+            }
+        }
+        return num_bins;
+    }
+
 
     // map from player index in moments data set to the bin index for that player
     std::map<long int, int> players_indices_in_bins;
