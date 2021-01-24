@@ -1,4 +1,5 @@
 #include "clean_queries.h"
+#include "benchmark.h"
 #include <functional>
 #include <iostream>
 #include <omp.h>
@@ -22,6 +23,7 @@ void find_trajectories_fixed_origin_clean(moment_col_store * moments, vector<tra
         if (!any_match) {
             continue;
         }
+        auto start = Halide::Tools::benchmark_now();
         for (int64_t dst_time = src_time + t_index_offset - t_delta_ticks;
             dst_time < src_time + t_index_offset + t_delta_ticks + 1; dst_time++) {
             if (dst_time < 0 || dst_time > moments->size) {
@@ -57,6 +59,8 @@ void find_trajectories_fixed_origin_clean(moment_col_store * moments, vector<tra
                 }
             }
         }
+        auto end = Halide::Tools::benchmark_now();
+        moments->inner_loop_time += Halide::Tools::benchmark_duration_seconds(start, end);
     }
 
     for (int i = 0; i < num_threads; i++) {

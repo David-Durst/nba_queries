@@ -169,9 +169,11 @@ int main(int argc, char * argv[]) {
 
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         trajectories.clear();
+        moments_col->inner_loop_time = 0;
         find_trajectories_fixed_origin_clean(moments_col, trajectories, origin, destination, 2, 25, true);
     });
     printf("compute time: %gms\n", min_time * 1e3);
+    printf("inner_loop_time: %gms\n", moments_col->inner_loop_time * 1e3);
     std::cout << "trajectories size: " << trajectories.size() << std::endl;
     std::cout << "first trajectory: " << trajectories.at(0) << std::endl;
     std::cout << "first trajectory starting index" << clock_fixed_point(trajectories.at(0).start_game_clock).time_to_index(extra_data, trajectories.at(0).game_num, trajectories.at(0).quarter) << std::endl;
