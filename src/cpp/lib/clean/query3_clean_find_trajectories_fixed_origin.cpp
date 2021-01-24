@@ -76,7 +76,8 @@ void find_trajectories_fixed_origin_clean_part(moment_col_store * moments, vecto
                                           int t_offset, int t_delta_ticks, bool parallel) {
     int t_index_offset = t_offset * 25;
     int num_threads = omp_get_max_threads();
-    vector<trajectory_data> temp_trajs[num_threads];
+    int temp_trajs[num_threads];
+    int sum = 0;
     #pragma omp parallel for if(parallel)
     for (int64_t src_time = 0; src_time < moments->size - t_index_offset + t_delta_ticks; src_time++) {
         int thread_num = omp_get_thread_num();
@@ -90,6 +91,7 @@ void find_trajectories_fixed_origin_clean_part(moment_col_store * moments, vecto
         if (!any_match) {
             continue;
         }
+        temp_trajs[thread_num]++;
     }
 }
 
