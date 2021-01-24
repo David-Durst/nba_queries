@@ -76,10 +76,16 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
         }
 
     }
-
+    int starts[num_threads];
+    starts[0] = 0;
+    for (int i = 1; i < num_threads; i++) {
+        starts[i] = starts[i-1] + temp_trajs[i-1].size();
+    }
+    trajectories.resize(starts[num_threads - 1] + temp_trajs[num_threads -1].size());
+    #pragma omp parallel for if(parallel)
     for (int i = 0; i < num_threads; i++) {
-        for (const auto & elem : temp_trajs[i]) {
-            trajectories.push_back(elem);
+        for (int j = 0; j < temp_trajs[i].size(); j++) {
+            trajectories[starts[i] + j] = temp_trajs[i].at(j);
         }
     }
 
