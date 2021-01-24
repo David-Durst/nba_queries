@@ -34,6 +34,10 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
         }
     }
 
+    std::sort(src_moments.begin(), src_moments.end(), [](player_pointer_and_id p0, player_pointer_and_id p1) {
+        return p0.ptr.moment_index < p1.ptr.moment_index || (p0.ptr.moment_index == p1.ptr.moment_index && p0.player_id < p1.player_id);
+    });
+
     vector<trajectory_data> temp_trajs[num_threads];
 
     #pragma omp parallel for if(parallel)
