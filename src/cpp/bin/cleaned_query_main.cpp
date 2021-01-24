@@ -60,9 +60,10 @@ int main(int argc, char * argv[]) {
 
     // load the cleaned moments
     std::cout << "loading cleaned moments file: " << moments_file_path << std::endl;
-    moments_file.open(moments_file_path);
-    load_cleaned_moment_rows_vec(moments_file, moments);
-    moments_file.close();
+    //moments_file.open(moments_file_path);
+    //load_cleaned_moment_rows_vec(moments_file, moments);
+    //moments_file.close();
+    load_cleaned_moment_rows_fast(moments_file_path, moments);
     std::cout << "moments size: " << moments.size() << std::endl;
     moments_col = new moment_col_store(moments);
 
@@ -132,7 +133,25 @@ int main(int argc, char * argv[]) {
     res.query1_colstore_parallel_time = min_time;
     coordinate_range origin{{64.5f,24.9f,0}, {65.5f,25.1f, 0}};
     coordinate_range destination{{70.0f,16.0f,0}, {90.0f,32.0f, 0}};
-    std::cout << "player_pointers pairs in region: " << bins->get_elems_in_region(origin) << std::endl;
+    int64_t elements_in_bins = 0;
+    int64_t elements_in_region = 0;
+    const std::list<int>& origin_bins = court_bins::get_bins_in_region(origin);
+    for (int player_num = 0; player_num < bins->players_indices_in_bins.size(); player_num++) {
+        long int player_id = bins->player_ids[player_num];
+        // all trajectory starts for the current player
+        for (const auto &src_bin : origin_bins) {
+            for (const player_pointer *src_moment = bins->bin_start(player_id, src_bin);
+                 src_moment != bins->bin_end(player_id, src_bin); src_moment++) {
+                elements_in_bins++;
+                if (point_intersect_no_time(&origin, moments_col->x_loc[src_moment->player_index][src_moment->moment_index],
+                                            moments_col->y_loc[src_moment->player_index][src_moment->moment_index])) {
+                    elements_in_region++;
+                }
+            }
+        }
+    }
+    std::cout << "player_pointers pairs in bins: " << elements_in_bins << std::endl;
+    std::cout << "player_pointers pairs in region: " << elements_in_region << std::endl;
     std::cout << "size of player_pointers: " << sizeof(player_pointer) << std::endl;
     /*
     std::cout << "running query 3 cleaned with colstore, sequential" << std::endl;
