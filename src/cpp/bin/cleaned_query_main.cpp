@@ -224,6 +224,14 @@ int main(int argc, char * argv[]) {
     });
     printf("compute time: %gms\n", min_time * 1e3);
 
+    std::cout << "running min time of query 3 cleaned and binned with colstore, parallel" << std::endl;
+
+    min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
+        trajectories.clear();
+        find_trajectories_fixed_origin_clean_binned_min_time(moments_col, bins, trajectories, origin, destination, 2, 25, true);
+    });
+    printf("compute time: %gms\n", min_time * 1e3);
+
     /*
     std::cout << "running query 3 cleaned with row store, sequential" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {

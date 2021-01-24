@@ -44,6 +44,10 @@ void find_trajectories_fixed_origin_clean_binned_just_outer(moment_col_store * m
                                                  vector<trajectory_data>& trajectories, coordinate_range origin,
                                                  coordinate_range destination, int t_offset, int t_delta_ticks, bool parallel);
 
+void find_trajectories_fixed_origin_clean_binned_min_time(moment_col_store * moments, court_bins * moment_bins,
+                                                            vector<trajectory_data>& trajectories, coordinate_range origin,
+                                                            coordinate_range destination, int t_offset, int t_delta_ticks, bool parallel);
+
 inline bool point_intersect_no_time(coordinate_range * r, double x_loc, double y_loc) {
     bool x_intersects = x_loc >= r->start.x && x_loc <= r->end.x;
     bool y_intersects = y_loc >= r->start.y && y_loc <= r->end.y;
