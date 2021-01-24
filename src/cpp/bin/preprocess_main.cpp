@@ -71,7 +71,7 @@ int main(int argc, char * argv[]) {
         }
     }
     std::cout << "writing output cleaned moments file: " << cleaned_moments_file_path << std::endl;
-    cleaned_moments_file.open(cleaned_moments_file_path, std::ios::out);
+    cleaned_moments_file.open(cleaned_moments_file_path, std::ios::out | std::ofstream::trunc);
     cleaned_moments_file << std::fixed << std::setprecision(4);
     cleaned_moments_file << "team_id_ball, player_id_ball, x_loc_ball, y_loc_ball, radius_ball";
     for (int i = 0; i < 10; i++) {
@@ -89,7 +89,7 @@ int main(int argc, char * argv[]) {
     cleaned_moments_file.close();
 
     std::cout << "writing output extra game data file: " << extra_data_file_path << std::endl;
-    extra_data_file.open(extra_data_file_path, std::ios::out);
+    extra_data_file.open(extra_data_file_path, std::ios::out | std::ofstream::trunc);
     extra_data_file << "game_id, game_num, num_ot_periods" << std::endl;
     for (const auto & e : extra_data) {
         print_extra_game_data_csv(extra_data_file, e);
@@ -111,7 +111,7 @@ int main(int argc, char * argv[]) {
     clean_shot_rows(shots, cleaned_shots, game_id_to_num);
 
     std::cout << "writing output cleaned shots file: " << cleaned_shots_file_path << std::endl;
-    cleaned_shots_file.open(cleaned_shots_file_path, std::ios::out);
+    cleaned_shots_file.open(cleaned_shots_file_path, std::ios::out | std::ofstream::trunc);
     cleaned_shots_file << "action_type, event_time, event_type, game_date, game_event_id, game_id, game_num, grid_type, htm,"
                        << " loc_x, loc_y, minutes_remaining, period, player_id, player_name, quarter, seconds_remaining,"
                        << " shot_attempted_flag, shot_distance, shot_made_flag, shot_time, shot_type, shot_zone_area,"
