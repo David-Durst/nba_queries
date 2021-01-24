@@ -107,36 +107,6 @@ size_t load_cleaned_moment_rows(string filepath, cleaned_moment * ms[]) {
     return num_rows;
 }
 
-void load_cleaned_moment_rows_fast(string moments_file_path, vector<cleaned_moment>& ms) {
-    csv::CSVReader reader(moments_file_path);
-
-    for (csv::CSVRow& row: reader) {
-        cleaned_moment m;
-        vector<string> tmp = row.get_col_names();
-        m.ball.team_id = row["team_id_ball"].get<long int>();
-        m.ball.player_id = row[" player_id_ball"].get<int>();
-        m.ball.x_loc = row[" x_loc_ball"].get<double>();
-        m.ball.y_loc = row[" y_loc_ball"].get<double>();
-        m.ball.radius = row[" radius_ball"].get<double>();
-
-        for (int i = 0; i < 10; i++) {
-            string si = std::to_string(i);
-            m.players[i].team_id = row[" team_id_" + si].get<long int>();
-            m.players[i].player_id = row[" player_id_" + si].get<int>();
-            m.players[i].x_loc = row[" x_loc_" + si].get<double>();
-            m.players[i].y_loc = row[" y_loc_" + si].get<double>();
-            m.players[i].radius = row[" radius_" + si].get<double>();
-        }
-
-        m.game_clock = clock_fixed_point(row[" game_clock"].get<double>());
-        m.shot_clock = row[" shot_clock"].get<double>();
-        m.quarter = row[" quarter"].get<int>();
-        m.game_id = row[" game_id"].get<long int>();
-        m.game_num = row[" game_num"].get<long int>();
-        ms.push_back(m);
-    }
-}
-
 /* load a CSV file of cleaned_moments with a header row */
 void load_cleaned_moment_rows_vec(istream& rows, vector<cleaned_moment>& ms) {
     string row;

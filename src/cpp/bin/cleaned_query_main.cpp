@@ -60,10 +60,9 @@ int main(int argc, char * argv[]) {
 
     // load the cleaned moments
     std::cout << "loading cleaned moments file: " << moments_file_path << std::endl;
-    //moments_file.open(moments_file_path);
-    //load_cleaned_moment_rows_vec(moments_file, moments);
-    //moments_file.close();
-    load_cleaned_moment_rows_fast(moments_file_path, moments);
+    moments_file.open(moments_file_path);
+    load_cleaned_moment_rows_vec(moments_file, moments);
+    moments_file.close();
     std::cout << "moments size: " << moments.size() << std::endl;
     moments_col = new moment_col_store(moments);
 
