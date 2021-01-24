@@ -22,9 +22,8 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
         for (const auto &src_bin : origin_bins) {
             for (const player_pointer *src_moment = moment_bins->bin_start(player_id, src_bin);
                  src_moment != moment_bins->bin_end(player_id, src_bin); src_moment++) {
-                if (point_intersect_no_time(&origin, moments->x_loc[src_moment->player_index][src_moment->moment_index],
-                                            moments->y_loc[src_moment->player_index][src_moment->moment_index])) {
-                    temp_srcs[thread_num].push_back({src_moment->moment_index, src_moment->player_index, player_id});
+                if (point_intersect_no_time(&origin, src_moment->x_loc, src_moment->y_loc)) {
+                    temp_srcs[thread_num].push_back({*src_moment, player_id});
                 }
             }
         }
@@ -42,7 +41,7 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
         int thread_num = omp_get_thread_num();
         const player_pointer_and_id& src_moment = src_moments.at(src_moment_index);
         long int player_id = src_moment.player_id;
-        int64_t src_time = src_moment.moment_index;
+        int64_t src_time = src_moment.ptr.moment_index;
         // all trajectory ends for the current player
         for (int64_t dst_time = src_time + t_index_offset - t_delta_ticks;
              dst_time < src_time + t_index_offset + t_delta_ticks + 1; dst_time++) {
@@ -50,7 +49,7 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
                 continue;
             }
             for (int dst_player_index = 0; dst_player_index < 11; dst_player_index++) {
-                if (moments->player_id[src_moment.player_index][src_time] == moments->player_id[dst_player_index][dst_time] &&
+                if (moments->player_id[src_moment.ptr.player_index][src_time] == moments->player_id[dst_player_index][dst_time] &&
                         moments->game_num[src_time] == moments->game_num[dst_time] &&
                         moments->quarter[src_time] == moments->quarter[dst_time] &&
                         point_intersect_no_time(&destination, moments->x_loc[dst_player_index][dst_time],
@@ -59,10 +58,10 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
                         temp_trajs[thread_num].push_back({
                                                           moments->game_id[src_time],
                                                           moments->game_num[src_time],
-                                                          moments->team_id[src_moment.player_index][src_time],
-                                                          moments->player_id[src_moment.player_index][src_time],
-                                                          moments->x_loc[src_moment.player_index][src_time],
-                                                          moments->y_loc[src_moment.player_index][src_time],
+                                                          moments->team_id[src_moment.ptr.player_index][src_time],
+                                                          moments->player_id[src_moment.ptr.player_index][src_time],
+                                                          moments->x_loc[src_moment.ptr.player_index][src_time],
+                                                          moments->y_loc[src_moment.ptr.player_index][src_time],
                                                           moments->game_clock[src_time].to_double(),
                                                           moments->x_loc[dst_player_index][dst_time],
                                                           moments->y_loc[dst_player_index][dst_time],
@@ -103,7 +102,7 @@ void find_trajectories_fixed_origin_clean_binned_just_outer(moment_col_store * m
                  src_moment != moment_bins->bin_end(player_id, src_bin); src_moment++) {
                 if (point_intersect_no_time(&origin, moments->x_loc[src_moment->player_index][src_moment->moment_index],
                                             moments->y_loc[src_moment->player_index][src_moment->moment_index])) {
-                    temp_srcs[thread_num].push_back({src_moment->moment_index, src_moment->player_index, player_id});
+                    temp_srcs[thread_num].push_back({*src_moment, player_id});
                 }
             }
         }
@@ -160,7 +159,9 @@ court_bins::court_bins(moment_col_store * moments) {
                 std::cout << "problem with " << moments->x_loc[player][i] << "," << moments->y_loc[player][i] << std::endl;
             }
             bin_data_in_lists.at(players_indices_in_bins.at(moments->player_id[player][i]))
-                .at(get_bin_index(moments->x_loc[player][i], moments->y_loc[player][i])).push_back({i, player});
+                .at(get_bin_index(moments->x_loc[player][i], moments->y_loc[player][i])).push_back({i, player,
+                                                                                                    moments->x_loc[player][i],
+                                                                                                    moments->y_loc[player][i]});
         }
     }
 

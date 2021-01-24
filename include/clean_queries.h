@@ -59,11 +59,12 @@ inline bool point_intersect_no_time(const coordinate_range& r, const player_data
 struct player_pointer {
     int64_t moment_index;
     int player_index;
+    double x_loc;
+    double y_loc;
 };
 
 struct player_pointer_and_id {
-    int64_t moment_index;
-    int player_index;
+    player_pointer ptr;
     long int player_id;
 };
 
