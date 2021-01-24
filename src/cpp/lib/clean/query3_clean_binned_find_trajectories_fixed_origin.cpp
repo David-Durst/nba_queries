@@ -34,6 +34,7 @@ int64_t find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, 
             src_moments.push_back(elem);
         }
     }
+    std::cout << "size of src_moments: " << src_moments.size() << std::endl;
 
     vector<trajectory_data> temp_trajs[num_threads];
 
