@@ -84,10 +84,9 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
     }
 }
 
-void find_trajectories_fixed_origin_clean_binned_part_just_outer(moment_col_store * moments, court_bins * moment_bins,
-                                                      vector<trajectory_data>& trajectories, coordinate_range origin,
-                                                      coordinate_range destination, int t_offset, int t_delta_ticks,
-                                                      bool parallel) {
+void find_trajectories_fixed_origin_clean_binned_just_outer(moment_col_store * moments, court_bins * moment_bins,
+                                                            vector<trajectory_data>& trajectories, coordinate_range origin,
+                                                            coordinate_range destination, int t_offset, int t_delta_ticks, bool parallel){
     const std::list<int> &origin_bins = court_bins::get_bins_in_region(origin);
     int t_index_offset = t_offset * 25;
     std::vector<player_pointer_and_id> src_moments;
