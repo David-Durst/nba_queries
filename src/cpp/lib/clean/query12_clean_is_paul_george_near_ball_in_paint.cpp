@@ -57,8 +57,8 @@ void is_paul_george_near_ball_in_paint_clean(moment_col_store * moments, court_b
                         moments->game_id[p->moment_index],
                         0,// this isn't actually a shot
                         0,
-                        false,
-                        false
+                        true,
+                        true
                 });
             }
         }

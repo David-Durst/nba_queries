@@ -44,7 +44,7 @@ For the reference part of the taxonomy, I also state which entity is the referen
     It's surprising that the octree didn't help. Other indices focused on trajectories may improve over both the octree and sort by time approaches.
 4. Query 12: when Paul George is in the paint, is he getting rewarded by being near the ball?
 5. Query 13: give me the height of the ball in the last 24 seconds of a game
-6. Query 14: give me all the moments in the last 24 seconds of a game where players are on both sides of the court
+6. Query 14: give me all the players in the paint in the last 24 seconds of a game
 
 ## Going To Implement
 1. Query 4: Fouls per player when moving more than 5 MPH (roughly 1.5 ft/s)

@@ -33,6 +33,7 @@ struct results {
     double query3_binned_colstore_parallel_time;
     double query12_colstore_parallel_time;
     double query13_colstore_parallel_time;
+    double query14_colstore_parallel_time;
 };
 
 int main(int argc, char * argv[]) {
@@ -255,11 +256,10 @@ int main(int argc, char * argv[]) {
     printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "shot_and_players size: " << shots_and_players.size() << std::endl;
     buckets = bucket_shots_by_distance(shots_and_players);
-    std::cout << "distance,num_shot_made,num_shot_attempt,percent_made" << std::endl;
+    std::cout << "distance,num_shots" << std::endl;
     num_buckets = 0;
     for (const auto & b : buckets) {
-        print_shot_distance_bucket_csv(std::cout, b);
-        std::cout << std::endl;
+        std::cout << b.distance << "," << b.num_shot_attempts << std::endl;
         if (num_buckets > 30) {
             break;
         }
