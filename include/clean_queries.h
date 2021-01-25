@@ -47,6 +47,9 @@ void find_trajectories_fixed_origin_clean_binned_just_outer(moment_col_store * m
 void find_trajectories_fixed_origin_clean_binned_min_time(moment_col_store * moments, court_bins * moment_bins,
                                                             vector<trajectory_data>& trajectories, coordinate_range origin,
                                                             coordinate_range destination, int t_offset, int t_delta_ticks, bool parallel);
+// query 12
+void is_paul_george_near_ball_in_paint_clean(moment_col_store * moments, court_bins * moment_bins, vector<shot_and_player_data>& paul_and_ball,
+                                             coordinate_range paint0, coordinate_range paint1, long int player_id);
 
 inline bool point_intersect_no_time(coordinate_range * r, double x_loc, double y_loc) {
     bool x_intersects = x_loc >= r->start.x && x_loc <= r->end.x;
@@ -92,8 +95,8 @@ public:
         return floor(y)*MAX_X + floor(x);
     }
 
-    static inline std::list<int> get_bins_in_region(const coordinate_range& r) {
-        std::list<int> result;
+    static inline std::vector<int> get_bins_in_region(const coordinate_range& r) {
+        std::vector<int> result;
         for (int x = floor(r.start.x); x < ceil(r.end.x); x++) {
             for (int y = floor(r.start.y); y < ceil(r.end.y); y++) {
                 result.push_back(get_bin_index(x, y));
@@ -119,7 +122,7 @@ public:
     }
 
     int64_t get_elems_in_region(const coordinate_range& r) {
-        const std::list<int>& bins = get_bins_in_region(r);
+        const std::vector<int>& bins = get_bins_in_region(r);
         int64_t num_bins = 0;
         for (int player_num = 0; player_num < this->players_indices_in_bins.size(); player_num++) {
             long int player_id = this->player_ids[player_num];
@@ -132,7 +135,7 @@ public:
     }
 
 
-    // map from player index in moments data set to the bin index for that player
+    // map from player id in moments data set to the bin index for that player
     std::map<long int, int> players_indices_in_bins;
     long int * player_ids;
     // map from player bin index and then bin index to a location in bin_list_indices

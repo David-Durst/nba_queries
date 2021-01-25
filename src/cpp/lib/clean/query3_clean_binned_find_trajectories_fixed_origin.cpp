@@ -8,7 +8,7 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
                                                  vector<trajectory_data>& trajectories, coordinate_range origin,
                                                  coordinate_range destination, int t_offset, int t_delta_ticks,
                                                  bool parallel) {
-    const std::list<int>& origin_bins = court_bins::get_bins_in_region(origin);
+    const std::vector<int>& origin_bins = court_bins::get_bins_in_region(origin);
     int t_index_offset = t_offset * 25;
     std::vector<player_pointer_and_id> src_moments;
     int num_threads = omp_get_max_threads();
@@ -90,7 +90,7 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
 void find_trajectories_fixed_origin_clean_binned_just_outer(moment_col_store * moments, court_bins * moment_bins,
                                                             vector<trajectory_data>& trajectories, coordinate_range origin,
                                                             coordinate_range destination, int t_offset, int t_delta_ticks, bool parallel){
-    const std::list<int> &origin_bins = court_bins::get_bins_in_region(origin);
+    const std::vector<int> &origin_bins = court_bins::get_bins_in_region(origin);
     int t_index_offset = t_offset * 25;
     std::vector<player_pointer_and_id> src_moments;
     int num_threads = omp_get_max_threads();
@@ -121,7 +121,7 @@ void find_trajectories_fixed_origin_clean_binned_just_outer(moment_col_store * m
 void find_trajectories_fixed_origin_clean_binned_min_time(moment_col_store * moments, court_bins * moment_bins,
                                                             vector<trajectory_data>& trajectories, coordinate_range origin,
                                                             coordinate_range destination, int t_offset, int t_delta_ticks, bool parallel){
-    const std::list<int> &origin_bins = court_bins::get_bins_in_region(origin);
+    const std::vector<int> &origin_bins = court_bins::get_bins_in_region(origin);
     int t_index_offset = t_offset * 25;
     std::vector<player_pointer_and_id> src_moments;
     int num_threads = omp_get_max_threads();

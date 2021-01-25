@@ -42,6 +42,9 @@ For the reference part of the taxonomy, I also state which entity is the referen
         3. Cython: 
     5. Future work on this query: a better answer for this query appears to be sorting by time and taking the approach from query 2.
     It's surprising that the octree didn't help. Other indices focused on trajectories may improve over both the octree and sort by time approaches.
+4. Query 12: when Paul George is in the paint, is he getting rewarded by being near the ball?
+5. Query 13: give me all the moments in the last 24 seconds of a game
+6. Query 14: give me all the moments in the last 24 seconds of a game where players are on both sides of the court
 
 ## Going To Implement
 1. Query 4: Fouls per player when moving more than 5 MPH (roughly 1.5 ft/s)

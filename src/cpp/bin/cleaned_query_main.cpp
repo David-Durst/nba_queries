@@ -31,6 +31,7 @@ struct results {
     double query3_colstore_parallel_time;
     double query3_binned_colstore_sequential_time;
     double query3_binned_colstore_parallel_time;
+    double query12_colstore_parallel_time;
 };
 
 int main(int argc, char * argv[]) {
@@ -39,7 +40,7 @@ int main(int argc, char * argv[]) {
     vector<cleaned_shot> shots;
     shot_col_store * shots_col;
     court_bins * bins;
-    vector<shot_and_player_data> shots_and_players_seq, shots_and_players_par;
+    vector<shot_and_player_data> shots_and_players_seq, shots_and_players_par, shots_and_players;
     list<shot_and_player_data> shots_and_players_list;
     vector<trajectory_data> trajectories;
     trajectory_data * trajectories_arr = new trajectory_data[1];
@@ -134,7 +135,7 @@ int main(int argc, char * argv[]) {
     coordinate_range destination{{70.0f,16.0f,0}, {90.0f,32.0f, 0}};
     int64_t elements_in_bins = 0;
     int64_t elements_in_region = 0;
-    const std::list<int>& origin_bins = court_bins::get_bins_in_region(origin);
+    const std::vector<int>& origin_bins = court_bins::get_bins_in_region(origin);
     for (int player_num = 0; player_num < bins->players_indices_in_bins.size(); player_num++) {
         long int player_id = bins->player_ids[player_num];
         // all trajectory starts for the current player
@@ -242,6 +243,29 @@ int main(int argc, char * argv[]) {
     std::cout << "trajectories size: " << trajectories.size() << std::endl;
      */
     res.query3_rowstore_sequential_time = -1; //min_time;
+    coordinate_range paint0{{0.0f,16.0f,0}, {0.0f,32.0f, 0}};
+    coordinate_range paint1{{70.0f,16.0f,0}, {90.0f,32.0f, 0}};
+    std::cout << "running query 12 cleaned, parallel" << std::endl;
+    min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
+        shots_and_players.clear();
+        // paul george is 202331
+        is_paul_george_near_ball_in_paint_clean(moments_col, bins, shots_and_players, paint0, paint1, 202331);
+    });
+    printf("compute time: %gms\n", min_time * 1e3);
+    std::cout << "shot_and_players size: " << shots_and_players.size() << std::endl;
+    buckets = bucket_shots_by_distance(shots_and_players);
+    std::cout << "distance,num_shot_made,num_shot_attempt,percent_made" << std::endl;
+    num_buckets = 0;
+    for (const auto & b : buckets) {
+        print_shot_distance_bucket_csv(std::cout, b);
+        std::cout << std::endl;
+        if (num_buckets > 30) {
+            break;
+        }
+        num_buckets++;
+    }
+    std::cout << "first paul george in paint and ball moment: " << shots_and_players_par.at(0) << std::endl;
+    res.query12_colstore_parallel_time = min_time;
 
     // write results
     std::cout << "writing to file: " << timing_file_path << std::endl;
@@ -249,13 +273,13 @@ int main(int argc, char * argv[]) {
     timing_file << "Language,Query1 Rowstore Sequential Time (ms),Query1 Colstore Sequential Time (ms),Query1 Colstore Parallel Time (ms),"
                 << "Query3 Rowstore Sequential Time (ms),Query3 Colstore Sequential Time (ms),"
                 << "Query3 Colstore Parallel Time (ms),Query3 Binned Colstore Sequential Time (ms),"
-                << "Query3 Binned Colstore Parallel Time" << std::endl;
+                << "Query3 Binned Colstore Parallel Time (ms),Query12 Colstore Parallel Time (ms)" << std::endl;
     timing_file << std::fixed << std::setprecision(2)
                 << "CPP," << res.query1_rowstore_sequential_time*1e3 << "," << res.query1_colstore_sequential_time*1e3
                 << "," << res.query1_colstore_parallel_time*1e3 << ","
                 << res.query3_rowstore_sequential_time*1e3 << "," << res.query3_colstore_sequential_time*1e3 << ","
                 << res.query3_colstore_parallel_time*1e3 << "," << res.query3_binned_colstore_sequential_time*1e3 << ","
-                << res.query3_binned_colstore_parallel_time*1e3 << std::endl;
+                << res.query3_binned_colstore_parallel_time*1e3 << res.query12_colstore_parallel_time*1e3 << std::endl;
     timing_file.close();
 
     return 0;
