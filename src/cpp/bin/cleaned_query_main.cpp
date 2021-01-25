@@ -279,7 +279,7 @@ int main(int argc, char * argv[]) {
     for (const auto& h : ball_heights) {
         sum_heights += h.height;
     }
-    std::cout << "average height: " << sum_heights << std::endl;
+    std::cout << "average height: " << sum_heights / ball_heights.size() << std::endl;
     res.query13_colstore_parallel_time = min_time;
 
     // write results
