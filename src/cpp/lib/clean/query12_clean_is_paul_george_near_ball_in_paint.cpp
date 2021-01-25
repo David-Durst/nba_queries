@@ -6,7 +6,6 @@
 
 void is_paul_george_near_ball_in_paint_clean(moment_col_store * moments, court_bins * moment_bins, vector<shot_and_player_data>& paul_and_ball,
                                              coordinate_range paint0, coordinate_range paint1, long int player_id) {
-
     const std::vector<int>& paint0_bins = court_bins::get_bins_in_region(paint0);
     const std::vector<int>& paint1_bins = court_bins::get_bins_in_region(paint1);
     std::vector<int> all_bins;

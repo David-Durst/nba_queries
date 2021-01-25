@@ -51,6 +51,14 @@ void find_trajectories_fixed_origin_clean_binned_min_time(moment_col_store * mom
 void is_paul_george_near_ball_in_paint_clean(moment_col_store * moments, court_bins * moment_bins, vector<shot_and_player_data>& paul_and_ball,
                                              coordinate_range paint0, coordinate_range paint1, long int player_id);
 
+// query 13
+struct ball_height_at_time {
+    clock_fixed_point game_clock;
+    double height;
+};
+void get_end_game_moments(moment_col_store * moments, vector<extra_game_data>& extra_data,
+                          vector<ball_height_at_time>& ball_heights, int last_n_seconds);
+
 inline bool point_intersect_no_time(coordinate_range * r, double x_loc, double y_loc) {
     bool x_intersects = x_loc >= r->start.x && x_loc <= r->end.x;
     bool y_intersects = y_loc >= r->start.y && y_loc <= r->end.y;
