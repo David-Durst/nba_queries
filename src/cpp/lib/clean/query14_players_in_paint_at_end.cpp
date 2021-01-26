@@ -57,7 +57,7 @@ void get_players_in_paint_at_end_binned(moment_col_store * moments, court_bins *
         // all trajectory starts for the current player
         int bin = all_bins.at(i);
         for (int player_num = 0; player_num < moment_bins->players_indices_in_bins.size(); player_num++) {
-            long int player_id = moment_bins->player_ids[i];
+            long int player_id = moment_bins->player_ids[player_num];
             for (const player_pointer *p = moment_bins->bin_start(player_id, bin);
                  p != moment_bins->bin_end(player_id, bin); p++) {
                 if ((point_intersect_no_time(&paint0, p->x_loc, p->y_loc) ||
@@ -98,7 +98,7 @@ void get_players_in_paint_at_end_binned_with_time(moment_col_store * moments, co
         // all trajectory starts for the current player
         int bin = all_bins.at(i);
         for (int player_num = 0; player_num < moment_bins->players_indices_in_bins.size(); player_num++) {
-            long int player_id = moment_bins->player_ids[i];
+            long int player_id = moment_bins->player_ids[player_num];
             for (const player_pointer *p = moment_bins->bin_start(player_id, bin);
                  p != moment_bins->bin_end(player_id, bin); p++) {
                 if ((point_intersect_no_time(&paint0, p->x_loc, p->y_loc) ||
@@ -162,6 +162,7 @@ court_and_game_clock_bins::court_and_game_clock_bins(moment_col_store * moments)
             if (bin_index >= NUM_BINS_WITH_TIME) {
                 std::cout << "problem with " << moments->x_loc[player][i] << "," << moments->y_loc[player][i] << std::endl;
             }
+            int64_t bin_num = get_bin_index(moments->x_loc[player][i], moments->y_loc[player][i], moments->game_clock[i].to_double());
             bin_data_in_lists.at(players_indices_in_bins.at(moments->player_id[player][i]))
                     .at(get_bin_index(moments->x_loc[player][i], moments->y_loc[player][i], moments->game_clock[i].to_double()))
                     .push_back({i, player, moments->x_loc[player][i], moments->y_loc[player][i]});

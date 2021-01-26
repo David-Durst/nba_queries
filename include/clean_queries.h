@@ -8,12 +8,13 @@
 #include <vector>
 #include <algorithm>
 #include <list>
+#include <iostream>
 #include "query_structs.h"
 #include "find_trajectories.h"
 #include "col_stores.h"
 #include "check_distances.h"
 #define NUM_BINS MAX_X*MAX_Y
-#define NUM_BINS_WITH_TIME MAX_X*MAX_Y*720
+#define NUM_BINS_WITH_TIME MAX_X*MAX_Y*72
 
 // query 1
 void find_nearest_defender_at_each_shot_clean(moment_col_store * moments,
@@ -196,7 +197,7 @@ public:
         if (y >= MAX_Y) {
             y = MAX_Y-0.001;
         }
-        return floor(y)*MAX_X*MAX_GAME_CLOCK + floor(x)*MAX_GAME_CLOCK + floor(t);
+        return floor(y)*MAX_X*72 + floor(x)*72 + floor(t / 10.0);
     }
 
     static inline std::vector<int> get_bins_in_region(const coordinate_range& r) {
