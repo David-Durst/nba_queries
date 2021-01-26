@@ -34,6 +34,7 @@ struct results {
     double query12_colstore_parallel_time;
     double query13_colstore_parallel_time;
     double query14_colstore_parallel_time;
+    double query14_binned_colstore_parallel_time;
 };
 
 int main(int argc, char * argv[]) {
@@ -282,6 +283,25 @@ int main(int argc, char * argv[]) {
     std::cout << "average height: " << sum_heights / ball_heights.size() << std::endl;
     res.query13_colstore_parallel_time = min_time;
 
+    std::cout << "running query 14 cleaned, parallel" << std::endl;
+    vector<players_in_paint_at_time> players_in_paint;
+    min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
+        players_in_paint.clear();
+        get_players_in_paint_at_end(moments_col, extra_data, players_in_paint, paint0, paint1, 24);
+    });
+    printf("compute time: %gms\n", min_time * 1e3);
+    std::cout << "num players in paint at end of game " << players_in_paint.size() << std::endl;
+    res.query14_colstore_parallel_time = min_time;
+
+    std::cout << "running query 14 cleaned and binned, parallel" << std::endl;
+    min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
+        players_in_paint.clear();
+        get_players_in_paint_at_end_binned(moments_col, bins, extra_data, players_in_paint, paint0, paint1, 24);
+    });
+    printf("compute time: %gms\n", min_time * 1e3);
+    std::cout << "num players in paint at end of game " << players_in_paint.size() << std::endl;
+    res.query14_binned_colstore_parallel_time = min_time;
+
     // write results
     std::cout << "writing to file: " << timing_file_path << std::endl;
     timing_file.open(timing_file_path, std::fstream::out);
@@ -289,14 +309,16 @@ int main(int argc, char * argv[]) {
                 << "Query3 Rowstore Sequential Time (ms),Query3 Colstore Sequential Time (ms),"
                 << "Query3 Colstore Parallel Time (ms),Query3 Binned Colstore Sequential Time (ms),"
                 << "Query3 Binned Colstore Parallel Time (ms),Query12 Colstore Parallel Time (ms),"
-                << "Query13 Colstore Parallel Time (ms)" << std::endl;
+                << "Query13 Colstore Parallel Time (ms),Query14 Colstore Parallel Time (ms),"
+                << "Query14 Binned Colstore Parallel Time (ms)" << std::endl;
     timing_file << std::fixed << std::setprecision(2)
                 << "CPP," << res.query1_rowstore_sequential_time*1e3 << "," << res.query1_colstore_sequential_time*1e3
                 << "," << res.query1_colstore_parallel_time*1e3 << ","
                 << res.query3_rowstore_sequential_time*1e3 << "," << res.query3_colstore_sequential_time*1e3 << ","
                 << res.query3_colstore_parallel_time*1e3 << "," << res.query3_binned_colstore_sequential_time*1e3 << ","
                 << res.query3_binned_colstore_parallel_time*1e3 << res.query12_colstore_parallel_time*1e3
-                << res.query13_colstore_parallel_time*1e3 << std::endl;
+                << res.query13_colstore_parallel_time*1e3 << res.query14_colstore_parallel_time*1e3
+                << res.query14_binned_colstore_parallel_time*1e3 << std::endl;
     timing_file.close();
 
     return 0;
