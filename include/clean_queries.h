@@ -63,6 +63,7 @@ void get_end_game_moments(moment_col_store * moments, vector<extra_game_data>& e
 
 // query 14
 struct players_in_paint_at_time {
+    int64_t moment_index;
     clock_fixed_point game_clock;
     long int player_id;
 };
@@ -204,7 +205,7 @@ public:
         std::vector<int> result;
         for (int x = floor(r.start.x); x < ceil(r.end.x); x++) {
             for (int y = floor(r.start.y); y < ceil(r.end.y); y++) {
-                for (int t = floor(r.start.game_clock); t < ceil(r.end.game_clock); t++) {
+                for (int t = floor(r.start.game_clock); t < ceil(r.end.game_clock); t += 10.0) {
                     result.push_back(get_bin_index(x, y, t));
                 }
             }

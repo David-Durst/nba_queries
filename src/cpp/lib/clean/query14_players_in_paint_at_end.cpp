@@ -22,7 +22,7 @@ void get_players_in_paint_at_end(moment_col_store * moments, vector<extra_game_d
                  moments->quarter[time] == quarter; time++) {
                     if (point_intersect_no_time(&paint0, moments->x_loc[i][time], moments->y_loc[i][time]) ||
                         point_intersect_no_time(&paint1, moments->x_loc[i][time], moments->y_loc[i][time])) {
-                        temp_players[thread_num].push_back({moments->game_clock[time], moments->player_id[i][time]});
+                        temp_players[thread_num].push_back({time, moments->game_clock[time], moments->player_id[i][time]});
                     }
                 }
             }
@@ -63,7 +63,7 @@ void get_players_in_paint_at_end_binned(moment_col_store * moments, court_bins *
                 if ((point_intersect_no_time(&paint0, p->x_loc, p->y_loc) ||
                     point_intersect_no_time(&paint1, p->x_loc, p->y_loc)) &&
                     start_of_end.gt(moments->game_clock[p->moment_index])) {
-                    temp_players[thread_num].push_back({moments->game_clock[p->moment_index], moments->player_id[p->player_index][p->moment_index]});
+                    temp_players[thread_num].push_back({p->moment_index, moments->game_clock[p->moment_index], moments->player_id[p->player_index][p->moment_index]});
                 }
             }
 
@@ -92,7 +92,7 @@ void get_players_in_paint_at_end_binned_with_time(moment_col_store * moments, co
     all_bins.insert(all_bins.end(), paint0_bins.begin(), paint0_bins.end());
     all_bins.insert(all_bins.end(), paint1_bins.begin(), paint1_bins.end());
 
-#pragma omp parallel for
+    #pragma omp parallel for
     for (int i = 0; i < all_bins.size(); i++) {
         int thread_num = omp_get_thread_num();
         // all trajectory starts for the current player
@@ -104,7 +104,7 @@ void get_players_in_paint_at_end_binned_with_time(moment_col_store * moments, co
                 if ((point_intersect_no_time(&paint0, p->x_loc, p->y_loc) ||
                      point_intersect_no_time(&paint1, p->x_loc, p->y_loc)) &&
                     start_of_end.gt(moments->game_clock[p->moment_index])) {
-                    temp_players[thread_num].push_back({moments->game_clock[p->moment_index], moments->player_id[p->player_index][p->moment_index]});
+                    temp_players[thread_num].push_back({p->moment_index, moments->game_clock[p->moment_index], moments->player_id[p->player_index][p->moment_index]});
                 }
             }
 
@@ -116,7 +116,6 @@ void get_players_in_paint_at_end_binned_with_time(moment_col_store * moments, co
             players_in_paint.push_back(elem);
         }
     }
-
 }
 
 court_and_game_clock_bins::court_and_game_clock_bins(moment_col_store * moments) {

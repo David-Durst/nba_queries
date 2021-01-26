@@ -8,6 +8,7 @@
 #include <chrono>
 #include <numeric>
 #include <limits>
+#include <map>
 #include <sys/types.h>
 #include <unistd.h>
 #include "check_distances.h"
@@ -287,13 +288,13 @@ int main(int argc, char * argv[]) {
     res.query13_colstore_parallel_time = min_time;
 
     std::cout << "running query 14 cleaned, parallel" << std::endl;
-    vector<players_in_paint_at_time> players_in_paint;
+    vector<players_in_paint_at_time> players_in_paint1, players_in_paint2, players_in_paint3;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
-        players_in_paint.clear();
-        get_players_in_paint_at_end(moments_col, extra_data, players_in_paint, paint0, paint1, 24);
+        players_in_paint1.clear();
+        get_players_in_paint_at_end(moments_col, extra_data, players_in_paint1, paint0, paint1, 24);
     });
     printf("compute time: %gms\n", min_time * 1e3);
-    std::cout << "num players in paint at end of game " << players_in_paint.size() << std::endl;
+    std::cout << "num players in paint at end of game " << players_in_paint1.size() << std::endl;
     int64_t end_points_considered_by_time = 0;
     clock_fixed_point start_of_end(24);
     for (int i = 0; i < extra_data.size(); i++) {
@@ -312,23 +313,69 @@ int main(int argc, char * argv[]) {
 
     std::cout << "running query 14 cleaned and binned, parallel" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
-        players_in_paint.clear();
-        get_players_in_paint_at_end_binned(moments_col, bins, extra_data, players_in_paint, paint0, paint1, 24);
+        players_in_paint2.clear();
+        get_players_in_paint_at_end_binned(moments_col, bins, extra_data, players_in_paint2, paint0, paint1, 24);
     });
     printf("compute time: %gms\n", min_time * 1e3);
-    std::cout << "num players in paint at end of game " << players_in_paint.size() << std::endl;
+    std::cout << "num players in paint at end of game " << players_in_paint2.size() << std::endl;
     std::cout << "data points in bins: " << bins->get_elems_in_region(paint0) + bins->get_elems_in_region(paint1) << std::endl;
     res.query14_binned_colstore_parallel_time = min_time;
 
     std::cout << "running query 14 cleaned and binned with time, parallel" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
-        players_in_paint.clear();
-        get_players_in_paint_at_end_binned_with_time(moments_col, time_bins, extra_data, players_in_paint, paint0, paint1, 24);
+        players_in_paint3.clear();
+        get_players_in_paint_at_end_binned_with_time(moments_col, time_bins, extra_data, players_in_paint3, paint0, paint1, 24);
     });
     printf("compute time: %gms\n", min_time * 1e3);
-    std::cout << "num players in paint at end of game " << players_in_paint.size() << std::endl;
+    std::cout << "num players in paint at end of game " << players_in_paint3.size() << std::endl;
     std::cout << "data points in bins: " << time_bins->get_elems_in_region(paint0) + time_bins->get_elems_in_region(paint1) << std::endl;
     res.query14_binned_with_time_colstore_parallel_time = min_time;
+
+    /*
+    int num_hits = 0;
+    for (int i = 0; i < players_in_paint3.size(); i++) {
+       if (players_in_paint3[i].player_id == 201941 && players_in_paint3[i].moment_index == 17401)  {
+           num_hits++;
+       }
+       if (num_hits > 1) {
+           int x =1;
+       }
+    }
+
+    std::sort(players_in_paint1.begin(), players_in_paint1.end(), [](players_in_paint_at_time pa, players_in_paint_at_time pb) { return pa.moment_index < pb.moment_index || (pa.moment_index == pb.moment_index && pa.player_id < pb.player_id) ; });
+    std::sort(players_in_paint2.begin(), players_in_paint2.end(), [](players_in_paint_at_time pa, players_in_paint_at_time pb) { return pa.moment_index < pb.moment_index || (pa.moment_index == pb.moment_index && pa.player_id < pb.player_id) ;  });
+    std::sort(players_in_paint3.begin(), players_in_paint3.end(), [](players_in_paint_at_time pa, players_in_paint_at_time pb) { return pa.moment_index < pb.moment_index || (pa.moment_index == pb.moment_index && pa.player_id < pb.player_id) ;  });
+    std::map<int, int> p1_to_p3_index;
+    for (int p3_index = 1; p3_index < players_in_paint3.size(); p3_index++) {
+        bool found_moment = false;
+        int p1_index = 0;
+        players_in_paint_at_time p1, p3;
+        p3 = players_in_paint3[p3_index];
+        if (p3.player_id == players_in_paint3[p3_index-1].player_id && p3.moment_index == players_in_paint3[p3_index-1].moment_index) {
+            std::cout << "repeat on index " << p3_index << std::endl;
+        }
+        for (p1_index = 0; players_in_paint1[p1_index].moment_index <= players_in_paint3[p3_index].moment_index && p1_index < players_in_paint1.size(); p1_index++) {
+            if (players_in_paint1[p1_index].moment_index == players_in_paint3[p3_index].moment_index &&
+                players_in_paint1[p1_index].player_id == players_in_paint3[p3_index].player_id) {
+                found_moment = true;
+                p1 = players_in_paint1[p1_index];
+                break;
+            }
+        }
+        if (p3_index > players_in_paint1.size()) {
+            int y = 3;
+        }
+        if (!found_moment) {
+            int x = 3;
+        }
+        if (p1_to_p3_index.count(p1_index) > 0) {
+            std::cout << "p1 index" << p1_index << std::endl;
+            std::cout << "old p3_index" << p1_to_p3_index.at(p1_index) << std::endl;
+            std::cout << "new p3 index" << p3_index << std::endl;
+        }
+        p1_to_p3_index[p1_index] = p3_index;
+    }
+    */
 
     // write results
     std::cout << "writing to file: " << timing_file_path << std::endl;
