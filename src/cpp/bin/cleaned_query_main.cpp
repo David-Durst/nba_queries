@@ -291,6 +291,20 @@ int main(int argc, char * argv[]) {
     });
     printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "num players in paint at end of game " << players_in_paint.size() << std::endl;
+    int64_t end_points_considered_by_time = 0;
+    clock_fixed_point start_of_end(24);
+    for (int i = 0; i < extra_data.size(); i++) {
+        const extra_game_data &game_data = extra_data.at(i);
+        for (int quarter = 1; quarter < 5 + game_data.num_ot_periods; quarter++) {
+            for (int i = 0; i < NUM_PLAYERS_AND_BALL; i++) {
+                for (int64_t time = start_of_end.time_to_index(extra_data, game_data.game_num, quarter);
+                     moments_col->quarter[time] == quarter; time++) {
+                    end_points_considered_by_time++;
+                }
+            }
+        }
+    }
+    std::cout << "data points without: " << end_points_considered_by_time << std::endl;
     res.query14_colstore_parallel_time = min_time;
 
     std::cout << "running query 14 cleaned and binned, parallel" << std::endl;
@@ -300,6 +314,7 @@ int main(int argc, char * argv[]) {
     });
     printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "num players in paint at end of game " << players_in_paint.size() << std::endl;
+    std::cout << "data points in bins: " << bins->get_elems_in_region(paint0) + bins->get_elems_in_region(paint1) << std::endl;
     res.query14_binned_colstore_parallel_time = min_time;
 
     // write results

@@ -16,7 +16,7 @@ void get_players_in_paint_at_end(moment_col_store * moments, vector<extra_game_d
         const extra_game_data& game_data = extra_data.at(i);
         int thread_num = omp_get_thread_num();
         for (int quarter = 1; quarter < 5 + game_data.num_ot_periods; quarter++) {
-            for (int i = 1; i < NUM_PLAYERS_AND_BALL; i++) {
+            for (int i = 0; i < NUM_PLAYERS_AND_BALL; i++) {
                 for (int64_t time = start_of_end.time_to_index(extra_data, game_data.game_num, quarter);
                  moments->quarter[time] == quarter; time++) {
                     if (point_intersect_no_time(&paint0, moments->x_loc[i][time], moments->y_loc[i][time]) ||
