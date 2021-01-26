@@ -13,6 +13,7 @@
 #include "col_stores.h"
 #include "check_distances.h"
 #define NUM_BINS MAX_X*MAX_Y
+#define NUM_BINS_WITH_TIME MAX_X*MAX_Y*720
 
 // query 1
 void find_nearest_defender_at_each_shot_clean(moment_col_store * moments,
@@ -71,6 +72,11 @@ void get_players_in_paint_at_end(moment_col_store * moments, vector<extra_game_d
 void get_players_in_paint_at_end_binned(moment_col_store * moments, court_bins * moment_bins, vector<extra_game_data>& extra_data,
                                  vector<players_in_paint_at_time>& players_in_paint,
                                  coordinate_range paint0, coordinate_range paint1, int last_n_seconds);
+
+class court_and_game_clock_bins;
+void get_players_in_paint_at_end_binned_with_time(moment_col_store * moments, court_and_game_clock_bins * moment_bins, vector<extra_game_data>& extra_data,
+                                                  vector<players_in_paint_at_time>& players_in_paint,
+                                                  coordinate_range paint0, coordinate_range paint1, int last_n_seconds);
 
 inline bool point_intersect_no_time(coordinate_range * r, double x_loc, double y_loc) {
     bool x_intersects = x_loc >= r->start.x && x_loc <= r->end.x;
@@ -161,6 +167,85 @@ public:
     long int * player_ids;
     // map from player bin index and then bin index to a location in bin_list_indices
     int64_t (* bin_starts)[NUM_BINS];
+    // all the moments for each player organized by bin
+    player_pointer * player_moment_bins;
+    // number of elements in bin_list_indices
+    int64_t num_player_moments;
+};
+
+class court_and_game_clock_bins {
+public:
+    court_and_game_clock_bins(moment_col_store * moments);
+
+    static inline int get_bin_index(double x, double y, double t) {
+        if (t < 0) {
+            t = 0;
+        }
+        if (t >= MAX_GAME_CLOCK) {
+            t = MAX_GAME_CLOCK - 0.001;
+        }
+        if (x < 0) {
+            x = 0;
+        }
+        if (x >= MAX_X) {
+            x = MAX_X-0.001;
+        }
+        if (y < 0) {
+            y = 0;
+        }
+        if (y >= MAX_Y) {
+            y = MAX_Y-0.001;
+        }
+        return floor(y)*MAX_X*MAX_GAME_CLOCK + floor(x)*MAX_GAME_CLOCK + floor(t);
+    }
+
+    static inline std::vector<int> get_bins_in_region(const coordinate_range& r) {
+        std::vector<int> result;
+        for (int x = floor(r.start.x); x < ceil(r.end.x); x++) {
+            for (int y = floor(r.start.y); y < ceil(r.end.y); y++) {
+                for (int t = floor(r.start.game_clock); t < ceil(r.end.game_clock); t++) {
+                    result.push_back(get_bin_index(x, y, t));
+                }
+            }
+        }
+        return result;
+    }
+
+    inline const player_pointer* bin_start(long int player_id, int bin_index) {
+        int player_bin_index = players_indices_in_bins.at(player_id);
+        int offset = bin_starts[player_bin_index][bin_index];
+        return &player_moment_bins[offset];
+    }
+    inline const player_pointer* bin_end(long int player_id, int bin_index) {
+        int player_bin_index = players_indices_in_bins.at(player_id);
+        if (bin_index == NUM_BINS_WITH_TIME) {
+            player_bin_index++;
+            bin_index = 0;
+        }
+        int offset = (player_bin_index == players_indices_in_bins.size()) ?
+                     num_player_moments : bin_starts[player_bin_index][bin_index + 1];
+        return &player_moment_bins[offset];
+    }
+
+    int64_t get_elems_in_region(const coordinate_range& r) {
+        const std::vector<int>& bins = get_bins_in_region(r);
+        int64_t num_bins = 0;
+        for (int player_num = 0; player_num < this->players_indices_in_bins.size(); player_num++) {
+            long int player_id = this->player_ids[player_num];
+            // all trajectory starts for the current player
+            for (const auto &src_bin : bins) {
+                num_bins += this->bin_end(player_id, src_bin) - this->bin_start(player_id, src_bin);
+            }
+        }
+        return num_bins;
+    }
+
+
+    // map from player id in moments data set to the bin index for that player
+    std::map<long int, int> players_indices_in_bins;
+    long int * player_ids;
+    // map from player bin index and then bin index to a location in bin_list_indices
+    int64_t (* bin_starts)[NUM_BINS_WITH_TIME];
     // all the moments for each player organized by bin
     player_pointer * player_moment_bins;
     // number of elements in bin_list_indices

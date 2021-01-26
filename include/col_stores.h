@@ -5,6 +5,7 @@
 #define MAX_X 100
 #define MAX_Y 50
 #define NUM_PLAYERS_AND_BALL 11
+#define MAX_GAME_CLOCK 720.0
 
 class player_col_store {
 public:

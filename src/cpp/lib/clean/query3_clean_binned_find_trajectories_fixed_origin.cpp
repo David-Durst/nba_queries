@@ -169,7 +169,7 @@ court_bins::court_bins(moment_col_store * moments) {
         }
     }
 
-    std::cout << "moving bin lists to arrays" << std::endl;
+    std::cout << "filling vector" << std::endl;
 
     for (int player = 0; player < NUM_PLAYERS_AND_BALL; player++) {
         for (int64_t i = 0; i < moments->size; i++) {
@@ -182,6 +182,8 @@ court_bins::court_bins(moment_col_store * moments) {
                                                                                                     moments->y_loc[player][i]});
         }
     }
+
+    std::cout << "moving vectors to arrays" << std::endl;
 
     // convert the lists to arrays for faster lookup
     int64_t total_index = 0;
