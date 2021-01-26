@@ -149,11 +149,10 @@ court_and_game_clock_bins::court_and_game_clock_bins(moment_col_store * moments)
     // now create the bins with a data structure that is efficient insert, but inefficient lookup (lists)
     // this will store the locations of all player in each bin in lists before inserting into array
     std::vector<std::vector<std::vector<player_pointer>>> bin_data_in_lists;
+    bin_data_in_lists.resize(players_indices_in_bins.size(), std::vector<std::vector<player_pointer>>());
     for (int64_t i = 0; i < players_indices_in_bins.size(); i++) {
         bin_data_in_lists.push_back(std::vector<std::vector<player_pointer>>());
-        for (int64_t j = 0; j < NUM_BINS_WITH_TIME; j++) {
-            bin_data_in_lists[i].push_back(std::vector<player_pointer>());
-        }
+        bin_data_in_lists.at(i).resize(NUM_BINS_WITH_TIME, std::vector<player_pointer>());
     }
 
     std::cout << "filling vector" << std::endl;
