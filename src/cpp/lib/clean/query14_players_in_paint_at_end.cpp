@@ -85,8 +85,8 @@ void get_players_in_paint_at_end_binned_with_time(moment_col_store * moments, co
     int num_threads = omp_get_max_threads();
     vector<players_in_paint_at_time> temp_players[num_threads];
 
-    const std::vector<int>& paint0_bins = court_bins::get_bins_in_region(paint0);
-    const std::vector<int>& paint1_bins = court_bins::get_bins_in_region(paint1);
+    const std::vector<int>& paint0_bins = court_and_game_clock_bins::get_bins_in_region(paint0);
+    const std::vector<int>& paint1_bins = court_and_game_clock_bins::get_bins_in_region(paint1);
     std::vector<int> all_bins;
     all_bins.reserve(paint0_bins.size() + paint1_bins.size());
     all_bins.insert(all_bins.end(), paint0_bins.begin(), paint0_bins.end());
