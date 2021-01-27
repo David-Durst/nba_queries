@@ -86,7 +86,7 @@ public:
         return this->to_double() > f;
     }
 
-    bool gt(clock_fixed_point c) const {
+    inline bool gt(clock_fixed_point c) const {
         return this->seconds > c.seconds || (this->seconds == c.seconds && this->twenty_fifths_of_second > c.twenty_fifths_of_second);
     }
 

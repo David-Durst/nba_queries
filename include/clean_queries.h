@@ -256,6 +256,7 @@ public:
     player_pointer * player_moment_bins;
     // number of elements in bin_list_indices
     int64_t num_player_moments;
+    double seconds_tracked;
 };
 
 #endif //CLEAN_QUERIES_H
