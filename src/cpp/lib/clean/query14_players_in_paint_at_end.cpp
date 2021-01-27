@@ -4,16 +4,21 @@
 #include <functional>
 #include <iostream>
 #include <omp.h>
-
+int iter_num1 = 0;
 void get_players_in_paint_at_end(moment_col_store * moments, vector<extra_game_data>& extra_data,
                                  vector<players_in_paint_at_time>& players_in_paint,
                                  coordinate_range paint0, coordinate_range paint1, int last_n_seconds) {
     clock_fixed_point start_of_end(last_n_seconds);
     int num_threads = omp_get_max_threads();
     vector<players_in_paint_at_time> temp_players[num_threads];
+    double time_taken[num_threads];
+    for (int i = 0; i < num_threads; i++) {
+        time_taken[i] = 0;
+    }
 
 #pragma omp parallel for
     for (int i = 0; i < extra_data.size(); i++) {
+        auto start_t = Halide::Tools::benchmark_now();
         const extra_game_data& game_data = extra_data.at(i);
         int thread_num = omp_get_thread_num();
         for (int quarter = 1; quarter < 5 + game_data.num_ot_periods; quarter++) {
@@ -27,6 +32,7 @@ void get_players_in_paint_at_end(moment_col_store * moments, vector<extra_game_d
                 }
             }
         }
+        time_taken[thread_num] += Halide::Tools::benchmark_duration_seconds(start_t, Halide::Tools::benchmark_now());
     }
 
     for (int i = 0; i < num_threads; i++) {
@@ -34,7 +40,12 @@ void get_players_in_paint_at_end(moment_col_store * moments, vector<extra_game_d
             players_in_paint.push_back(elem);
         }
     }
-
+    if (iter_num1 == 0) {
+        for (int i = 0; i < num_threads; i++) {
+            std::cout << "time per thread " << i << " is " << time_taken[i] << std::endl;
+        }
+        iter_num1++;
+    }
 }
 
 void get_players_in_paint_at_end_binned(moment_col_store * moments, court_bins * moment_bins, vector<extra_game_data>& extra_data,
@@ -137,7 +148,7 @@ void get_players_in_paint_at_end_binned_with_time(moment_col_store * moments, co
     }
 }
 
-
+int iter_num2 = 0;
 void get_players_in_paint_at_end_binned_with_time_fix_par(moment_col_store * moments, court_and_game_clock_bins * moment_bins, vector<extra_game_data>& extra_data,
                                                   vector<players_in_paint_at_time>& players_in_paint,
                                                   coordinate_range paint0, coordinate_range paint1, int last_n_seconds) {
@@ -184,8 +195,11 @@ void get_players_in_paint_at_end_binned_with_time_fix_par(moment_col_store * mom
         }
     }
     //time_taken[0] += Halide::Tools::benchmark_duration_seconds(start, Halide::Tools::benchmark_now());
-    for (int i = 0; i < num_threads; i++) {
-        std::cout << "time per thread " << i << " is " << time_taken[i] << std::endl;
+    if (iter_num2 == 0) {
+        for (int i = 0; i < num_threads; i++) {
+            std::cout << "time per thread " << i << " is " << time_taken[i] << std::endl;
+        }
+        iter_num2++;
     }
 }
 court_and_game_clock_bins::court_and_game_clock_bins(moment_col_store * moments) {
