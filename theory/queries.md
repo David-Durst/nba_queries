@@ -45,6 +45,7 @@ For the reference part of the taxonomy, I also state which entity is the referen
 4. Query 12: when Paul George is in the paint, is he getting rewarded by being near the ball? - spatial
 5. Query 13: give me the height of the ball in the last 24 seconds of a game - temporal
 6. Query 14: give me all the players in the paint in the last 24 seconds of a game - space-time
+7. Query 15: give me all the players in the paint in the last 2 seconds of the shot clock - space and sparse time
 
 ## Going To Implement
 1. Query 4: Fouls per player when moving more than 5 MPH (roughly 1.5 ft/s)
