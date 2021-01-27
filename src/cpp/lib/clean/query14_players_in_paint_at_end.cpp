@@ -114,10 +114,14 @@ void get_players_in_paint_at_end_binned_with_time(moment_col_store * moments, co
         }
     }
 
+    std::sort(flat_temp_moments.begin(), flat_temp_moments.end(), [](player_pointer_and_id p0, player_pointer_and_id p1) {
+        return p0.ptr.moment_index < p1.ptr.moment_index || (p0.ptr.moment_index == p1.ptr.moment_index && p0.player_id < p1.player_id);
+    });
+
     #pragma omp parallel for
     for (int i = 0; i < all_bins.size(); i++) {
         int thread_num = omp_get_thread_num();
-        const player_pointer_and_id& p = flat_temp_moments.at(i);
+        const player_pointer_and_id& p = flat_temp_moments[i];
         if ((point_intersect_no_time(&paint0, p.ptr.x_loc, p.ptr.y_loc) ||
              point_intersect_no_time(&paint1, p.ptr.x_loc, p.ptr.y_loc)) &&
             start_of_end.gt(moments->game_clock[p.ptr.moment_index])) {

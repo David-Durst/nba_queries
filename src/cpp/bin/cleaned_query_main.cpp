@@ -62,7 +62,7 @@ int main(int argc, char * argv[]) {
     }
     string moments_file_path = argv[1], shots_file_path = argv[2], run_type = argv[3], extra_data_file_path = argv[4],
         timing_file_path = argv[5];
-    int num_samples_and_iterations = (run_type.compare("debug") == 0) ? 1 : 3;
+    int num_samples_and_iterations = (run_type.compare("debug") == 0) ? 1 : 5;
     std::fstream moments_file, shots_file, timing_file, extra_data_file;
 
     // load the cleaned moments
