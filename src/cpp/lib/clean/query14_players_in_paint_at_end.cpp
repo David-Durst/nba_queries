@@ -10,14 +10,16 @@ void get_players_in_paint_at_end(moment_col_store * moments, vector<extra_game_d
     clock_fixed_point start_of_end(last_n_seconds);
     int num_threads = omp_get_max_threads();
     vector<players_in_paint_at_time> temp_players[num_threads];
+    /*
     double time_taken[num_threads];
     for (int i = 0; i < num_threads; i++) {
         time_taken[i] = 0;
     }
+     */
 
 #pragma omp parallel for
     for (int i = 0; i < extra_data.size(); i++) {
-        auto start_t = Halide::Tools::benchmark_now();
+        //auto start_t = Halide::Tools::benchmark_now();
         const extra_game_data& game_data = extra_data.at(i);
         int thread_num = omp_get_thread_num();
         for (int quarter = 1; quarter < 5 + game_data.num_ot_periods; quarter++) {
@@ -31,7 +33,7 @@ void get_players_in_paint_at_end(moment_col_store * moments, vector<extra_game_d
                 }
             }
         }
-        time_taken[thread_num] += Halide::Tools::benchmark_duration_seconds(start_t, Halide::Tools::benchmark_now());
+        //time_taken[thread_num] += Halide::Tools::benchmark_duration_seconds(start_t, Halide::Tools::benchmark_now());
     }
 
     for (int i = 0; i < num_threads; i++) {
@@ -39,6 +41,7 @@ void get_players_in_paint_at_end(moment_col_store * moments, vector<extra_game_d
             players_in_paint.push_back(elem);
         }
     }
+    /*
     double min_t = 10000.0;
     double max_t = 0.0;
     for (int i = 0; i < num_threads; i++) {
@@ -50,6 +53,7 @@ void get_players_in_paint_at_end(moment_col_store * moments, vector<extra_game_d
         }
     }
     std::cout << "time per thread min " << min_t << " and maax " << max_t << std::endl;
+     */
 }
 
 void get_players_in_paint_at_end_binned(moment_col_store * moments, court_bins * moment_bins, vector<extra_game_data>& extra_data,
@@ -158,10 +162,12 @@ void get_players_in_paint_at_end_binned_with_time_fix_par(moment_col_store * mom
     clock_fixed_point start_of_end(last_n_seconds);
     int num_threads = omp_get_max_threads();
     vector<players_in_paint_at_time> temp_players[num_threads];
+    /*
     double time_taken[num_threads];
     for (int i = 0; i < num_threads; i++) {
         time_taken[i] = 0;
     }
+     */
 
     //auto start = Halide::Tools::benchmark_now();
     const std::vector<int>& paint0_bins = court_and_game_clock_bins::get_bins_in_region(paint0);
@@ -174,7 +180,7 @@ void get_players_in_paint_at_end_binned_with_time_fix_par(moment_col_store * mom
 
 #pragma omp parallel for schedule(dynamic)
     for (int i = 0; i < all_bins.size()* moment_bins->players_indices_in_bins.size(); i++) {
-        auto start_t = Halide::Tools::benchmark_now();
+       // auto start_t = Halide::Tools::benchmark_now();
         int thread_num = omp_get_thread_num();
         // all trajectory starts for the current player
         int bin = all_bins[i / moment_bins->players_indices_in_bins.size()];
@@ -188,7 +194,7 @@ void get_players_in_paint_at_end_binned_with_time_fix_par(moment_col_store * mom
                 temp_players[thread_num].push_back({p->moment_index, moments->game_clock[p->moment_index], moments->player_id[p->player_index][p->moment_index]});
             }
         }
-        time_taken[thread_num] += Halide::Tools::benchmark_duration_seconds(start_t, Halide::Tools::benchmark_now());
+        //time_taken[thread_num] += Halide::Tools::benchmark_duration_seconds(start_t, Halide::Tools::benchmark_now());
     }
 
     //double time_taken[num_threads];
@@ -197,6 +203,7 @@ void get_players_in_paint_at_end_binned_with_time_fix_par(moment_col_store * mom
             players_in_paint.push_back(elem);
         }
     }
+    /*
     //time_taken[0] += Halide::Tools::benchmark_duration_seconds(start, Halide::Tools::benchmark_now());
     double min_t = 10000.0;
     double max_t = 0.0;
@@ -209,6 +216,7 @@ void get_players_in_paint_at_end_binned_with_time_fix_par(moment_col_store * mom
         }
     }
     std::cout << "time per thread min " << min_t << " and maax " << max_t << std::endl;
+     */
 }
 court_and_game_clock_bins::court_and_game_clock_bins(moment_col_store * moments) {
     // first need to collect all the players, as moments just track 10 on the floor and ball
