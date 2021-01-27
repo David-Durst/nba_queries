@@ -114,9 +114,10 @@ void get_players_in_paint_at_end_binned_with_time(moment_col_store * moments, co
         }
     }
 
-    std::sort(flat_temp_moments.begin(), flat_temp_moments.end(), [](player_pointer_and_id p0, player_pointer_and_id p1) {
-        return p0.ptr.moment_index < p1.ptr.moment_index || (p0.ptr.moment_index == p1.ptr.moment_index && p0.player_id < p1.player_id);
-    });
+    // sorting doesn't help
+    //std::sort(flat_temp_moments.begin(), flat_temp_moments.end(), [](player_pointer_and_id p0, player_pointer_and_id p1) {
+        //return p0.ptr.moment_index < p1.ptr.moment_index || (p0.ptr.moment_index == p1.ptr.moment_index && p0.player_id < p1.player_id);
+    //});
 
     #pragma omp parallel for
     for (int i = 0; i < flat_temp_moments.size(); i++) {
@@ -136,6 +137,7 @@ void get_players_in_paint_at_end_binned_with_time(moment_col_store * moments, co
     }
 }
 
+
 void get_players_in_paint_at_end_binned_with_time_fix_par(moment_col_store * moments, court_and_game_clock_bins * moment_bins, vector<extra_game_data>& extra_data,
                                                   vector<players_in_paint_at_time>& players_in_paint,
                                                   coordinate_range paint0, coordinate_range paint1, int last_n_seconds) {
@@ -149,15 +151,13 @@ void get_players_in_paint_at_end_binned_with_time_fix_par(moment_col_store * mom
     all_bins.reserve(paint0_bins.size() + paint1_bins.size());
     all_bins.insert(all_bins.end(), paint0_bins.begin(), paint0_bins.end());
     all_bins.insert(all_bins.end(), paint1_bins.begin(), paint1_bins.end());
-    vector<player_pointer_and_id> temp_moments[num_threads];
-    vector<player_pointer_and_id> flat_temp_moments;
 
 #pragma omp parallel for
     for (int i = 0; i < all_bins.size()* moment_bins->players_indices_in_bins.size(); i++) {
         int thread_num = omp_get_thread_num();
         // all trajectory starts for the current player
         int bin = all_bins.at(i / moment_bins->players_indices_in_bins.size());
-        int player_num = all_bins.at(i % moment_bins->players_indices_in_bins.size());
+        int player_num = i % moment_bins->players_indices_in_bins.size();
         long int player_id = moment_bins->player_ids[player_num];
         for (const player_pointer *p = moment_bins->bin_start(player_id, bin);
              p != moment_bins->bin_end(player_id, bin); p++) {
@@ -175,7 +175,6 @@ void get_players_in_paint_at_end_binned_with_time_fix_par(moment_col_store * mom
         }
     }
 }
-
 court_and_game_clock_bins::court_and_game_clock_bins(moment_col_store * moments) {
     // first need to collect all the players, as moments just track 10 on the floor and ball
     // and for each player, track how many moments they are in
