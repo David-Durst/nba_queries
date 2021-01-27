@@ -152,7 +152,7 @@ void get_players_in_paint_at_end_binned_with_time_fix_par(moment_col_store * mom
     all_bins.insert(all_bins.end(), paint0_bins.begin(), paint0_bins.end());
     all_bins.insert(all_bins.end(), paint1_bins.begin(), paint1_bins.end());
 
-#pragma omp parallel for
+#pragma omp parallel for schedule(dynamic, 20)
     for (int i = 0; i < all_bins.size()* moment_bins->players_indices_in_bins.size(); i++) {
         int thread_num = omp_get_thread_num();
         // all trajectory starts for the current player
