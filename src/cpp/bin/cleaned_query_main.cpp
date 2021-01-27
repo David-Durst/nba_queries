@@ -288,15 +288,18 @@ int main(int argc, char * argv[]) {
     res.query13_colstore_parallel_time = min_time;
 
     std::cout << "running query 14 cleaned, parallel" << std::endl;
+    int query_14_endtime = 10;
+    coordinate_range paint0_14{{0.0f,16.0f,0.0}, {20.0f,32.0f, 1.0*query_14_endtime}};
+    coordinate_range paint1_14{{70.0f,16.0f,0.0}, {90.0f,32.0f, 1.0*query_14_endtime}};
     vector<players_in_paint_at_time> players_in_paint1, players_in_paint2, players_in_paint3;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         players_in_paint1.clear();
-        get_players_in_paint_at_end(moments_col, extra_data, players_in_paint1, paint0, paint1, 60);
+        get_players_in_paint_at_end(moments_col, extra_data, players_in_paint1, paint0_14, paint1_14, query_14_endtime);
     });
     printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "num players in paint at end of game " << players_in_paint1.size() << std::endl;
     int64_t end_points_considered_by_time = 0;
-    clock_fixed_point start_of_end(60);
+    clock_fixed_point start_of_end(query_14_endtime);
     for (int i = 0; i < extra_data.size(); i++) {
         const extra_game_data &game_data = extra_data.at(i);
         for (int quarter = 1; quarter < 5 + game_data.num_ot_periods; quarter++) {
@@ -314,31 +317,31 @@ int main(int argc, char * argv[]) {
     std::cout << "running query 14 cleaned and binned, parallel" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         players_in_paint2.clear();
-        get_players_in_paint_at_end_binned(moments_col, bins, extra_data, players_in_paint2, paint0, paint1, 60);
+        get_players_in_paint_at_end_binned(moments_col, bins, extra_data, players_in_paint2, paint0_14, paint1_14, query_14_endtime);
     });
     printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "num players in paint at end of game " << players_in_paint2.size() << std::endl;
-    std::cout << "data points in bins: " << bins->get_elems_in_region(paint0) + bins->get_elems_in_region(paint1) << std::endl;
+    std::cout << "data points in bins: " << bins->get_elems_in_region(paint0_14) + bins->get_elems_in_region(paint1_14) << std::endl;
     res.query14_binned_colstore_parallel_time = min_time;
 
     std::cout << "running query 14 cleaned and binned with time, parallel" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         players_in_paint3.clear();
-        get_players_in_paint_at_end_binned_with_time(moments_col, time_bins, extra_data, players_in_paint3, paint0, paint1, 60);
+        get_players_in_paint_at_end_binned_with_time(moments_col, time_bins, extra_data, players_in_paint3, paint0_14, paint1_14, query_14_endtime);
     });
     printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "num players in paint at end of game " << players_in_paint3.size() << std::endl;
-    std::cout << "data points in bins: " << time_bins->get_elems_in_region(paint0) + time_bins->get_elems_in_region(paint1) << std::endl;
+    std::cout << "data points in bins: " << time_bins->get_elems_in_region(paint0_14) + time_bins->get_elems_in_region(paint1_14) << std::endl;
     res.query14_binned_with_time_colstore_parallel_time = min_time;
 
     std::cout << "running query 14 cleaned and binned with time fix par, parallel" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         players_in_paint3.clear();
-        get_players_in_paint_at_end_binned_with_time_fix_par(moments_col, time_bins, extra_data, players_in_paint3, paint0, paint1, 60);
+        get_players_in_paint_at_end_binned_with_time_fix_par(moments_col, time_bins, extra_data, players_in_paint3, paint0_14, paint1_14, query_14_endtime);
     });
     printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "num players in paint at end of game " << players_in_paint3.size() << std::endl;
-    std::cout << "data points in bins: " << time_bins->get_elems_in_region(paint0) + time_bins->get_elems_in_region(paint1) << std::endl;
+    std::cout << "data points in bins: " << time_bins->get_elems_in_region(paint0_14) + time_bins->get_elems_in_region(paint1_14) << std::endl;
 
     /*
     int num_hits = 0;
