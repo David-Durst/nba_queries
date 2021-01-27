@@ -94,6 +94,9 @@ void get_players_in_paint_shot_clock_one_paint(moment_col_store * moments, vecto
 void get_players_in_paint_shot_clock_no_funcs(moment_col_store * moments, vector<players_in_paint_at_time>& players_in_paint,
                                                coordinate_range paint0, coordinate_range paint1, double end_time);
 
+void get_players_in_paint_shot_clock_no_ptr_funcs(moment_col_store * moments, vector<players_in_paint_at_time>& players_in_paint,
+                                              coordinate_range paint0, coordinate_range paint1, double end_time);
+
 void get_players_in_paint_shot_clock_one_paint_no_vec(moment_col_store * moments, vector<players_in_paint_at_time>& players_in_paint,
                                                coordinate_range paint0, double end_time);
 
@@ -107,11 +110,18 @@ inline bool point_intersect_no_time(coordinate_range * r, double x_loc, double y
     return x_intersects && y_intersects;
 }
 
+inline bool point_intersect_no_time_no_ptr(coordinate_range r, double x_loc, double y_loc) {
+    bool x_intersects = x_loc >= r.start.x && x_loc <= r.end.x;
+    bool y_intersects = y_loc >= r.start.y && y_loc <= r.end.y;
+    return x_intersects && y_intersects;
+}
+
 inline bool point_intersect_no_time(const coordinate_range& r, const player_data& c) {
     bool x_intersects = c.x_loc >= r.start.x && c.x_loc <= r.end.x;
     bool y_intersects = c.y_loc >= r.start.y && c.y_loc <= r.end.y;
     return x_intersects && y_intersects;
 }
+
 
 struct player_pointer {
     int64_t moment_index;
