@@ -91,6 +91,8 @@ void get_players_in_paint_at_end_binned_with_time(moment_col_store * moments, co
     all_bins.reserve(paint0_bins.size() + paint1_bins.size());
     all_bins.insert(all_bins.end(), paint0_bins.begin(), paint0_bins.end());
     all_bins.insert(all_bins.end(), paint1_bins.begin(), paint1_bins.end());
+    vector<player_pointer_and_id> temp_moments[num_threads];
+    vector<player_pointer_and_id> flat_temp_moments;
 
     #pragma omp parallel for
     for (int i = 0; i < all_bins.size(); i++) {
@@ -101,13 +103,25 @@ void get_players_in_paint_at_end_binned_with_time(moment_col_store * moments, co
             long int player_id = moment_bins->player_ids[player_num];
             for (const player_pointer *p = moment_bins->bin_start(player_id, bin);
                  p != moment_bins->bin_end(player_id, bin); p++) {
-                if ((point_intersect_no_time(&paint0, p->x_loc, p->y_loc) ||
-                     point_intersect_no_time(&paint1, p->x_loc, p->y_loc)) &&
-                    start_of_end.gt(moments->game_clock[p->moment_index])) {
-                    temp_players[thread_num].push_back({p->moment_index, moments->game_clock[p->moment_index], moments->player_id[p->player_index][p->moment_index]});
-                }
+                temp_moments[thread_num].push_back({*p, player_id});
             }
+        }
+    }
 
+    for (int i = 0; i < num_threads; i++) {
+        for (const auto & elem : temp_moments[i]) {
+            flat_temp_moments.push_back(elem);
+        }
+    }
+
+    #pragma omp parallel for
+    for (int i = 0; i < all_bins.size(); i++) {
+        int thread_num = omp_get_thread_num();
+        const player_pointer_and_id& p = flat_temp_moments.at(i);
+        if ((point_intersect_no_time(&paint0, p.ptr.x_loc, p.ptr.y_loc) ||
+             point_intersect_no_time(&paint1, p.ptr.x_loc, p.ptr.y_loc)) &&
+            start_of_end.gt(moments->game_clock[p.ptr.moment_index])) {
+            temp_players[thread_num].push_back({p.ptr.moment_index, moments->game_clock[p.ptr.moment_index], moments->player_id[p.ptr.player_index][p.ptr.moment_index]});
         }
     }
 
