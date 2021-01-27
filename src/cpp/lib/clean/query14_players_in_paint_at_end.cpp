@@ -145,6 +145,9 @@ void get_players_in_paint_at_end_binned_with_time_fix_par(moment_col_store * mom
     int num_threads = omp_get_max_threads();
     vector<players_in_paint_at_time> temp_players[num_threads];
     double time_taken[num_threads];
+    for (int i = 0; i < num_threads; i++) {
+        time_taken[i] = 0;
+    }
 
     //auto start = Halide::Tools::benchmark_now();
     const std::vector<int>& paint0_bins = court_and_game_clock_bins::get_bins_in_region(paint0);
