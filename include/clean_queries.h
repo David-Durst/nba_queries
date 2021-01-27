@@ -119,8 +119,8 @@ struct player_pointer_and_id {
 class court_bins {
 public:
     court_bins(moment_col_store * moments);
-    constexpr static double x_bin_size = 4.0;
-    constexpr static double y_bin_size = 4.0;
+    constexpr static double x_bin_size = 10.0;
+    constexpr static double y_bin_size = 10.0;
 
     static inline int get_bin_index(double x, double y) {
         if (x < 0) {
@@ -193,6 +193,10 @@ class court_and_game_clock_bins {
 public:
     court_and_game_clock_bins(moment_col_store * moments);
 
+    constexpr static double x_bin_size = 10.0;
+    constexpr static double y_bin_size = 10.0;
+    constexpr static double t_bin_size = 10.0;
+
     static inline int get_bin_index(double x, double y, double t) {
         if (t < 0) {
             t = 0;
@@ -212,14 +216,14 @@ public:
         if (y >= MAX_Y) {
             y = MAX_Y-0.001;
         }
-        return floor(y)*MAX_X*72 + floor(x)*72 + floor(t / 10.0);
+        return floor(y / y_bin_size)*MAX_X*72 + floor(x / x_bin_size)*72 + floor(t / t_bin_size);
     }
 
     static inline std::vector<int> get_bins_in_region(const coordinate_range& r) {
         std::vector<int> result;
-        for (int x = floor(r.start.x); x < ceil(r.end.x); x++) {
-            for (int y = floor(r.start.y); y < ceil(r.end.y); y++) {
-                for (int t = floor(r.start.game_clock); t < ceil(r.end.game_clock); t += 10.0) {
+        for (int x = floor(r.start.x); x < ceil(r.end.x); x += x_bin_size) {
+            for (int y = floor(r.start.y); y < ceil(r.end.y); y += y_bin_size) {
+                for (int t = floor(r.start.game_clock); t < ceil(r.end.game_clock); t += t_bin_size) {
                     result.push_back(get_bin_index(x, y, t));
                 }
             }
