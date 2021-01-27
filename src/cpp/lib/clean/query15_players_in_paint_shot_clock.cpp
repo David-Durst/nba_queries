@@ -74,11 +74,6 @@ void get_players_in_paint_shot_clock_one_paint_no_vec(moment_col_store * moments
         //time_taken[thread_num] += Halide::Tools::benchmark_duration_seconds(start_t, Halide::Tools::benchmark_now());
     }
 
-    for (int i = 0; i < num_threads; i++) {
-        for (const auto & elem : temp_players[i]) {
-            players_in_paint.push_back(elem);
-        }
-    }
 }
 
 void get_players_in_paint_shot_clock_binned(moment_col_store * moments, court_bins * moment_bins,
