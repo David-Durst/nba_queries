@@ -291,7 +291,7 @@ int main(int argc, char * argv[]) {
 
     std::cout << "running query 14 cleaned, parallel" << std::endl;
     int query_14_endtime = 10;
-    coordinate_range paint0_14{{0.0f,16.0f,0.0}, {0.0f,32.0f, 1.0*query_14_endtime}};
+    coordinate_range paint0_14{{0.0f,16.0f,0.0}, {20.0f,32.0f, 1.0*query_14_endtime}};
     coordinate_range paint1_14{{70.0f,16.0f,0.0}, {90.0f,32.0f, 1.0*query_14_endtime}};
     vector<players_in_paint_at_time> players_in_paint1, players_in_paint2, players_in_paint3;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
