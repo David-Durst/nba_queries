@@ -37,6 +37,8 @@ struct results {
     double query14_colstore_parallel_time;
     double query14_binned_colstore_parallel_time;
     double query14_binned_with_time_colstore_parallel_time;
+    double query15_colstore_parallel_time;
+    double query15_binned_colstore_parallel_time;
 };
 
 int main(int argc, char * argv[]) {
@@ -332,7 +334,6 @@ int main(int argc, char * argv[]) {
     printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "num players in paint at end of game " << players_in_paint3.size() << std::endl;
     std::cout << "data points in bins: " << time_bins->get_elems_in_region(paint0_14) + time_bins->get_elems_in_region(paint1_14) << std::endl;
-    res.query14_binned_with_time_colstore_parallel_time = min_time;
 
     std::cout << "running query 14 cleaned and binned with time fix par, parallel" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
@@ -342,6 +343,26 @@ int main(int argc, char * argv[]) {
     printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "num players in paint at end of game " << players_in_paint3.size() << std::endl;
     std::cout << "data points in bins: " << time_bins->get_elems_in_region(paint0_14) + time_bins->get_elems_in_region(paint1_14) << std::endl;
+    res.query14_binned_with_time_colstore_parallel_time = min_time;
+
+
+    std::cout << "running query 15 cleaned, parallel" << std::endl;
+    min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
+        players_in_paint1.clear();
+        get_players_in_paint_shot_clock(moments_col, players_in_paint1, paint0_14, paint1_14, 2.0);
+    });
+    printf("compute time: %gms\n", min_time * 1e3);
+    std::cout << "num players in paint at end of game " << players_in_paint1.size() << std::endl;
+    res.query15_colstore_parallel_time = min_time;
+
+    std::cout << "running query 15 cleaned and binned, parallel" << std::endl;
+    min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
+        players_in_paint2.clear();
+        get_players_in_paint_shot_clock_binned(moments_col, bins, players_in_paint2, paint0_14, paint1_14, 2.0);
+    });
+    printf("compute time: %gms\n", min_time * 1e3);
+    std::cout << "num players in paint at end of game " << players_in_paint2.size() << std::endl;
+    res.query15_binned_colstore_parallel_time = min_time;
 
     /*
     int num_hits = 0;
@@ -397,7 +418,7 @@ int main(int argc, char * argv[]) {
                 << "Query3 Colstore Parallel Time (ms),Query3 Binned Colstore Sequential Time (ms),"
                 << "Query3 Binned Colstore Parallel Time (ms),Query12 Colstore Parallel Time (ms),"
                 << "Query13 Colstore Parallel Time (ms),Query14 Colstore Parallel Time (ms),"
-                << "Query14 Binned Colstore Parallel Time (ms)" << std::endl;
+                << "Query14 Binned Colstore Parallel Time (ms)" << "Query14 Binned With Time Colstore Parallel Time (ms)" << std::endl;
     timing_file << std::fixed << std::setprecision(2)
                 << "CPP," << res.query1_rowstore_sequential_time*1e3 << "," << res.query1_colstore_sequential_time*1e3
                 << "," << res.query1_colstore_parallel_time*1e3 << ","
@@ -405,7 +426,7 @@ int main(int argc, char * argv[]) {
                 << res.query3_colstore_parallel_time*1e3 << "," << res.query3_binned_colstore_sequential_time*1e3 << ","
                 << res.query3_binned_colstore_parallel_time*1e3 << res.query12_colstore_parallel_time*1e3
                 << res.query13_colstore_parallel_time*1e3 << res.query14_colstore_parallel_time*1e3
-                << res.query14_binned_colstore_parallel_time*1e3 << std::endl;
+                << res.query14_binned_colstore_parallel_time*1e3 << res.query14_binned_colstore_parallel_time*1e3 << std::endl;
     timing_file.close();
 
     return 0;
