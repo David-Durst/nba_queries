@@ -119,13 +119,53 @@ void get_players_in_paint_at_end_binned_with_time(moment_col_store * moments, co
     });
 
     #pragma omp parallel for
-    for (int i = 0; i < all_bins.size(); i++) {
+    for (int i = 0; i < flat_temp_moments.size(); i++) {
         int thread_num = omp_get_thread_num();
         const player_pointer_and_id& p = flat_temp_moments[i];
         if ((point_intersect_no_time(&paint0, p.ptr.x_loc, p.ptr.y_loc) ||
              point_intersect_no_time(&paint1, p.ptr.x_loc, p.ptr.y_loc)) &&
             start_of_end.gt(moments->game_clock[p.ptr.moment_index])) {
             temp_players[thread_num].push_back({p.ptr.moment_index, moments->game_clock[p.ptr.moment_index], moments->player_id[p.ptr.player_index][p.ptr.moment_index]});
+        }
+    }
+
+    for (int i = 0; i < num_threads; i++) {
+        for (const auto & elem : temp_players[i]) {
+            players_in_paint.push_back(elem);
+        }
+    }
+}
+
+void get_players_in_paint_at_end_binned_with_time_fix_par(moment_col_store * moments, court_and_game_clock_bins * moment_bins, vector<extra_game_data>& extra_data,
+                                                  vector<players_in_paint_at_time>& players_in_paint,
+                                                  coordinate_range paint0, coordinate_range paint1, int last_n_seconds) {
+    clock_fixed_point start_of_end(last_n_seconds);
+    int num_threads = omp_get_max_threads();
+    vector<players_in_paint_at_time> temp_players[num_threads];
+
+    const std::vector<int>& paint0_bins = court_and_game_clock_bins::get_bins_in_region(paint0);
+    const std::vector<int>& paint1_bins = court_and_game_clock_bins::get_bins_in_region(paint1);
+    std::vector<int> all_bins;
+    all_bins.reserve(paint0_bins.size() + paint1_bins.size());
+    all_bins.insert(all_bins.end(), paint0_bins.begin(), paint0_bins.end());
+    all_bins.insert(all_bins.end(), paint1_bins.begin(), paint1_bins.end());
+    vector<player_pointer_and_id> temp_moments[num_threads];
+    vector<player_pointer_and_id> flat_temp_moments;
+
+#pragma omp parallel for
+    for (int i = 0; i < all_bins.size()* moment_bins->players_indices_in_bins.size(); i++) {
+        int thread_num = omp_get_thread_num();
+        // all trajectory starts for the current player
+        int bin = all_bins.at(i / moment_bins->players_indices_in_bins.size());
+        int player_num = all_bins.at(i % moment_bins->players_indices_in_bins.size());
+        long int player_id = moment_bins->player_ids[player_num];
+        for (const player_pointer *p = moment_bins->bin_start(player_id, bin);
+             p != moment_bins->bin_end(player_id, bin); p++) {
+            if ((point_intersect_no_time(&paint0, p->x_loc, p->y_loc) ||
+                 point_intersect_no_time(&paint1, p->x_loc, p->y_loc)) &&
+                start_of_end.gt(moments->game_clock[p->moment_index])) {
+                temp_players[thread_num].push_back({p->moment_index, moments->game_clock[p->moment_index], moments->player_id[p->player_index][p->moment_index]});
+            }
         }
     }
 

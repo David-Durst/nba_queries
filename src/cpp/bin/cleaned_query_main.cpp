@@ -331,6 +331,15 @@ int main(int argc, char * argv[]) {
     std::cout << "data points in bins: " << time_bins->get_elems_in_region(paint0) + time_bins->get_elems_in_region(paint1) << std::endl;
     res.query14_binned_with_time_colstore_parallel_time = min_time;
 
+    std::cout << "running query 14 cleaned and binned with time fix par, parallel" << std::endl;
+    min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
+        players_in_paint3.clear();
+        get_players_in_paint_at_end_binned_with_time_fix_par(moments_col, time_bins, extra_data, players_in_paint3, paint0, paint1, 24);
+    });
+    printf("compute time: %gms\n", min_time * 1e3);
+    std::cout << "num players in paint at end of game " << players_in_paint3.size() << std::endl;
+    std::cout << "data points in bins: " << time_bins->get_elems_in_region(paint0) + time_bins->get_elems_in_region(paint1) << std::endl;
+
     /*
     int num_hits = 0;
     for (int i = 0; i < players_in_paint3.size(); i++) {

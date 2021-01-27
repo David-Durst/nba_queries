@@ -80,6 +80,10 @@ void get_players_in_paint_at_end_binned_with_time(moment_col_store * moments, co
                                                   vector<players_in_paint_at_time>& players_in_paint,
                                                   coordinate_range paint0, coordinate_range paint1, int last_n_seconds);
 
+void get_players_in_paint_at_end_binned_with_time_fix_par(moment_col_store * moments, court_and_game_clock_bins * moment_bins, vector<extra_game_data>& extra_data,
+                                                  vector<players_in_paint_at_time>& players_in_paint,
+                                                  coordinate_range paint0, coordinate_range paint1, int last_n_seconds);
+
 inline bool point_intersect_no_time(coordinate_range * r, double x_loc, double y_loc) {
     bool x_intersects = x_loc >= r->start.x && x_loc <= r->end.x;
     bool y_intersects = y_loc >= r->start.y && y_loc <= r->end.y;
