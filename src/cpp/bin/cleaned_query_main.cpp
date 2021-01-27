@@ -250,8 +250,8 @@ int main(int argc, char * argv[]) {
     std::cout << "trajectories size: " << trajectories.size() << std::endl;
      */
     res.query3_rowstore_sequential_time = -1; //min_time;
-    coordinate_range paint0{{0.0f,16.0f,0.0}, {20.0f,32.0f, 24.0}};
-    coordinate_range paint1{{70.0f,16.0f,0.0}, {90.0f,32.0f, 24.0}};
+    coordinate_range paint0{{0.0f,16.0f,0.0}, {20.0f,32.0f, 60.0}};
+    coordinate_range paint1{{70.0f,16.0f,0.0}, {90.0f,32.0f, 60.0}};
     std::cout << "running query 12 cleaned, parallel" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         shots_and_players.clear();
