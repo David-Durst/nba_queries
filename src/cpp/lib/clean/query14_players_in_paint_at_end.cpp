@@ -144,7 +144,7 @@ void get_players_in_paint_at_end_binned_with_time_fix_par(moment_col_store * mom
     clock_fixed_point start_of_end(last_n_seconds);
     int num_threads = omp_get_max_threads();
     vector<players_in_paint_at_time> temp_players[num_threads];
-    //double time_taken[num_threads];
+    double time_taken[num_threads];
 
     //auto start = Halide::Tools::benchmark_now();
     const std::vector<int>& paint0_bins = court_and_game_clock_bins::get_bins_in_region(paint0);
@@ -157,7 +157,7 @@ void get_players_in_paint_at_end_binned_with_time_fix_par(moment_col_store * mom
 
 #pragma omp parallel for schedule(dynamic)
     for (int i = 0; i < all_bins.size()* moment_bins->players_indices_in_bins.size(); i++) {
-        //auto start_t = Halide::Tools::benchmark_now();
+        auto start_t = Halide::Tools::benchmark_now();
         int thread_num = omp_get_thread_num();
         // all trajectory starts for the current player
         int bin = all_bins[i / moment_bins->players_indices_in_bins.size()];
@@ -171,7 +171,7 @@ void get_players_in_paint_at_end_binned_with_time_fix_par(moment_col_store * mom
                 temp_players[thread_num].push_back({p->moment_index, moments->game_clock[p->moment_index], moments->player_id[p->player_index][p->moment_index]});
             }
         }
-     //   time_taken[thread_num] += Halide::Tools::benchmark_duration_seconds(start_t, Halide::Tools::benchmark_now());
+        time_taken[thread_num] += Halide::Tools::benchmark_duration_seconds(start_t, Halide::Tools::benchmark_now());
     }
 
     //double time_taken[num_threads];
@@ -181,6 +181,9 @@ void get_players_in_paint_at_end_binned_with_time_fix_par(moment_col_store * mom
         }
     }
     //time_taken[0] += Halide::Tools::benchmark_duration_seconds(start, Halide::Tools::benchmark_now());
+    for (int i = 0; i < num_threads; i++) {
+        std::cout << "time per thread " << i << " is " << time_taken[i] << std::endl;
+    }
 }
 court_and_game_clock_bins::court_and_game_clock_bins(moment_col_store * moments) {
     // first need to collect all the players, as moments just track 10 on the floor and ball
