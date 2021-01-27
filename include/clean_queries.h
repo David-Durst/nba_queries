@@ -91,6 +91,9 @@ void get_players_in_paint_shot_clock(moment_col_store * moments, vector<players_
 void get_players_in_paint_shot_clock_one_paint(moment_col_store * moments, vector<players_in_paint_at_time>& players_in_paint,
                                      coordinate_range paint0, double end_time);
 
+void get_players_in_paint_shot_clock_no_funcs(moment_col_store * moments, vector<players_in_paint_at_time>& players_in_paint,
+                                               coordinate_range paint0, coordinate_range paint1, double end_time);
+
 void get_players_in_paint_shot_clock_one_paint_no_vec(moment_col_store * moments, vector<players_in_paint_at_time>& players_in_paint,
                                                coordinate_range paint0, double end_time);
 

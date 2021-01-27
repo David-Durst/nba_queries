@@ -355,6 +355,13 @@ int main(int argc, char * argv[]) {
     std::cout << "num players in paint at end of game " << players_in_paint1.size() << std::endl;
     res.query15_colstore_parallel_time = min_time;
 
+    std::cout << "running query 15 no funcs cleaned, parallel" << std::endl;
+    min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
+        players_in_paint1.clear();
+        get_players_in_paint_shot_clock_no_funcs(moments_col, players_in_paint1, paint0_14, paint1_14, 2.0);
+    });
+    printf("compute time: %gms\n", min_time * 1e3);
+
     std::cout << "running query 15 one paint cleaned, parallel" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         players_in_paint1.clear();

@@ -31,6 +31,34 @@ void get_players_in_paint_shot_clock(moment_col_store * moments, vector<players_
     }
 }
 
+void get_players_in_paint_shot_clock_no_funcs(moment_col_store * moments, vector<players_in_paint_at_time>& players_in_paint,
+                                                        coordinate_range paint0, coordinate_range paint1, double end_time) {
+    int num_threads = omp_get_max_threads();
+    vector<players_in_paint_at_time> temp_players[num_threads];
+#pragma omp parallel for
+    for (int64_t time = 0; time < moments->size; time++) {
+        //auto start_t = Halide::Tools::benchmark_now();
+        int thread_num = omp_get_thread_num();
+        if (moments->shot_clock[time] < end_time) {
+            for (int i = 0; i < NUM_PLAYERS_AND_BALL; i++) {
+                if ((moments->x_loc[i][time] >= paint0.start.x && moments->x_loc[i][time] < paint0.start.x &&
+                     moments->y_loc[i][time] >= paint0.start.y && moments->y_loc[i][time] < paint0.start.y) ||
+                    (moments->x_loc[i][time] >= paint1.start.x && moments->x_loc[i][time] < paint1.start.x &&
+                     moments->y_loc[i][time] >= paint1.start.y && moments->y_loc[i][time] < paint1.start.y)) {
+                    temp_players[thread_num].push_back({time, moments->game_clock[time], moments->player_id[i][time]});
+                }
+            }
+        }
+        //time_taken[thread_num] += Halide::Tools::benchmark_duration_seconds(start_t, Halide::Tools::benchmark_now());
+    }
+
+    for (int i = 0; i < num_threads; i++) {
+        for (const auto & elem : temp_players[i]) {
+            players_in_paint.push_back(elem);
+        }
+    }
+}
+
 void get_players_in_paint_shot_clock_one_paint(moment_col_store * moments, vector<players_in_paint_at_time>& players_in_paint,
                                      coordinate_range paint0, double end_time) {
     int num_threads = omp_get_max_threads();
