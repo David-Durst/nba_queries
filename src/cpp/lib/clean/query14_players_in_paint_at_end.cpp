@@ -188,10 +188,10 @@ void get_players_in_paint_at_end_binned_with_time_fix_par(moment_col_store * mom
         long int player_id = moment_bins->player_ids[player_num];
         for (const player_pointer *p = moment_bins->bin_start(player_id, bin);
              p != moment_bins->bin_end(player_id, bin); p++) {
-            if (((p->x_loc >= paint0.start.x && p->x_loc < paint0.start.x &&
-                 p->y_loc >= paint0.start.y && p->y_loc < paint0.start.y) ||
-                (p->x_loc >= paint1.start.x && p->x_loc < paint1.start.x &&
-                 p->y_loc >= paint1.start.y && p->y_loc < paint1.start.y)) &&
+            if (((p->x_loc >= paint0.start.x && p->x_loc <= paint0.end.x &&
+                 p->y_loc >= paint0.start.y && p->y_loc <= paint0.end.y) ||
+                (p->x_loc >= paint1.start.x && p->x_loc <= paint1.end.x &&
+                 p->y_loc >= paint1.start.y && p->y_loc <= paint1.end.y)) &&
                 start_of_end.gt(moments->game_clock[p->moment_index])) {
                 temp_players[thread_num].push_back({p->moment_index, moments->game_clock[p->moment_index], moments->player_id[p->player_index][p->moment_index]});
             }
