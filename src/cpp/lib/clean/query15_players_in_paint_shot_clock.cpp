@@ -153,8 +153,10 @@ void get_players_in_paint_shot_clock_binned(moment_col_store * moments, court_bi
         long int player_id = moment_bins->player_ids[player_num];
         for (const player_pointer *p = moment_bins->bin_start(player_id, bin);
              p != moment_bins->bin_end(player_id, bin); p++) {
-            if ((point_intersect_no_time(&paint0, p->x_loc, p->y_loc) ||
-                 point_intersect_no_time(&paint1, p->x_loc, p->y_loc)) &&
+            if (((p->x_loc >= paint0.start.x && p->x_loc < paint0.start.x &&
+                  p->y_loc >= paint0.start.y && p->y_loc < paint0.start.y) ||
+                 (p->x_loc >= paint1.start.x && p->x_loc < paint1.start.x &&
+                  p->y_loc >= paint1.start.y && p->y_loc < paint1.start.y)) &&
                  moments->shot_clock[p->moment_index] < end_time) {
                 temp_players[thread_num].push_back({p->moment_index, moments->game_clock[p->moment_index], moments->player_id[p->player_index][p->moment_index]});
             }
