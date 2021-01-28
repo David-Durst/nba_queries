@@ -22,7 +22,8 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
         for (const auto &src_bin : origin_bins) {
             for (const player_pointer *src_moment = moment_bins->bin_start(player_id, src_bin);
                  src_moment != moment_bins->bin_end(player_id, src_bin); src_moment++) {
-                if (point_intersect_no_time(&origin, src_moment->x_loc, src_moment->y_loc)) {
+                if (src_moment->x_loc >= origin.start.x && src_moment->x_loc < origin.start.x &&
+                    src_moment->y_loc >= origin.start.y && src_moment->y_loc < origin.start.y) {
                     temp_srcs[thread_num].push_back({*src_moment, player_id});
                 }
             }
