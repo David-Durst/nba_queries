@@ -438,6 +438,13 @@ int main(int argc, char * argv[]) {
     }
     */
 
+    std::cout << "min time measured" << std::endl;
+
+    min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
+        return 2;
+    });
+    printf("compute time: %gms\n", min_time * 1e3);
+
     // write results
     std::cout << "writing to file: " << timing_file_path << std::endl;
     timing_file.open(timing_file_path, std::fstream::out);
