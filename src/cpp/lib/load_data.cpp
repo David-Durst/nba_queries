@@ -170,6 +170,7 @@ void load_cleaned_moment_row(string& row, cleaned_moment& m) {
     next_sep = row.find(',', next_sep) + 1;
     m.game_num = std::atol(c + next_sep);
 
+    /*
     // load event data, add 1 after for check so npos is valid comparison
     for (next_sep = row.find(',', next_sep); next_sep != std::string::npos; next_sep = row.find(';', next_sep)) {
         next_sep += 2;
@@ -178,6 +179,7 @@ void load_cleaned_moment_row(string& row, cleaned_moment& m) {
         int moment_in_event = std::atol(c + next_sep);
         m.events.push_back({event_id, moment_in_event});
     }
+     */
 }
 
 void cleaned_moment_from_moment(const moment& m, cleaned_moment& cm, long int& cur_game_id, int& game_num,
