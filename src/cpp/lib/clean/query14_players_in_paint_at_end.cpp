@@ -26,8 +26,10 @@ void get_players_in_paint_at_end(moment_col_store * moments, vector<extra_game_d
             for (int i = 0; i < NUM_PLAYERS_AND_BALL; i++) {
                 for (int64_t time = start_of_end.time_to_index(extra_data, game_data.game_num, quarter);
                  moments->quarter[time] == quarter; time++) {
-                    if (point_intersect_no_time(&paint0, moments->x_loc[i][time], moments->y_loc[i][time]) ||
-                        point_intersect_no_time(&paint1, moments->x_loc[i][time], moments->y_loc[i][time])) {
+                    if (((moments->x_loc[i][time] >= paint0.start.x && moments->x_loc[i][time] <= paint0.end.x &&
+                          moments->y_loc[i][time] >= paint0.start.y && moments->y_loc[i][time] <= paint0.end.y) ||
+                         (moments->x_loc[i][time] >= paint1.start.x && moments->x_loc[i][time] <= paint1.end.x &&
+                         moments->y_loc[i][time] >= paint1.start.y && moments->y_loc[i][time] <= paint1.end.y))) {
                         temp_players[thread_num].push_back({time, moments->game_clock[time], moments->player_id[i][time]});
                     }
                 }
