@@ -10,6 +10,7 @@
 #include <limits>
 #include <map>
 #include <sys/types.h>
+#include <omp.h>
 #include <unistd.h>
 #include "check_distances.h"
 #include "find_trajectories.h"
@@ -347,7 +348,7 @@ int main(int argc, char * argv[]) {
 
 
     int num_threads = omp_get_max_threads();
-    temp_time = new double[num_threads * 4];
+    double * temp_time = new double[num_threads * 4];
     for (int i = 0; i < num_threads * 4; i++) {
         temp_time[i] = 0;
     }
@@ -355,7 +356,7 @@ int main(int argc, char * argv[]) {
     std::cout << "running query 15 cleaned, parallel" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         players_in_paint1.clear();
-        get_players_in_paint_shot_clock(moments_col, players_in_paint1, paint0_14, paint1_14, 2.0);
+        get_players_in_paint_shot_clock(moments_col, players_in_paint1, paint0_14, paint1_14, 2.0, temp_time);
     });
     printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "num players in paint at end of game " << players_in_paint1.size() << std::endl;

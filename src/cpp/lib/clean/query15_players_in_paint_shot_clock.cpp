@@ -6,7 +6,7 @@
 #include <omp.h>
 
 void get_players_in_paint_shot_clock(moment_col_store * moments, vector<players_in_paint_at_time>& players_in_paint,
-                                     coordinate_range paint0, coordinate_range paint1, double end_time) {
+                                     coordinate_range paint0, coordinate_range paint1, double end_time, double * temp_time) {
     int num_threads = omp_get_max_threads();
     vector<players_in_paint_at_time> temp_players[num_threads];
 #pragma omp parallel for
