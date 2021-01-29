@@ -308,4 +308,7 @@ public:
     double seconds_tracked;
 };
 
+#include <omp.h>
+double * temp_time;
+
 #endif //CLEAN_QUERIES_H

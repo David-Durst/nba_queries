@@ -346,6 +346,12 @@ int main(int argc, char * argv[]) {
     res.query14_binned_with_time_colstore_parallel_time = min_time;
 
 
+    int num_threads = omp_get_max_threads();
+    temp_time = new double[num_threads * 4];
+    for (int i = 0; i < num_threads * 4; i++) {
+        temp_time[i] = 0;
+    }
+
     std::cout << "running query 15 cleaned, parallel" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         players_in_paint1.clear();
@@ -354,6 +360,13 @@ int main(int argc, char * argv[]) {
     printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "num players in paint at end of game " << players_in_paint1.size() << std::endl;
     res.query15_colstore_parallel_time = min_time;
+    for (int i = 0; i < 4; i++) {
+        double total = 0;
+        for (int j = 0; j < num_threads; j++) {
+            total += temp_time[i * num_threads + j];
+        }
+        std::cout << "loop " << i << " time across all threads " << total << std::endl;
+    }
 
     std::cout << "running query 15 no funcs cleaned, parallel" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
