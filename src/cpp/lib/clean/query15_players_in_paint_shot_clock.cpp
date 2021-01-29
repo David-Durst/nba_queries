@@ -11,15 +11,11 @@ void get_players_in_paint_shot_clock(moment_col_store * moments, vector<players_
     vector<players_in_paint_at_time> temp_players[num_threads];
 #pragma omp parallel for
     for (int64_t time = 0; time < moments->size; time++) {
-        auto start_outer = Halide::Tools::benchmark_now();
         int thread_num = omp_get_thread_num();
         if (moments->shot_clock[time] < end_time) {
-            auto start_outer_if = Halide::Tools::benchmark_now();
             for (int i = 0; i < NUM_PLAYERS_AND_BALL; i++) {
-                auto start_inner_for = Halide::Tools::benchmark_now();
                 if (point_intersect_no_time(&paint0, moments->x_loc[i][time], moments->y_loc[i][time]) ||
                     point_intersect_no_time(&paint1, moments->x_loc[i][time], moments->y_loc[i][time])) {
-                    auto start_inner_if = Halide::Tools::benchmark_now();
                     temp_players[thread_num].push_back({time, moments->game_clock[time], moments->player_id[i][time]});
                 }
             }
