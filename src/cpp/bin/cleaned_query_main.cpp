@@ -349,15 +349,22 @@ int main(int argc, char * argv[]) {
 
 
     std::cout << "running query 15 cleaned, parallel" << std::endl;
-    std::raise(SIGINT);
+    //std::raise(SIGINT);
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         players_in_paint1.clear();
         get_players_in_paint_shot_clock(moments_col, players_in_paint1, paint0_14, paint1_14, 2.0);
     });
-    std::raise(SIGINT);
+    //std::raise(SIGINT);
     printf("compute time: %gms\n", min_time * 1e3);
     std::cout << "num players in paint at end of game " << players_in_paint1.size() << std::endl;
     res.query15_colstore_parallel_time = min_time;
+
+    std::cout << "running query 15 cleaned hand_tuned, parallel" << std::endl;
+    min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
+        players_in_paint1.clear();
+        get_players_in_paint_shot_clock_hand_tuned(moments_col, players_in_paint1, paint0_14, paint1_14, 2.0);
+    });
+    printf("compute time: %gms\n", min_time * 1e3);
 
     std::cout << "running query 15 no funcs cleaned, parallel" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {

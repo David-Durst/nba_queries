@@ -85,6 +85,9 @@ void get_players_in_paint_at_end_binned_with_time_fix_par(moment_col_store * mom
                                                   coordinate_range paint0, coordinate_range paint1, int last_n_seconds);
 
 // query 15
+void get_players_in_paint_shot_clock_hand_tuned(moment_col_store * moments, vector<players_in_paint_at_time>& players_in_paint,
+                                         coordinate_range paint0, coordinate_range paint1, double end_time);
+
 void get_players_in_paint_shot_clock(moment_col_store * moments, vector<players_in_paint_at_time>& players_in_paint,
                                      coordinate_range paint0, coordinate_range paint1, double end_time);
 
