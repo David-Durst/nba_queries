@@ -6,7 +6,7 @@
 #include <omp.h>
 
 void get_players_in_paint_shot_clock(moment_col_store * moments, vector<players_in_paint_at_time>& players_in_paint,
-                                     coordinate_range paint0, coordinate_range paint1, double end_time, double * temp_time) {
+                                     coordinate_range paint0, coordinate_range paint1, double end_time) {
     int num_threads = omp_get_max_threads();
     vector<players_in_paint_at_time> temp_players[num_threads];
 #pragma omp parallel for
@@ -21,13 +21,9 @@ void get_players_in_paint_shot_clock(moment_col_store * moments, vector<players_
                     point_intersect_no_time(&paint1, moments->x_loc[i][time], moments->y_loc[i][time])) {
                     auto start_inner_if = Halide::Tools::benchmark_now();
                     temp_players[thread_num].push_back({time, moments->game_clock[time], moments->player_id[i][time]});
-                    temp_time[3 * num_threads + thread_num] += Halide::Tools::benchmark_duration_seconds(start_inner_if, Halide::Tools::benchmark_now());
                 }
-                temp_time[2 * num_threads + thread_num] += Halide::Tools::benchmark_duration_seconds(start_inner_for, Halide::Tools::benchmark_now());
             }
-            temp_time[1 * num_threads + thread_num] += Halide::Tools::benchmark_duration_seconds(start_outer_if, Halide::Tools::benchmark_now());
         }
-        temp_time[0 * num_threads + thread_num] += Halide::Tools::benchmark_duration_seconds(start_outer, Halide::Tools::benchmark_now());
     }
 
     for (int i = 0; i < num_threads; i++) {
