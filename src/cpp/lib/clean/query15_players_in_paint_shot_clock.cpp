@@ -9,7 +9,7 @@
 
 void players_in_paint_inner(moment_col_store * moments, vector<players_in_paint_at_time> * temp_players,
                             coordinate_range paint0, coordinate_range paint1, double end_time,
-                            std::atomic<int64_t>* cur_index, int step_size = 1000) {
+                            std::atomic<int64_t>* cur_index, int step_size) {
     for (int64_t cur_end = cur_index->fetch_add(step_size); cur_end <= moments->size; cur_end = cur_index->fetch_add(step_size)) {
         for (int64_t time = cur_end - step_size; time < cur_end; time++) {
             if (moments->shot_clock[time] < end_time) {
@@ -36,11 +36,11 @@ void get_players_in_paint_shot_clock_hand_tuned(moment_col_store * moments, vect
     int num_threads = omp_get_max_threads();
     vector<players_in_paint_at_time> temp_players[num_threads];
     std::thread threads[num_threads];
-    std::atomic<int64_t> cur_index = 1000;
+    std::atomic<int64_t> cur_index = 10;
     for (int i = 0; i < num_threads; i++) {
         //players_in_paint_inner(moments, &(temp_players[i]), paint0, paint1, end_time, &cur_index);
         //threads[i] = std::thread(test, moments, &temp_players[i], paint0, paint1, end_time, &cur_index);
-        threads[i] = std::thread(players_in_paint_inner, moments, &temp_players[i], paint0, paint1, end_time, &cur_index, 1000);
+        threads[i] = std::thread(players_in_paint_inner, moments, &temp_players[i], paint0, paint1, end_time, &cur_index, 10);
     }
 
     for (int i = 0; i < num_threads; i++) {
