@@ -36,11 +36,11 @@ void get_players_in_paint_shot_clock_hand_tuned(moment_col_store * moments, vect
     int num_threads = omp_get_max_threads();
     vector<players_in_paint_at_time> temp_players[num_threads];
     std::thread threads[num_threads];
-    std::atomic<int64_t> cur_index = 10;
+    std::atomic<int64_t> cur_index = 100000;
     for (int i = 0; i < num_threads; i++) {
         //players_in_paint_inner(moments, &(temp_players[i]), paint0, paint1, end_time, &cur_index);
         //threads[i] = std::thread(test, moments, &temp_players[i], paint0, paint1, end_time, &cur_index);
-        threads[i] = std::thread(players_in_paint_inner, moments, &temp_players[i], paint0, paint1, end_time, &cur_index, 10);
+        threads[i] = std::thread(players_in_paint_inner, moments, &temp_players[i], paint0, paint1, end_time, &cur_index, 100000);
     }
 
     for (int i = 0; i < num_threads; i++) {
