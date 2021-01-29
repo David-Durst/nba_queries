@@ -151,7 +151,7 @@ void get_players_in_paint_shot_clock_binned(moment_col_store * moments, court_bi
         int bin = all_bins[i / moment_bins->players_indices_in_bins.size()];
         int player_num = i % moment_bins->players_indices_in_bins.size();
         long int player_id = moment_bins->player_ids[player_num];
-        for (const player_pointer *p = moment_bins->player_moment_bins[moment_bins->bin_starts[bin][player_num]];
+        for (const player_pointer *p = &moment_bins->player_moment_bins[moment_bins->bin_starts[bin][player_num]];
              p != get_bin_end(moment_bins, player_id, bin); p++) {
             if (((p->x_loc >= paint0.start.x && p->x_loc < paint0.end.x &&
                   p->y_loc >= paint0.start.y && p->y_loc < paint0.end.y) ||
