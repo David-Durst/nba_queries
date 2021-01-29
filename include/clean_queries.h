@@ -167,12 +167,12 @@ public:
         return result;
     }
 
-    inline const player_pointer* bin_start(long int player_id, int bin_index) {
+    inline __attribute__((always_inline)) const player_pointer* bin_start(long int player_id, int bin_index) {
         int player_bin_index = players_indices_in_bins.at(player_id);
         int offset = bin_starts[player_bin_index][bin_index];
         return &player_moment_bins[offset];
     }
-    inline const player_pointer* bin_end(long int player_id, int bin_index) {
+    inline __attribute__((always_inline))  const player_pointer* bin_end(long int player_id, int bin_index) {
         int player_bin_index = players_indices_in_bins.at(player_id);
         if (bin_index == NUM_BINS) {
             player_bin_index++;
@@ -207,6 +207,22 @@ public:
     // number of elements in bin_list_indices
     int64_t num_player_moments;
 };
+
+static inline __attribute__((always_inline)) const player_pointer* get_bin_start(court_bins * bins, long int player_id, int bin_index) {
+    int player_bin_index = bins->players_indices_in_bins.at(player_id);
+    int offset = bins->bin_starts[player_bin_index][bin_index];
+    return &bins->player_moment_bins[offset];
+}
+static inline __attribute__((always_inline))  const player_pointer* get_bin_end(court_bins * bins, long int player_id, int bin_index) {
+    int player_bin_index = bins->players_indices_in_bins.at(player_id);
+    if (bin_index == NUM_BINS) {
+        player_bin_index++;
+        bin_index = 0;
+    }
+    int offset = (player_bin_index == bins->players_indices_in_bins.size()) ?
+                 bins->num_player_moments : bins->bin_starts[player_bin_index][bin_index + 1];
+    return &bins->player_moment_bins[offset];
+}
 
 class court_and_game_clock_bins {
 public:
