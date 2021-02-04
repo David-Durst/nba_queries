@@ -12,6 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 project (nba_queries VERSION "0.1")
 include(GNUInstallDirs)
 find_package(OpenMP REQUIRED)
+find_package(Protobuf REQUIRED)
 
 include_directories(${PROJECT_BINARY_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/include)
@@ -22,6 +23,7 @@ list(FILTER NBA_TESTS EXCLUDE REGEX "\.#.*")
 file(GLOB_RECURSE NBA_TESTS_SOURCES ${PROJECT_SOURCE_DIR}/src/cpp/lib/*.cpp)
 list(FILTER NBA_TESTS_SOURCES EXCLUDE REGEX "\.#.*")
 file(GLOB_RECURSE NBA_HEADERS ${PROJECT_SOURCE_DIR}/include/*.h)
+file(GLOB_RECURSE PROTO_FILES ${PROJECT_SOURCE_DIR}/src/proto/*.proto)
 
 
 # from OpenCV via https://medium.com/@onur.dundar1/cmake-tutorial-585dd180109b
@@ -35,14 +37,27 @@ FATAL: In-source builds are not allowed.
 ")
 endif()
 
+add_subdirectory(src/proto)
+# Generate header and source files for all the proto files
+#foreach(proto ${PROTO_FILES})
+#    # Get filename without extension
+#    get_filename_component(PROTO_NAME_WE ${proto} NAME_WE)
+#    get_filename_component(PROTO_NAME ${proto} NAME)
+#    # message(STATUS "Generating Protobuf Code for ${PROTO_NAME}")
+#    protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ${proto})
+#    add_library(${PROTO_NAME_WE} STATIC ${PROTO_SRCS} ${PROTO_HDRS})
+#    target_include_directories(${PROTO_NAME_WE} PUBLIC ${Protobuf_INCLUDE_DIRS})
+#endforeach()
+
 add_executable(nba_queries ${NBA_SOURCES} ${PROJECT_SOURCE_DIR}/src/cpp/bin/query_main.cpp)
 add_executable(cleaned_nba_queries ${NBA_SOURCES} ${PROJECT_SOURCE_DIR}/src/cpp/bin/cleaned_query_main.cpp)
 add_executable(preprocess_moments ${NBA_SOURCES} ${PROJECT_SOURCE_DIR}/src/cpp/bin/preprocess_main.cpp)
-add_library(nba_queries_lib SHARED ${NBA_SOURCES} ${NBA_HEADERS})
+add_executable(generate_nba_proto ${PROJECT_SOURCE_DIR}/src/cpp/bin/generate_nba_proto_main.cpp)
+add_library(nba_queries_lib STATIC ${NBA_SOURCES} ${NBA_HEADERS} ${PROTO_SRCS} ${PROTO_HDRS})
 target_link_libraries(nba_queries PRIVATE OpenMP::OpenMP_CXX)
 target_link_libraries(cleaned_nba_queries PRIVATE OpenMP::OpenMP_CXX)
 target_link_libraries(preprocess_moments PRIVATE OpenMP::OpenMP_CXX)
-target_link_libraries(nba_queries_lib PRIVATE OpenMP::OpenMP_CXX)
+target_link_libraries(nba_queries_lib PUBLIC OpenMP::OpenMP_CXX)
 # add this to enable debug printing statements
 #target_compile_definitions(nba_queries PRIVATE DEBUG)
 #target_compile_definitions(nba_queries PRIVATE CALLGRIND)
@@ -52,6 +67,14 @@ IF(ENABLE_CALLGRIND)
 ENDIF(ENABLE_CALLGRIND)
 
 set_target_properties(nba_queries_lib PROPERTIES VERSION ${PROJECT_VERSION})
+
+
+target_link_libraries(generate_nba_proto PUBLIC nba_queries_lib addressbook ${Protobuf_LIBRARIES})
+target_include_directories(generate_nba_proto PUBLIC ${Protobuf_INCLUDE_DIRS})
+message("protobuf_include_dirs is ${Protobuf_INCLUDE_DIRS}")
+message("protobuf_libraries is ${Protobuf_LIBRARIES}")
+message("protobuf_srcs is ${PROTO_SRCS}")
+message("protobuf_hdrs is ${PROTO_HDRS}")
 
 # add the install targets
 install (TARGETS nba_queries DESTINATION bin)
