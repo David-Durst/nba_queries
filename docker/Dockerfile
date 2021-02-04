@@ -29,9 +29,11 @@ RUN conda create -y -n nba_queries python=3.8
 
 # setup protobuf
 RUN apt install -y zip
+RUN mkdir -p /home/durst/.local
+WORKDIR /home/durst/.local
 RUN curl -LO https://github.com/protocolbuffers/protobuf/releases/download/v3.14.0/protoc-3.14.0-linux-x86_64.zip && \
-    mkdir -p /home/durst/.local && \
     unzip protoc-3.14.0-linux-x86_64.zip /home/durst/.local
+WORKDIR /home/durst
 
 # setup code
 RUN git clone https://github.com/David-Durst/nba_queries.git
