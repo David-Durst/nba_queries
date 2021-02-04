@@ -32,7 +32,7 @@ RUN apt install -y zip
 RUN mkdir -p /home/durst/.local
 WORKDIR /home/durst/.local
 RUN curl -LO https://github.com/protocolbuffers/protobuf/releases/download/v3.14.0/protoc-3.14.0-linux-x86_64.zip && \
-    unzip protoc-3.14.0-linux-x86_64.zip /home/durst/.local
+    unzip protoc-3.14.0-linux-x86_64.zip
 WORKDIR /home/durst
 
 # setup code
