@@ -57,6 +57,7 @@ target_link_libraries(nba_queries PRIVATE OpenMP::OpenMP_CXX)
 target_link_libraries(cleaned_nba_queries PRIVATE OpenMP::OpenMP_CXX)
 target_link_libraries(preprocess_moments PRIVATE OpenMP::OpenMP_CXX)
 target_link_libraries(nba_queries_lib PUBLIC OpenMP::OpenMP_CXX)
+target_link_libraries(generate_nba_proto PRIVATE nba_queries_lib)
 # add this to enable debug printing statements
 #target_compile_definitions(nba_queries PRIVATE DEBUG)
 #target_compile_definitions(nba_queries PRIVATE CALLGRIND)
@@ -67,12 +68,8 @@ ENDIF(ENABLE_CALLGRIND)
 
 set_target_properties(nba_queries_lib PROPERTIES VERSION ${PROJECT_VERSION})
 
-target_link_libraries(generate_nba_proto PUBLIC addressbook ${Protobuf_LIBRARIES})
-target_include_directories(generate_nba_proto PUBLIC ${Protobuf_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
-message("protobuf_include_dirs is ${Protobuf_INCLUDE_DIRS}")
-message("protobuf_libraries is ${Protobuf_LIBRARIES}")
-message("protobuf_srcs is ${PROTO_SRCS}")
-message("protobuf_hdrs is ${PROTO_HDRS}")
+target_link_libraries(nba_queries_lib PUBLIC moment nba_queries_lib ${Protobuf_LIBRARIES})
+target_include_directories(nba_queries_lib PUBLIC ${Protobuf_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 
 # add the install targets
 install (TARGETS nba_queries DESTINATION bin)
