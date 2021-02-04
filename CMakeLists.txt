@@ -37,23 +37,22 @@ FATAL: In-source builds are not allowed.
 ")
 endif()
 
-add_subdirectory(src/proto)
 # Generate header and source files for all the proto files
-#foreach(proto ${PROTO_FILES})
-#    # Get filename without extension
-#    get_filename_component(PROTO_NAME_WE ${proto} NAME_WE)
-#    get_filename_component(PROTO_NAME ${proto} NAME)
-#    # message(STATUS "Generating Protobuf Code for ${PROTO_NAME}")
-#    protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ${proto})
-#    add_library(${PROTO_NAME_WE} STATIC ${PROTO_SRCS} ${PROTO_HDRS})
-#    target_include_directories(${PROTO_NAME_WE} PUBLIC ${Protobuf_INCLUDE_DIRS})
-#endforeach()
+foreach(proto ${PROTO_FILES})
+    # Get filename without extension
+    get_filename_component(PROTO_NAME_WE ${proto} NAME_WE)
+    get_filename_component(PROTO_NAME ${proto} NAME)
+    # message(STATUS "Generating Protobuf Code for ${PROTO_NAME}")
+    protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ${proto})
+    add_library(${PROTO_NAME_WE} STATIC ${PROTO_SRCS} ${PROTO_HDRS})
+    target_include_directories(${PROTO_NAME_WE} PUBLIC ${Protobuf_INCLUDE_DIRS})
+endforeach()
 
 add_executable(nba_queries ${NBA_SOURCES} ${PROJECT_SOURCE_DIR}/src/cpp/bin/query_main.cpp)
 add_executable(cleaned_nba_queries ${NBA_SOURCES} ${PROJECT_SOURCE_DIR}/src/cpp/bin/cleaned_query_main.cpp)
 add_executable(preprocess_moments ${NBA_SOURCES} ${PROJECT_SOURCE_DIR}/src/cpp/bin/preprocess_main.cpp)
 add_executable(generate_nba_proto ${PROJECT_SOURCE_DIR}/src/cpp/bin/generate_nba_proto_main.cpp)
-add_library(nba_queries_lib STATIC ${NBA_SOURCES} ${NBA_HEADERS} ${PROTO_SRCS} ${PROTO_HDRS})
+add_library(nba_queries_lib STATIC ${NBA_SOURCES} ${NBA_HEADERS})
 target_link_libraries(nba_queries PRIVATE OpenMP::OpenMP_CXX)
 target_link_libraries(cleaned_nba_queries PRIVATE OpenMP::OpenMP_CXX)
 target_link_libraries(preprocess_moments PRIVATE OpenMP::OpenMP_CXX)
@@ -68,9 +67,8 @@ ENDIF(ENABLE_CALLGRIND)
 
 set_target_properties(nba_queries_lib PROPERTIES VERSION ${PROJECT_VERSION})
 
-
-target_link_libraries(generate_nba_proto PUBLIC nba_queries_lib addressbook ${Protobuf_LIBRARIES})
-target_include_directories(generate_nba_proto PUBLIC ${Protobuf_INCLUDE_DIRS})
+target_link_libraries(generate_nba_proto PUBLIC addressbook ${Protobuf_LIBRARIES})
+target_include_directories(generate_nba_proto PUBLIC ${Protobuf_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 message("protobuf_include_dirs is ${Protobuf_INCLUDE_DIRS}")
 message("protobuf_libraries is ${Protobuf_LIBRARIES}")
 message("protobuf_srcs is ${PROTO_SRCS}")
