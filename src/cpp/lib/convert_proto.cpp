@@ -1,4 +1,4 @@
-#include "convert_proto.h"
+/*#include "convert_proto.h"
 
 void moments_memory_to_proto(vector<cleaned_moment>& internal_moments, proto::Moments& proto_moments) {
     for (const auto & internal_moment : internal_moments) {
@@ -72,4 +72,4 @@ void moments_proto_to_memory(proto::Moments& proto_moments, vector<cleaned_momen
 
         internal_moments.push_back(internal_moment);
     }
-}
+}*/

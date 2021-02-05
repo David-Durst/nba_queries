@@ -12,12 +12,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 project (nba_queries VERSION "0.1")
 include(GNUInstallDirs)
 find_package(OpenMP REQUIRED)
-find_package(Protobuf REQUIRED)
+find_package(CapnProto REQUIRED)
 
 include_directories(${PROJECT_BINARY_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${Protobuf_INCLUDE_DIRS})
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/src/proto)
+# following line is a hack for clion to recognize the directory
+include_directories(./build/src/proto)
 file(GLOB_RECURSE NBA_SOURCES ${PROJECT_SOURCE_DIR}/src/cpp/lib/*.cpp)
 list(FILTER NBA_SOURCES EXCLUDE REGEX "\.#.*")
 file(GLOB NBA_TESTS "${PROJECT_SOURCE_DIR}/test/*.cpp")
@@ -25,7 +26,7 @@ list(FILTER NBA_TESTS EXCLUDE REGEX "\.#.*")
 file(GLOB_RECURSE NBA_TESTS_SOURCES ${PROJECT_SOURCE_DIR}/src/cpp/lib/*.cpp)
 list(FILTER NBA_TESTS_SOURCES EXCLUDE REGEX "\.#.*")
 file(GLOB_RECURSE NBA_HEADERS ${PROJECT_SOURCE_DIR}/include/*.h)
-file(GLOB_RECURSE PROTO_FILES ${PROJECT_SOURCE_DIR}/src/proto/*.proto)
+file(GLOB_RECURSE PROTO_FILES ${PROJECT_SOURCE_DIR}/src/proto/*.capnp)
 
 
 # from OpenCV via https://medium.com/@onur.dundar1/cmake-tutorial-585dd180109b
@@ -39,15 +40,17 @@ FATAL: In-source builds are not allowed.
 ")
 endif()
 
-# Generate header and source files for all the proto files
+# Generate header and source files for all the CapnProto files
 foreach(proto ${PROTO_FILES})
     # Get filename without extension
     get_filename_component(PROTO_NAME_WE ${proto} NAME_WE)
     get_filename_component(PROTO_NAME ${proto} NAME)
     # message(STATUS "Generating Protobuf Code for ${PROTO_NAME}")
-    protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ${proto})
+    capnp_generate_cpp(PROTO_SRCS PROTO_HDRS ${proto})
     add_library(${PROTO_NAME_WE} STATIC ${PROTO_SRCS} ${PROTO_HDRS})
-    target_include_directories(${PROTO_NAME_WE} PUBLIC ${Protobuf_INCLUDE_DIRS})
+    target_link_libraries(${PROTO_NAME_WE} CapnProto::capnp)
+    message("current binary dir ${CMAKE_CURRENT_BINARY_DIR}")
+    message("capnpc_output_dir ${CAPNPC_OUTPUT_DIR}")
 endforeach()
 
 add_library(nba_queries_lib STATIC ${NBA_SOURCES} ${NBA_HEADERS})

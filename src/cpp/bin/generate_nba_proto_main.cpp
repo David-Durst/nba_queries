@@ -3,11 +3,12 @@
 #include "load_data.h"
 #include "query_structs.h"
 #include "convert_proto.h"
-#include "moment.pb.h"
 #include "benchmark.h"
+#include "moment.capnp.h"
 
 
 int main(int argc, char * argv[]) {
+    /*
     GOOGLE_PROTOBUF_VERIFY_VERSION;
 
     vector<cleaned_moment> moments;
@@ -39,5 +40,6 @@ int main(int argc, char * argv[]) {
     auto time_proto = Halide::Tools::benchmark_duration_seconds(start_internal, Halide::Tools::benchmark_now());
     std::cout << "it took " << time_internal << " seconds to write the data in protobuf" << std::endl;
 
+     */
     return 0;
 }
