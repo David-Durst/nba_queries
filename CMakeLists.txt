@@ -48,15 +48,16 @@ foreach(proto ${PROTO_FILES})
     target_include_directories(${PROTO_NAME_WE} PUBLIC ${Protobuf_INCLUDE_DIRS})
 endforeach()
 
-add_executable(nba_queries ${NBA_SOURCES} ${PROJECT_SOURCE_DIR}/src/cpp/bin/query_main.cpp)
+add_library(nba_queries_lib STATIC ${NBA_SOURCES} ${NBA_HEADERS})
+add_executable(nba_queries ${PROJECT_SOURCE_DIR}/src/cpp/bin/query_main.cpp)
 add_executable(cleaned_nba_queries ${PROJECT_SOURCE_DIR}/src/cpp/bin/cleaned_query_main.cpp)
 add_executable(preprocess_moments ${PROJECT_SOURCE_DIR}/src/cpp/bin/preprocess_main.cpp)
 add_executable(generate_nba_proto ${PROJECT_SOURCE_DIR}/src/cpp/bin/generate_nba_proto_main.cpp)
-add_library(nba_queries_lib STATIC ${NBA_SOURCES} ${NBA_HEADERS})
 target_link_libraries(nba_queries PRIVATE OpenMP::OpenMP_CXX)
 target_link_libraries(cleaned_nba_queries PRIVATE OpenMP::OpenMP_CXX)
 target_link_libraries(preprocess_moments PRIVATE OpenMP::OpenMP_CXX)
 target_link_libraries(nba_queries_lib PUBLIC OpenMP::OpenMP_CXX)
+target_link_libraries(nba_queries PRIVATE nba_queries_lib)
 target_link_libraries(preprocess_moments PRIVATE nba_queries_lib)
 target_link_libraries(cleaned_nba_queries PRIVATE nba_queries_lib)
 target_link_libraries(generate_nba_proto PRIVATE nba_queries_lib)
@@ -70,7 +71,7 @@ ENDIF(ENABLE_CALLGRIND)
 
 set_target_properties(nba_queries_lib PROPERTIES VERSION ${PROJECT_VERSION})
 
-target_link_libraries(nba_queries_lib PUBLIC moment nba_queries_lib ${Protobuf_LIBRARIES})
+target_link_libraries(nba_queries_lib PUBLIC moment ${Protobuf_LIBRARIES})
 target_include_directories(nba_queries_lib PUBLIC ${Protobuf_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 
 # add the install targets
