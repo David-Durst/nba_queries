@@ -60,7 +60,7 @@ void moments_memory_to_proto(vector<cleaned_moment>& internal_moments, string pr
         }
     }
 
-    int fd = open(proto_file_path.c_str(), O_WRONLY | O_TRUNC);
+    int fd = open(proto_file_path.c_str(), O_CREAT | O_WRONLY | O_TRUNC);
     capnp::writeMessageToFd(fd, message);
 
     /*
