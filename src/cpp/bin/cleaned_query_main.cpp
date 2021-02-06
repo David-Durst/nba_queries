@@ -77,12 +77,16 @@ int main(int argc, char * argv[]) {
     auto time_proto = Halide::Tools::benchmark_duration_seconds(start_proto, Halide::Tools::benchmark_now());
     std::cout << "moments size: " << moments.size() << std::endl;
     std::cout << "it took " << time_proto << " seconds to read the data in protobuf" << std::endl;
+
+    auto start_col = Halide::Tools::benchmark_now();
     moments_col = new moment_col_store(moments);
+    auto time_col = Halide::Tools::benchmark_duration_seconds(start_col, Halide::Tools::benchmark_now());
+    std::cout << "it took " << time_col << " seconds to convert to cols" << std::endl;
 
     // bin the moments
     auto start_bin = Halide::Tools::benchmark_now();
     bins = new court_bins(moments_col);
-    auto time_bin = Halide::Tools::benchmark_duration_seconds(start_proto, Halide::Tools::benchmark_now());
+    auto time_bin = Halide::Tools::benchmark_duration_seconds(start_bin, Halide::Tools::benchmark_now());
     std::cout << "it took " << time_bin << " seconds to bin" << std::endl;
     return 0;
     moments_col = new moment_col_store(moments);
