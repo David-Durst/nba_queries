@@ -21,6 +21,7 @@
 #include "query_structs.h"
 #include "col_stores.h"
 #include "convert_proto.h"
+#include "storage_structs.h"
 #ifdef CALLGRIND
 #include <valgrind/callgrind.h>
 #endif
