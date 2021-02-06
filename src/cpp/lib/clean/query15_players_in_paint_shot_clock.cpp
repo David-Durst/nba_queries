@@ -58,7 +58,7 @@ void get_players_in_paint_shot_clock(moment_col_store * moments, vector<players_
                                      coordinate_range paint0, coordinate_range paint1, double end_time) {
     int num_threads = omp_get_max_threads();
     vector<players_in_paint_at_time> temp_players[num_threads];
-//#pragma omp parallel for
+    #pragma omp parallel for
     for (int64_t time = 0; time < moments->size; time++) {
         int thread_num = omp_get_thread_num();
         if (moments->shot_clock[time] < end_time) {
@@ -82,7 +82,7 @@ void get_players_in_paint_shot_clock_no_funcs(moment_col_store * moments, vector
                                                         coordinate_range paint0, coordinate_range paint1, double end_time) {
     int num_threads = omp_get_max_threads();
     vector<players_in_paint_at_time> temp_players[num_threads];
-//#pragma omp parallel for
+    #pragma omp parallel for
     for (int64_t time = 0; time < moments->size; time++) {
         //auto start_t = Halide::Tools::benchmark_now();
         int thread_num = omp_get_thread_num();
