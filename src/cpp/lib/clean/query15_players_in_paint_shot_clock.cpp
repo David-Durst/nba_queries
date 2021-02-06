@@ -88,10 +88,10 @@ void get_players_in_paint_shot_clock_no_funcs(moment_col_store * moments, vector
         int thread_num = omp_get_thread_num();
         if (moments->shot_clock[time] < end_time) {
             for (int i = 0; i < NUM_PLAYERS_AND_BALL; i++) {
-                if ((moments->x_loc[i][time] >= paint0.start.x && moments->x_loc[i][time] < paint0.end.x &&
-                     moments->y_loc[i][time] >= paint0.start.y && moments->y_loc[i][time] < paint0.end.y) ||
-                    (moments->x_loc[i][time] >= paint1.start.x && moments->x_loc[i][time] < paint1.end.x &&
-                     moments->y_loc[i][time] >= paint1.start.y && moments->y_loc[i][time] < paint1.end.y)) {
+                if ((moments->x_loc[i][time] >= paint0.start.x && moments->x_loc[i][time] <= paint0.end.x &&
+                     moments->y_loc[i][time] >= paint0.start.y && moments->y_loc[i][time] <= paint0.end.y) ||
+                    (moments->x_loc[i][time] >= paint1.start.x && moments->x_loc[i][time] <= paint1.end.x &&
+                     moments->y_loc[i][time] >= paint1.start.y && moments->y_loc[i][time] <= paint1.end.y)) {
                     temp_players[thread_num].push_back({time, moments->game_clock[time], moments->player_id[i][time]});
                 }
             }
