@@ -20,6 +20,7 @@
 #include "load_data.h"
 #include "query_structs.h"
 #include "col_stores.h"
+#include "convert_proto.h"
 #ifdef CALLGRIND
 #include <valgrind/callgrind.h>
 #endif
@@ -67,13 +68,11 @@ int main(int argc, char * argv[]) {
     string moments_file_path = argv[1], shots_file_path = argv[2], run_type = argv[3], extra_data_file_path = argv[4],
         timing_file_path = argv[5];
     int num_samples_and_iterations = (run_type.compare("debug") == 0) ? 1 : 10;
-    std::fstream moments_file, shots_file, timing_file, extra_data_file;
+    std::fstream shots_file, timing_file, extra_data_file;
 
     // load the cleaned moments
     std::cout << "loading cleaned moments file: " << moments_file_path << std::endl;
-    moments_file.open(moments_file_path);
-    load_cleaned_moment_rows_vec(moments_file, moments);
-    moments_file.close();
+    moments_proto_to_memory(moments_file_path, moments);
     std::cout << "moments size: " << moments.size() << std::endl;
     moments_col = new moment_col_store(moments);
 

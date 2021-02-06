@@ -3,6 +3,9 @@
 #include <capnp/serialize.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/mman.h>
 
 int64_t SEGMENT_SIZE = 10000000;
 void moments_memory_to_proto(vector<cleaned_moment>& internal_moments, string proto_file_path) {
@@ -62,60 +65,63 @@ void moments_memory_to_proto(vector<cleaned_moment>& internal_moments, string pr
 
     int fd = open(proto_file_path.c_str(), O_CREAT | O_WRONLY | O_TRUNC);
     capnp::writeMessageToFd(fd, message);
-
-    /*
-    ::capnp::List<::capnp::List<Moment>>::Builder proto_segement_builder = proto_moments.initElements(internal_moments.size());
-
-    for (int segment = 0; segment < internal_moments.size() / SEGMENT_SIZE; segment++) {
-        ::capnp::List<Moment>::Builder proto_moment_builder = proto_segement_builder[segment];
-        proto_moment_builder.
-        for (int m = 0; m < SEGMENT_SIZE; m++) {
-            Moment::Builder proto_moment = proto_moment_builder[m];
-            cleaned_moment & internal_moment = internal_moments.at(segment * SEGMENT_SIZE + m);
-        }
-    }
-     */
-    /*
-    for (const auto & internal_moment : internal_moments) {
-        proto::Moment * proto_moment = proto_moments.add_elements();
-
-        // set ball
-        proto::PlayerData * proto_ball = proto_moment->mutable_ball();
-        proto_ball->set_team_id(internal_moment.ball.team_id);
-        proto_ball->set_player_id(internal_moment.ball.player_id);
-        proto_ball->set_x_loc(internal_moment.ball.x_loc);
-        proto_ball->set_y_loc(internal_moment.ball.y_loc);
-        proto_ball->set_radius(internal_moment.ball.radius);
-
-        // set players
-        for (int i = 0; i < 10; i++) {
-            proto::PlayerData * proto_player = proto_moment->add_players();
-            proto_player->set_team_id(internal_moment.players[i].team_id);
-            proto_player->set_player_id(internal_moment.players[i].player_id);
-            proto_player->set_x_loc(internal_moment.players[i].x_loc);
-            proto_player->set_y_loc(internal_moment.players[i].y_loc);
-        }
-
-        proto::ClockFixedPoint * proto_game_clock = proto_moment->mutable_game_clock();
-        proto_game_clock->set_seconds(internal_moment.game_clock.seconds);
-        proto_game_clock->set_twenty_fifths_of_second(internal_moment.game_clock.twenty_fifths_of_second);
-
-        proto_moment->set_shot_clock(internal_moment.shot_clock);
-        proto_moment->set_quarter(internal_moment.quarter);
-        proto_moment->set_game_id(internal_moment.game_id);
-        proto_moment->set_game_num(internal_moment.game_num);
-
-        // set moments
-        for (const auto & internal_emd : internal_moment.events) {
-            proto::EventMomentData * emd = proto_moment->add_events();
-            emd->set_event_id(internal_emd.event_id);
-            emd->set_moment_in_event(internal_emd.moment_in_event);
-        }
-    }
-    */
+    close(fd);
 }
 
 void moments_proto_to_memory(string proto_file_path, vector<cleaned_moment>& internal_moments) {
+    // https://groups.google.com/g/capnproto/c/f0-kF8JAqK4/m/TtDCO5BNCAAJ
+    int fd = open(proto_file_path.c_str(), O_RDONLY);
+    struct stat stats;
+    size_t size = fstat(fd, &stats);
+    void * addr = mmap(NULL, size, PROT_READ, MAP_PRIVATE, fd, 0);
+    kj::ArrayPtr<capnp::word> words(reinterpret_cast<capnp::word*>(addr),
+                                    size / sizeof(capnp::word));
+
+    capnp::FlatArrayMessageReader messageReader(words);
+    Moments::Reader proto_moments = messageReader.getRoot<Moments>();
+
+    for (Segment::Reader segment : proto_moments.getSegments()) {
+        for (Moment::Reader proto_moment : segment.getElements() ) {
+            cleaned_moment internal_moment;
+            internal_moment.ball.team_id = proto_moment.getBall().getTeamId();
+            internal_moment.ball.player_id = proto_moment.getBall().getPlayerId();
+            internal_moment.ball.x_loc = proto_moment.getBall().getXLoc();
+            internal_moment.ball.y_loc = proto_moment.getBall().getYLoc();
+            internal_moment.ball.radius = proto_moment.getBall().getRadius();
+
+            int i = 0;
+            for (PlayerData::Reader proto_player : proto_moment.getPlayers()) {
+                internal_moment.players[i].team_id = proto_player.getTeamId();
+                internal_moment.players[i].player_id = proto_player.getPlayerId();
+                internal_moment.players[i].x_loc = proto_player.getXLoc();
+                internal_moment.players[i].y_loc = proto_player.getYLoc();
+                internal_moment.players[i].radius = proto_player.getRadius();
+                i++;
+            }
+
+            internal_moment.game_clock.seconds = proto_moment.getGameClock().getSeconds();
+            internal_moment.game_clock.twenty_fifths_of_second = proto_moment.getGameClock().getTwentyFifthsOfSecond();
+
+            internal_moment.shot_clock = proto_moment.getShotClock();
+            internal_moment.quarter = proto_moment.getQuarter();
+            internal_moment.game_id = proto_moment.getGameId();
+            internal_moment.game_num = proto_moment.getGameNum();
+
+            for (EventMomentData::Reader proto_emd : proto_moment.getEvents()) {
+                event_moment_data emd;
+                emd.event_id = proto_emd.getEventId();
+                emd.moment_in_event = proto_emd.getMomentInEvent();
+                internal_moment.events.push_back(emd);
+            }
+
+            internal_moments.push_back(internal_moment);
+
+        }
+    }
+
+    munmap(addr, size);
+    close(fd);
+
     /*
     for (const auto & proto_moment : proto_moments.elements()) {
         cleaned_moment internal_moment;
