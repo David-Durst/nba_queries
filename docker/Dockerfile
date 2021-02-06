@@ -28,6 +28,7 @@ RUN conda config --prepend pkgs_dirs /home/durst/.conda/pkgs
 RUN conda create -y -n nba_queries python=3.8
 
 # setup Capn Proto
+RUN apt install -y pkg-config
 RUN curl -O https://capnproto.org/capnproto-c++-0.8.0.tar.gz && \
     tar zxf capnproto-c++-0.8.0.tar.gz && \
     cd capnproto-c++-0.8.0 && \

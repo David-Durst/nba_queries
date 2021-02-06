@@ -16,7 +16,7 @@ void moments_memory_to_proto(vector<cleaned_moment>& internal_moments, string pr
         Segment::Builder proto_segment = proto_segment_builder[segment_index];
         int64_t cur_segment_size = segment_index == num_segments - 1 ? last_segment_size : SEGMENT_SIZE;
         ::capnp::List<Moment>::Builder proto_moment_builder = proto_segment.initElements(cur_segment_size);
-        for (int m = 0; m < SEGMENT_SIZE; m++) {
+        for (int m = 0; m < cur_segment_size; m++) {
             Moment::Builder proto_moment = proto_moment_builder[m];
             cleaned_moment& internal_moment = internal_moments.at(segment_index * SEGMENT_SIZE + m);
             PlayerData::Builder proto_ball = proto_moment.initBall();
