@@ -17,7 +17,7 @@ void find_trajectories_fixed_origin_clean(moment_col_store * moments, vector<tra
         bool any_match = false;
         for (int j = 0; j < 11; j++) {
             players_match_src[j] =
-                    point_intersect_no_time(&origin, moments->x_loc[j][src_time], moments->y_loc[j][src_time]);
+                    point_intersect_no_time(origin, moments->x_loc[j][src_time], moments->y_loc[j][src_time]);
             any_match |= players_match_src[j];
         }
         if (!any_match) {
@@ -36,7 +36,7 @@ void find_trajectories_fixed_origin_clean(moment_col_store * moments, vector<tra
                     if (moments->player_id[src_player_index][src_time] == moments->player_id[dst_player_index][dst_time] &&
                         moments->game_num[src_time] == moments->game_num[dst_time] &&
                         moments->quarter[src_time] == moments->quarter[dst_time] &&
-                        point_intersect_no_time(&destination, moments->x_loc[dst_player_index][dst_time],
+                        point_intersect_no_time(destination, moments->x_loc[dst_player_index][dst_time],
                                                 moments->y_loc[dst_player_index][dst_time])) {
                         {
                             temp_trajs[thread_num].push_back({
@@ -82,7 +82,7 @@ void find_trajectories_fixed_origin_clean_just_outer(moment_col_store * moments,
         bool any_match = false;
         for (int j = 0; j < 11; j++) {
             players_match_src[j] =
-                    point_intersect_no_time(&origin, moments->x_loc[j][src_time], moments->y_loc[j][src_time]);
+                    point_intersect_no_time(origin, moments->x_loc[j][src_time], moments->y_loc[j][src_time]);
             any_match |= players_match_src[j];
         }
         if (!any_match) {

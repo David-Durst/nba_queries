@@ -58,7 +58,7 @@ void find_trajectories_fixed_origin_clean_binned(moment_col_store * moments, cou
                 if (moments->player_id[src_moment.ptr.player_index][src_time] == moments->player_id[dst_player_index][dst_time] &&
                         moments->game_num[src_time] == moments->game_num[dst_time] &&
                         moments->quarter[src_time] == moments->quarter[dst_time] &&
-                        point_intersect_no_time(&destination, moments->x_loc[dst_player_index][dst_time],
+                        point_intersect_no_time(destination, moments->x_loc[dst_player_index][dst_time],
                                             moments->y_loc[dst_player_index][dst_time])) {
                     {
                         temp_trajs[thread_num].push_back({
@@ -106,7 +106,7 @@ void find_trajectories_fixed_origin_clean_binned_just_outer(moment_col_store * m
         for (const auto &src_bin : origin_bins) {
             for (const player_pointer *src_moment = moment_bins->bin_start(player_id, src_bin);
                  src_moment != moment_bins->bin_end(player_id, src_bin); src_moment++) {
-                if (point_intersect_no_time(&origin, moments->x_loc[src_moment->player_index][src_moment->moment_index],
+                if (point_intersect_no_time(origin, moments->x_loc[src_moment->player_index][src_moment->moment_index],
                                             moments->y_loc[src_moment->player_index][src_moment->moment_index])) {
                     temp_srcs[thread_num].push_back({*src_moment, player_id});
                 }

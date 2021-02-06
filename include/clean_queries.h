@@ -107,9 +107,9 @@ void get_players_in_paint_shot_clock_binned(moment_col_store * moments, court_bi
                                             vector<players_in_paint_at_time>& players_in_paint,
                                             coordinate_range paint0, coordinate_range paint1, double end_time);
 
-static inline __attribute__((always_inline)) bool point_intersect_no_time(coordinate_range * r, double x_loc, double y_loc) {
-    bool x_intersects = x_loc >= r->start.x && x_loc <= r->end.x;
-    bool y_intersects = y_loc >= r->start.y && y_loc <= r->end.y;
+static inline __attribute__((always_inline)) bool point_intersect_no_time(const coordinate_range& r, double x_loc, double y_loc) {
+    bool x_intersects = x_loc >= r.start.x && x_loc <= r.end.x;
+    bool y_intersects = y_loc >= r.start.y && y_loc <= r.end.y;
     return x_intersects && y_intersects;
 }
 

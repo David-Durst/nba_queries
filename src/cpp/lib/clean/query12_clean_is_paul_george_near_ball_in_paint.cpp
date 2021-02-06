@@ -22,8 +22,8 @@ void is_paul_george_near_ball_in_paint_clean(moment_col_store * moments, court_b
         int bin = all_bins.at(i);
         for (const player_pointer *p = moment_bins->bin_start(player_id, bin);
              p != moment_bins->bin_end(player_id, bin); p++) {
-            if (point_intersect_no_time(&paint0, p->x_loc, p->y_loc) ||
-                point_intersect_no_time(&paint1, p->x_loc, p->y_loc)) {
+            if (point_intersect_no_time(paint0, p->x_loc, p->y_loc) ||
+                point_intersect_no_time(paint1, p->x_loc, p->y_loc)) {
                 player_data player;
                 player.team_id = moments->team_id[p->player_index][p->moment_index];
                 player.player_id = moments->player_id[p->player_index][p->moment_index];

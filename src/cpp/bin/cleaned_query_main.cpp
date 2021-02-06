@@ -164,7 +164,7 @@ int main(int argc, char * argv[]) {
             for (const player_pointer *src_moment = bins->bin_start(player_id, src_bin);
                  src_moment != bins->bin_end(player_id, src_bin); src_moment++) {
                 elements_in_bins++;
-                if (point_intersect_no_time(&origin, moments_col->x_loc[src_moment->player_index][src_moment->moment_index],
+                if (point_intersect_no_time(origin, moments_col->x_loc[src_moment->player_index][src_moment->moment_index],
                                             moments_col->y_loc[src_moment->player_index][src_moment->moment_index])) {
                     elements_in_region++;
                 }

@@ -14,8 +14,8 @@ void players_in_paint_inner(moment_col_store * moments, vector<players_in_paint_
         for (int64_t time = cur_end - step_size; time < cur_end; time++) {
             if (moments->shot_clock[time] < end_time) {
                 for (int i = 0; i < NUM_PLAYERS_AND_BALL; i++) {
-                    if (point_intersect_no_time(&paint0, moments->x_loc[i][time], moments->y_loc[i][time]) ||
-                        point_intersect_no_time(&paint1, moments->x_loc[i][time], moments->y_loc[i][time])) {
+                    if (point_intersect_no_time(paint0, moments->x_loc[i][time], moments->y_loc[i][time]) ||
+                        point_intersect_no_time(paint1, moments->x_loc[i][time], moments->y_loc[i][time])) {
                         temp_players->push_back({time, moments->game_clock[time], moments->player_id[i][time]});
                     }
                 }
@@ -63,8 +63,8 @@ void get_players_in_paint_shot_clock(moment_col_store * moments, vector<players_
         int thread_num = omp_get_thread_num();
         if (moments->shot_clock[time] < end_time) {
             for (int i = 0; i < NUM_PLAYERS_AND_BALL; i++) {
-                if (point_intersect_no_time(&paint0, moments->x_loc[i][time], moments->y_loc[i][time]) ||
-                    point_intersect_no_time(&paint1, moments->x_loc[i][time], moments->y_loc[i][time])) {
+                if (point_intersect_no_time(paint0, moments->x_loc[i][time], moments->y_loc[i][time]) ||
+                    point_intersect_no_time(paint1, moments->x_loc[i][time], moments->y_loc[i][time])) {
                     temp_players[thread_num].push_back({time, moments->game_clock[time], moments->player_id[i][time]});
                 }
             }
@@ -142,7 +142,7 @@ void get_players_in_paint_shot_clock_one_paint(moment_col_store * moments, vecto
         int thread_num = omp_get_thread_num();
         if (moments->shot_clock[time] < end_time) {
             for (int i = 0; i < NUM_PLAYERS_AND_BALL; i++) {
-                if (point_intersect_no_time(&paint0, moments->x_loc[i][time], moments->y_loc[i][time])) {
+                if (point_intersect_no_time(paint0, moments->x_loc[i][time], moments->y_loc[i][time])) {
                     temp_players[thread_num].push_back({time, moments->game_clock[time], moments->player_id[i][time]});
                 }
             }
@@ -167,7 +167,7 @@ void get_players_in_paint_shot_clock_one_paint_no_vec(moment_col_store * moments
         int thread_num = omp_get_thread_num();
         if (moments->shot_clock[time] < end_time) {
             for (int i = 0; i < NUM_PLAYERS_AND_BALL; i++) {
-                if (point_intersect_no_time(&paint0, moments->x_loc[i][time], moments->y_loc[i][time])) {
+                if (point_intersect_no_time(paint0, moments->x_loc[i][time], moments->y_loc[i][time])) {
                     temp_players[thread_num]++;
                 }
             }

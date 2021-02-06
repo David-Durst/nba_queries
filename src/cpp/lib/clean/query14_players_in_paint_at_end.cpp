@@ -81,8 +81,8 @@ void get_players_in_paint_at_end_binned(moment_col_store * moments, court_bins *
             long int player_id = moment_bins->player_ids[player_num];
             for (const player_pointer *p = moment_bins->bin_start(player_id, bin);
                  p != moment_bins->bin_end(player_id, bin); p++) {
-                if ((point_intersect_no_time(&paint0, p->x_loc, p->y_loc) ||
-                    point_intersect_no_time(&paint1, p->x_loc, p->y_loc)) &&
+                if ((point_intersect_no_time(paint0, p->x_loc, p->y_loc) ||
+                    point_intersect_no_time(paint1, p->x_loc, p->y_loc)) &&
                     start_of_end.gt(moments->game_clock[p->moment_index])) {
                     temp_players[thread_num].push_back({p->moment_index, moments->game_clock[p->moment_index], moments->player_id[p->player_index][p->moment_index]});
                 }
@@ -144,8 +144,8 @@ void get_players_in_paint_at_end_binned_with_time(moment_col_store * moments, co
     for (int i = 0; i < flat_temp_moments.size(); i++) {
         int thread_num = omp_get_thread_num();
         const player_pointer_and_id& p = flat_temp_moments[i];
-        if ((point_intersect_no_time(&paint0, p.ptr.x_loc, p.ptr.y_loc) ||
-             point_intersect_no_time(&paint1, p.ptr.x_loc, p.ptr.y_loc)) &&
+        if ((point_intersect_no_time(paint0, p.ptr.x_loc, p.ptr.y_loc) ||
+             point_intersect_no_time(paint1, p.ptr.x_loc, p.ptr.y_loc)) &&
             start_of_end.gt(moments->game_clock[p.ptr.moment_index])) {
             temp_players[thread_num].push_back({p.ptr.moment_index, moments->game_clock[p.ptr.moment_index], moments->player_id[p.ptr.player_index][p.ptr.moment_index]});
         }
