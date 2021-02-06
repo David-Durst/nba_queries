@@ -204,10 +204,9 @@ court_bins::court_bins(const moment_col_store& moments) {
             auto player_index_in_bin = players_indices_in_bins.at(moments.player_id[player][i]);
             auto bin = get_bin_index(moments.x_loc[player][i], moments.y_loc[player][i]);
             auto cur_bin_entry = entries_per_bin[player_index_in_bin][bin]++;
-            player_moment_bins[bin_starts[player_index_in_bin][bin] + cur_bin_entry].moment_index = i;
-            player_moment_bins[bin_starts[player_index_in_bin][bin] + cur_bin_entry].player_index = player;
-            player_moment_bins[bin_starts[player_index_in_bin][bin] + cur_bin_entry].x_loc = moments.x_loc[player][i];
-            player_moment_bins[bin_starts[player_index_in_bin][bin] + cur_bin_entry].y_loc = moments.y_loc[player][i];
+            player_moment_bins[bin_starts[player_index_in_bin][bin] + cur_bin_entry] = {i, player,
+                                                                                        moments.x_loc[player][i],
+                                                                                        moments.y_loc[player][i]};
         }
     }
     auto time_array_fill = Halide::Tools::benchmark_duration_seconds(start_array_fill, Halide::Tools::benchmark_now());
