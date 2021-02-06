@@ -1,4 +1,5 @@
 #include "clean_queries.h"
+#include "benchmark.h"
 #include <set>
 #include <utility>
 #include <iostream>
@@ -136,6 +137,7 @@ void find_trajectories_fixed_origin_clean_binned_min_time(moment_col_store * mom
 court_bins::court_bins(moment_col_store * moments) {
     // first need to collect all the players, as moments just track 10 on the floor and ball
     // and for each player, track how many moments they are in
+    auto start_pre_vec = Halide::Tools::benchmark_now();
     std::set<long int> player_ids_set;
     for (int player_in_game = 0; player_in_game < NUM_PLAYERS_AND_BALL; player_in_game++) {
         for (int64_t moment_index = 0; moment_index < moments->size; moment_index++) {
@@ -158,7 +160,7 @@ court_bins::court_bins(moment_col_store * moments) {
     num_player_moments = moments->size * NUM_PLAYERS_AND_BALL;
     player_moment_bins = new player_pointer[num_player_moments];
 
-    std::cout << "creating lists" << std::endl;
+    std::cout << "creating vectors" << std::endl;
 
     // now create the bins with a data structure that is efficient insert, but inefficient lookup (lists)
     // this will store the locations of all player in each bin in lists before inserting into array
@@ -170,7 +172,10 @@ court_bins::court_bins(moment_col_store * moments) {
         }
     }
 
+    auto time_pre_vec = Halide::Tools::benchmark_duration_seconds(start_pre_vec, Halide::Tools::benchmark_now());
+    std::cout << "it took " << time_pre_vec << " seconds to pre_vec" << std::endl;
     std::cout << "filling vector" << std::endl;
+    auto start_vec_fill = Halide::Tools::benchmark_now();
 
     for (int player = 0; player < NUM_PLAYERS_AND_BALL; player++) {
         for (int64_t i = 0; i < moments->size; i++) {
@@ -184,8 +189,11 @@ court_bins::court_bins(moment_col_store * moments) {
         }
     }
 
+    auto time_vec_fill = Halide::Tools::benchmark_duration_seconds(start_vec_fill, Halide::Tools::benchmark_now());
+    std::cout << "it took " << time_vec_fill << " seconds to vec_fill" << std::endl;
     std::cout << "moving vectors to arrays" << std::endl;
 
+    auto start_vec_to_array = Halide::Tools::benchmark_now();
     // convert the lists to arrays for faster lookup
     int64_t total_index = 0;
     for (const auto & player_id : player_ids_set) {
@@ -196,5 +204,7 @@ court_bins::court_bins(moment_col_store * moments) {
             }
         }
     }
+    auto time_vec_to_array = Halide::Tools::benchmark_duration_seconds(start_vec_to_array, Halide::Tools::benchmark_now());
+    std::cout << "it took " << time_vec_to_array << " seconds to vec_to_array" << std::endl;
 }
 
