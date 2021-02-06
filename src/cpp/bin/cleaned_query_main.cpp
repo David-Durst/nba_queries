@@ -67,17 +67,24 @@ int main(int argc, char * argv[]) {
     }
     string moments_file_path = argv[1], shots_file_path = argv[2], run_type = argv[3], extra_data_file_path = argv[4],
         timing_file_path = argv[5];
-    int num_samples_and_iterations = (run_type.compare("debug") == 0) ? 1 : 10;
+    int num_samples_and_iterations = (run_type.compare("debug") == 0) ? 1 : 5;
     std::fstream shots_file, timing_file, extra_data_file;
 
     // load the cleaned moments
     std::cout << "loading cleaned moments file: " << moments_file_path << std::endl;
+    auto start_proto = Halide::Tools::benchmark_now();
     moments_proto_to_memory(moments_file_path, moments);
+    auto time_proto = Halide::Tools::benchmark_duration_seconds(start_proto, Halide::Tools::benchmark_now());
     std::cout << "moments size: " << moments.size() << std::endl;
+    std::cout << "it took " << time_proto << " seconds to read the data in protobuf" << std::endl;
     moments_col = new moment_col_store(moments);
 
     // bin the moments
+    auto start_bin = Halide::Tools::benchmark_now();
     bins = new court_bins(moments_col);
+    auto time_bin = Halide::Tools::benchmark_duration_seconds(start_proto, Halide::Tools::benchmark_now());
+    std::cout << "it took " << time_bin << " seconds to bin" << std::endl;
+    moments_col = new moment_col_store(moments);
     //time_bins = new court_and_game_clock_bins(moments_col);
 
     // load the shots
