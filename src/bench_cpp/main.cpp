@@ -40,6 +40,7 @@ int main(int argc, char ** argv) {
 
     auto start_struct_array_alloc = Halide::Tools::benchmark_now();
     auto arr_struct = new players_in_paint_at_time[7821357];
+#pragma omp parallel for
     for (int i = 0; i < 7821357; i++) {
         arr_struct[i] = gen_value(i);
     }
@@ -50,6 +51,7 @@ int main(int argc, char ** argv) {
     auto start_struct_vec_alloc = Halide::Tools::benchmark_now();
     auto vec_struct = vector<players_in_paint_at_time>();
     vec_struct.resize(7821357);
+#pragma omp parallel for
     for (int i = 0; i < 7821357; i++) {
         vec_struct[i] = gen_value(i);
     }
