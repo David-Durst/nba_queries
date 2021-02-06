@@ -50,7 +50,7 @@ int main(int argc, char * argv[]) {
     vector<cleaned_shot> shots;
     shot_col_store * shots_col;
     court_bins * bins;
-    court_and_game_clock_bins * time_bins;
+    //court_and_game_clock_bins * time_bins;
     vector<shot_and_player_data> shots_and_players_seq, shots_and_players_par, shots_and_players;
     list<shot_and_player_data> shots_and_players_list;
     vector<trajectory_data> trajectories;
@@ -78,7 +78,7 @@ int main(int argc, char * argv[]) {
 
     // bin the moments
     bins = new court_bins(moments_col);
-    time_bins = new court_and_game_clock_bins(moments_col);
+    //time_bins = new court_and_game_clock_bins(moments_col);
 
     // load the shots
     std::cout << "loading shots file: " << shots_file_path << std::endl;
@@ -326,7 +326,7 @@ int main(int argc, char * argv[]) {
     std::cout << "num players in paint at end of game " << players_in_paint2.size() << std::endl;
     std::cout << "data points in bins: " << bins->get_elems_in_region(paint0_14) + bins->get_elems_in_region(paint1_14) << std::endl;
     res.query14_binned_colstore_parallel_time = min_time;
-
+/*
     std::cout << "running query 14 cleaned and binned with time, parallel" << std::endl;
     min_time = Halide::Tools::benchmark(num_samples_and_iterations, num_samples_and_iterations, [&]() {
         players_in_paint3.clear();
@@ -345,7 +345,7 @@ int main(int argc, char * argv[]) {
     std::cout << "num players in paint at end of game " << players_in_paint3.size() << std::endl;
     std::cout << "data points in bins: " << time_bins->get_elems_in_region(paint0_14) + time_bins->get_elems_in_region(paint1_14) << std::endl;
     res.query14_binned_with_time_colstore_parallel_time = min_time;
-
+*/
 
     std::cout << "running query 15 cleaned, parallel" << std::endl;
     //std::raise(SIGINT);

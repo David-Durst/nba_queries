@@ -6,13 +6,15 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
+#include <errno.h>
+#include <iostream>
 
 int64_t SEGMENT_SIZE = 10000000;
 void moments_memory_to_proto(vector<cleaned_moment>& internal_moments, string proto_file_path) {
     ::capnp::MallocMessageBuilder message;
 
     Moments::Builder proto_moments = message.initRoot<Moments>();
-    int64_t num_segments = internal_moments.size() / SEGMENT_SIZE;
+    int64_t num_segments = internal_moments.size() / SEGMENT_SIZE + 1;
     int64_t last_segment_size = internal_moments.size() % SEGMENT_SIZE;
     ::capnp::List<Segment>::Builder proto_segment_builder = proto_moments.initSegments(num_segments);
     for (int segment_index = 0; segment_index < num_segments; segment_index++) {
@@ -63,7 +65,12 @@ void moments_memory_to_proto(vector<cleaned_moment>& internal_moments, string pr
         }
     }
 
-    int fd = open(proto_file_path.c_str(), O_CREAT | O_WRONLY | O_TRUNC);
+    int fd = open(proto_file_path.c_str(), O_CREAT | O_WRONLY | O_TRUNC, S_IRWXU | S_IRWXG | S_IROTH | S_IWOTH);
+    if (fd < 0)
+    {
+        fprintf(stderr, "Error opening file: %s\n", strerror(errno));
+        exit(EXIT_FAILURE);
+    }
     capnp::writeMessageToFd(fd, message);
     close(fd);
 }
@@ -71,13 +78,19 @@ void moments_memory_to_proto(vector<cleaned_moment>& internal_moments, string pr
 void moments_proto_to_memory(string proto_file_path, vector<cleaned_moment>& internal_moments) {
     // https://groups.google.com/g/capnproto/c/f0-kF8JAqK4/m/TtDCO5BNCAAJ
     int fd = open(proto_file_path.c_str(), O_RDONLY);
+    if (fd < 0)
+    {
+        fprintf(stderr, "Error opening file: %s\n", strerror(errno));
+        exit(EXIT_FAILURE);
+    }
     struct stat stats;
-    size_t size = fstat(fd, &stats);
-    void * addr = mmap(NULL, size, PROT_READ, MAP_PRIVATE, fd, 0);
+    fstat(fd, &stats);
+    void * addr = mmap(NULL, stats.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
     kj::ArrayPtr<capnp::word> words(reinterpret_cast<capnp::word*>(addr),
-                                    size / sizeof(capnp::word));
-
-    capnp::FlatArrayMessageReader messageReader(words);
+                                    stats.st_size / sizeof(capnp::word));
+    capnp::ReaderOptions options;
+    options.traversalLimitInWords = 500ul * 1024ul * 1024ul * 1024ul;
+    capnp::FlatArrayMessageReader messageReader(words, options);
     Moments::Reader proto_moments = messageReader.getRoot<Moments>();
 
     for (Segment::Reader segment : proto_moments.getSegments()) {
@@ -119,7 +132,7 @@ void moments_proto_to_memory(string proto_file_path, vector<cleaned_moment>& int
         }
     }
 
-    munmap(addr, size);
+    munmap(addr, stats.st_size);
     close(fd);
 
     /*
