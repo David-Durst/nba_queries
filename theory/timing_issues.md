@@ -1,0 +1,1 @@
+1. e5faae4c407e32163e78b44f543fd21345a23329 - https://github.com/David-Durst/nba_queries/blob/e5faae4c407e32163e78b44f543fd21345a23329/src/cpp/lib/clean/query15_players_in_paint_shot_clock.cpp#L57-L107
