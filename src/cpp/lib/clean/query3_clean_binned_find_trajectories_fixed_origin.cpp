@@ -175,17 +175,6 @@ court_bins::court_bins(moment_col_store * moments) {
     auto time_pre_vec = Halide::Tools::benchmark_duration_seconds(start_pre_vec, Halide::Tools::benchmark_now());
     std::cout << "it took " << time_pre_vec << " seconds to pre_vec" << std::endl;
 
-    auto start_vec_count = Halide::Tools::benchmark_now();
-    int * bin_data_counters = new int[players_indices_in_bins.size() * NUM_BINS];
-    for (int player = 0; player < NUM_PLAYERS_AND_BALL; player++) {
-        for (int64_t i = 0; i < moments->size; i++) {
-            bin_data_counters[players_indices_in_bins.at(moments->player_id[player][i]) * get_bin_index(moments->x_loc[player][i], moments->y_loc[player][i])]++;
-        }
-    }
-
-    auto time_vec_count = Halide::Tools::benchmark_duration_seconds(start_vec_count, Halide::Tools::benchmark_now());
-    std::cout << "it took " << time_vec_count << " seconds to vec_fill" << std::endl;
-
     std::cout << "filling vector" << std::endl;
     auto start_vec_fill = Halide::Tools::benchmark_now();
 
