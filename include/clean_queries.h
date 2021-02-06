@@ -140,7 +140,7 @@ struct player_pointer_and_id {
 
 class court_bins {
 public:
-    court_bins(moment_col_store * moments);
+    court_bins(const moment_col_store& moments);
     constexpr static double x_bin_size = 10.0;
     constexpr static double y_bin_size = 10.0;
 
