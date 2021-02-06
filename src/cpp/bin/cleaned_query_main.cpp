@@ -89,7 +89,6 @@ int main(int argc, char * argv[]) {
     auto time_bin = Halide::Tools::benchmark_duration_seconds(start_bin, Halide::Tools::benchmark_now());
     std::cout << "it took " << time_bin << " seconds to bin" << std::endl;
     
-    moments_col = new moment_col_store(moments);
     //time_bins = new court_and_game_clock_bins(moments_col);
 
     // load the shots
