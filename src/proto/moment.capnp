@@ -28,6 +28,10 @@ struct Moment {
     events @7 :List(EventMomentData);
 }
 
-struct Moments {
+struct Segment {
     elements @0 :List(Moment);
+}
+
+struct Moments {
+    segments @0 :List(Segment);
 }
