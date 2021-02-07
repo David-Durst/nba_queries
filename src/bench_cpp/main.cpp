@@ -16,7 +16,6 @@ int main(int argc, char ** argv) {
     int64_t length = 7821357; 
     std::cout << "size of struct" << sizeof(players_in_paint_at_time) << std::endl;
 
-    /*
     auto start_int_array_alloc = Halide::Tools::benchmark_now();
     for (int j = 0; j < 10; j++) {
         int * arr_int = new int[length];
@@ -109,7 +108,6 @@ int main(int argc, char ** argv) {
     }
     auto time_struct_vec_push = Halide::Tools::benchmark_duration_seconds(start_struct_vec_push, Halide::Tools::benchmark_now());
     std::cout << "it took " << time_struct_vec_push * 1e3 / 10 << "ms to struct_vec_push" << std::endl;
-    */
     
     auto start_struct_ncv_push = Halide::Tools::benchmark_now();
     for (int j = 0; j < 10; j++) {
