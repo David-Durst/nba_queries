@@ -11,7 +11,7 @@ dirs:
 		/bin/mkdir -p $(OBJDIR)/
 
 clean:
-		/bin/rm -rf $(OBJDIR) *~ $(APP_NAME)
+		/bin/rm $(OBJDIR)/* *~ $(APP_NAME)
 
 OBJS=$(OBJDIR)/main.o 
 
