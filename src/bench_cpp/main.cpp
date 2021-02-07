@@ -4,6 +4,7 @@
 #include "clean_queries.h"
 #include "benchmark.h"
 #include "storage_structs.h"
+#include "omp.h"
 using std::vector;
 
 static inline __attribute__((always_inline)) players_in_paint_at_time gen_value(int64_t i) {
@@ -96,10 +97,13 @@ int main(int argc, char ** argv) {
 
 
     auto start_struct_vec_push = Halide::Tools::benchmark_now();
+    int num_threads = omp_get_max_threads();
     for (int j = 0; j < 10; j++) {
-        auto push_vec = vector<players_in_paint_at_time>();
+        auto push_vec = vector<vector<players_in_paint_at_time>>();
+        push_vec.resize(num_threads);
+#pragma omp parallel for
         for (int i = 0; i < length; i++) {
-            push_vec.push_back(gen_value(i));
+            push_vec[omp_get_thread_num()].push_back(gen_value(i));
         }
     }
     auto time_struct_vec_push = Halide::Tools::benchmark_duration_seconds(start_struct_vec_push, Halide::Tools::benchmark_now());
