@@ -62,21 +62,21 @@ int main(int argc, char ** argv) {
         }
         delete [] arr_struct;
     }
-    auto time_new_struct_array_alloc = Halide::Tools::benchmark_duration_seconds(start_struct_array_alloc, Halide::Tools::benchmark_now());
+    auto time_new_struct_array_alloc = Halide::Tools::benchmark_duration_seconds(start_new_struct_array_alloc, Halide::Tools::benchmark_now());
     std::cout << "it took " << time_new_struct_array_alloc * 1e3 / 10 << "ms to struct_array_alloc" << std::endl;
 
 
 
     auto start_malloc_struct_array_alloc = Halide::Tools::benchmark_now();
     for (int j = 0; j < 10; j++) {
-        auto arr_struct = malloc(sizeof(players_in_paint_at_time * length);
+        auto arr_struct = (players_in_paint_at_time *) malloc(sizeof(players_in_paint_at_time) * length);
 #pragma omp parallel for
         for (int i = 0; i < length; i++) {
             arr_struct[i] = gen_value(i);
         }
         free(arr_struct);
     }
-    auto time_malloc_struct_array_alloc = Halide::Tools::benchmark_duration_seconds(start_struct_array_alloc, Halide::Tools::benchmark_now());
+    auto time_malloc_struct_array_alloc = Halide::Tools::benchmark_duration_seconds(start_malloc_struct_array_alloc, Halide::Tools::benchmark_now());
     std::cout << "it took " << time_malloc_struct_array_alloc * 1e3 / 10 << "ms to struct_array_alloc" << std::endl;
 
 
