@@ -16,6 +16,7 @@ int main(int argc, char ** argv) {
     int64_t length = 7821357; 
     std::cout << "size of struct" << sizeof(players_in_paint_at_time) << std::endl;
 
+    /*
     auto start_int_array_alloc = Halide::Tools::benchmark_now();
     for (int j = 0; j < 10; j++) {
         int * arr_int = new int[length];
@@ -64,7 +65,7 @@ int main(int argc, char ** argv) {
         delete [] arr_struct;
     }
     auto time_new_struct_array_alloc = Halide::Tools::benchmark_duration_seconds(start_new_struct_array_alloc, Halide::Tools::benchmark_now());
-    std::cout << "it took " << time_new_struct_array_alloc * 1e3 / 10 << "ms to struct_array_alloc" << std::endl;
+    std::cout << "it took " << time_new_struct_array_alloc * 1e3 / 10 << "ms to struct_new_array_alloc" << std::endl;
 
 
 
@@ -78,7 +79,7 @@ int main(int argc, char ** argv) {
         free(arr_struct);
     }
     auto time_malloc_struct_array_alloc = Halide::Tools::benchmark_duration_seconds(start_malloc_struct_array_alloc, Halide::Tools::benchmark_now());
-    std::cout << "it took " << time_malloc_struct_array_alloc * 1e3 / 10 << "ms to struct_array_alloc" << std::endl;
+    std::cout << "it took " << time_malloc_struct_array_alloc * 1e3 / 10 << "ms to struct_malloc_array_alloc" << std::endl;
 
 
 
@@ -108,20 +109,24 @@ int main(int argc, char ** argv) {
     }
     auto time_struct_vec_push = Halide::Tools::benchmark_duration_seconds(start_struct_vec_push, Halide::Tools::benchmark_now());
     std::cout << "it took " << time_struct_vec_push * 1e3 / 10 << "ms to struct_vec_push" << std::endl;
+    */
     
-/*
     auto start_struct_ncv_push = Halide::Tools::benchmark_now();
-    auto ncv = noncontiguous_vector<players_in_paint_at_time>(1);
-    int64_t * index = &ncv.indices[0];
-    for (int i = 0; i < length % 10000; i++) {
-        auto tmp_arr = ensure_enough_space(ncv, 10000, 0);
-        for (int j = 0; j < length; j++) {
+    int64_t num_iterations = length / 10000 + 1;
+    int num_threads = omp_get_max_threads();
+    auto ncv = noncontiguous_vector<players_in_paint_at_time>(num_threads);
+#pragma omp parallel for
+    for (int i = 0; i < num_iterations; i++) {
+        int thread_num = omp_get_thread_num();
+        auto tmp_arr = ensure_enough_space(ncv, 10000, thread_num);
+        int64_t * index = &ncv.indices[thread_num];
+        int64_t num_steps = i == num_iterations - 1 ? length % 10000 : 10000;
+        for (int j = 0; j < num_steps; j++) {
             tmp_arr[*index] = gen_value(i);
             (*index)++;
         }
     }
     auto time_struct_ncv_push = Halide::Tools::benchmark_duration_seconds(start_struct_ncv_push, Halide::Tools::benchmark_now());
     std::cout << "it took " << time_struct_ncv_push * 1e3 << "ms to struct_ncv_push" << std::endl;
-*/
     return 0;
 }
