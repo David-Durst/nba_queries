@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS=-I../../include/ -Wall -fPIC -fopenmp -g
+CXXFLAGS=-I../../include/ -Wall -fPIC -fopenmp -O3
 
 APP_NAME=benchmark
 OBJDIR=objs
