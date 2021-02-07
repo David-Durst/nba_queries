@@ -112,21 +112,23 @@ int main(int argc, char ** argv) {
     */
     
     auto start_struct_ncv_push = Halide::Tools::benchmark_now();
-    int64_t num_iterations = length / 10000 + 1;
-    int num_threads = omp_get_max_threads();
-    auto ncv = noncontiguous_vector<players_in_paint_at_time>(num_threads);
+    for (int j = 0; j < 10; j++) {
+        int64_t num_iterations = length / 10000 + 1;
+        int num_threads = omp_get_max_threads();
+        auto ncv = noncontiguous_vector<players_in_paint_at_time>(num_threads);
 #pragma omp parallel for
-    for (int i = 0; i < num_iterations; i++) {
-        int thread_num = omp_get_thread_num();
-        auto tmp_arr = ensure_enough_space(ncv, 10000, thread_num);
-        int64_t * index = &ncv.indices[thread_num];
-        int64_t num_steps = i == num_iterations - 1 ? length % 10000 : 10000;
-        for (int j = 0; j < num_steps; j++) {
-            tmp_arr[*index] = gen_value(i);
-            (*index)++;
+        for (int i = 0; i < num_iterations; i++) {
+            int thread_num = omp_get_thread_num();
+            auto tmp_arr = ensure_enough_space(ncv, 10000, thread_num);
+            int64_t * index = &ncv.indices[thread_num];
+            int64_t num_steps = i == num_iterations - 1 ? length % 10000 : 10000;
+            for (int j = 0; j < num_steps; j++) {
+                tmp_arr[*index] = gen_value(i);
+                (*index)++;
+            }
         }
     }
     auto time_struct_ncv_push = Halide::Tools::benchmark_duration_seconds(start_struct_ncv_push, Halide::Tools::benchmark_now());
-    std::cout << "it took " << time_struct_ncv_push * 1e3 << "ms to struct_ncv_push" << std::endl;
+    std::cout << "it took " << time_struct_ncv_push * 1e3 / 10 << "ms to struct_ncv_push" << std::endl;
     return 0;
 }
