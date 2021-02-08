@@ -47,6 +47,9 @@ For the reference part of the taxonomy, I also state which entity is the referen
 6. Query 14: give me all the players in the paint in the last 24 seconds of a game - space-time
 7. Query 15: give me all the players in the paint in the last 2 seconds of the shot clock - space and sparse time
 
+## More Realistic Queries
+1. Query R1 - what percent of offensive possessions where a player is on a court does he iso?
+
 ## Going To Implement
 1. Query 4: Fouls per player when moving more than 5 MPH (roughly 1.5 ft/s)
     1. Place in Taxonomy:
