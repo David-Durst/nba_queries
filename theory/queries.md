@@ -49,6 +49,51 @@ For the reference part of the taxonomy, I also state which entity is the referen
 
 ## More Realistic Queries
 1. Query R1 - what percent of offensive possessions where a player is on a court does he iso?
+    1. Place in taxonomy
+        1. reference - player - moving, series, distributed in time
+        2. comparison - nearest neighbor
+        3. data set changing - static
+    2. concepts - possession
+    3. problem - this is just a temporal query, not spatial - need to look over all space for regions defined by time (when player has ball)
+        1. this is temporal assuming you've built a spatial index of who has the ball
+2. Query R2 - How frequently does a player pump fake/crossover/other fakeout move?
+    1. Place in taxonomy
+        1. reference - player - moving, series, distributed in time
+        2. comparison - trajectory similarity
+        3. data set changing - static
+    2. concepts - velocity, fakes 
+3. Query R3 - What percent of the time when a player is on the court do they havge the ball?
+    1. Place in taxonomy
+        1. reference - player - moving, series, distributed in time
+        2. comparison - range query
+        3. data set changing - static
+    2. concepts - player possession
+4. Query R4 - What does it mean to be open? - this will test if players receive passes when not open. Also, shots should increase rate of going in when open
+    1. Place in taxonomy
+        1. reference - player - moving, series, distributed in space
+        2. comparison - trajectory
+        3. data set changing - static
+    2. concepts - open for passing or shooting
+5. Query R5 - When a player is open, does he pass it to the open man?
+    1. Place in taxonomy
+        1. reference - player - moving, series, distributed in time
+        2. comparison - trajectory, range query
+        3. data set changing - static
+    2. concepts - open for passing, player possession
+6. Query R6 - Does a player have gravity?
+    1. Place in taxonomy
+        1. reference - player - static, series, distributed in space
+        2. comparison - trajectory, range query
+        3. data set changing - static
+    2. concepts - offensive and defense sets
+7. Query R7 - How sticky is a player
+    1. Place in taxonomy
+        1. reference - player - static, series, distributed in space and time
+        2. comparison - trajectory, range query
+        3. data set changing - static
+    2. concepts - possesion, defense sets
+    problem - does this get thrown off by zone? I could detect zone first
+
 
 ## Going To Implement
 1. Query 4: Fouls per player when moving more than 5 MPH (roughly 1.5 ft/s)

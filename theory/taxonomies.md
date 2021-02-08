@@ -77,6 +77,7 @@ Three or more relation joins are done by composing binary joins.
     2. for passing - velocity taking him to a sport where a trjaectory will exist from ball's possessor
 9. offensive set - layout in court (could encode this using bins)
     1. does this need to include velocity? - https://hooptactics.net/premium/basketballbasics/bb5offenses.php suggests no
+    2. the academic research does, for 2-3 second plays, needed an encoding for the plays - https://dl.acm.org/doi/pdf/10.1145/3185596 
 10. defensive set - seems like just man or zone
     1. this could be based on stickiness for a single man to detect man defenses - https://hooptactics.net/premium/basketballbasics/bb6defenses.php 
     2. but you would need a different setup for zone defenses
