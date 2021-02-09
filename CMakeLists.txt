@@ -97,3 +97,4 @@ target_link_libraries(tests nba_queries_lib)
 target_include_directories(tests PUBLIC ${PROJECT_SOURCE_DIR}/catch)
 target_include_directories(tests PUBLIC ${PROJECT_BINARY_DIR}/catch)
 
+add_subdirectory(src/cpp/cars)
