@@ -34,4 +34,6 @@ int main(int argc, char * argv[]) {
     load_data_csv(input_moment_files, car_moments, skip_first_n_rows);
     auto time_internal = Halide::Tools::benchmark_duration_seconds(start_internal, Halide::Tools::benchmark_now());
     std::cout << "it took " << time_internal << "s to load the data into csv" << std::endl;
+
 }
+
