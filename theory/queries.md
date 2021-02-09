@@ -92,9 +92,25 @@ For the reference part of the taxonomy, I also state which entity is the referen
         2. comparison - trajectory, range query
         3. data set changing - static
     2. concepts - possesion, defense sets
-    problem - does this get thrown off by zone? I could detect zone first
+    3. problem - does this get thrown off by zone? I could detect zone first
 
 
+## Car Queries
+1. Query C1 - When a car gets stuck behind a bike, how early could've the car seen the bike and prepard to go around it?
+    1. Place in taxonomy
+        1. reference - car - moving, series, distributed in time
+        2. comparison - nearest neighbor
+        3. data set changing - static
+    2. problem - this is a tmeporal query - this filters down to looking in a window of time, then looking at two objects in that window and compaing their coordinates
+2. Query C2 - Find me the places where cars get stuck behind bikes most frequently 
+    1. Place in taxonomy - 
+        1. reference - place in world, series, distributed in space
+        2. comparison - range query
+        3. data set changing - static
+    2. it seems like queries where the reference is static are better for my system. Since the reference is a static region, can index in space for it rather than just filtering in time
+3. Query C3 - find me the places where a car almost hit another entity
+    1. could you hash by trajectory?
+    
 ## Going To Implement
 1. Query 4: Fouls per player when moving more than 5 MPH (roughly 1.5 ft/s)
     1. Place in Taxonomy:
