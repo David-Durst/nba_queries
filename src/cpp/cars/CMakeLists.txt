@@ -2,7 +2,6 @@ cmake_minimum_required (VERSION 3.14)
 
 project (car_queries VERSION "0.1")
 find_package(OpenMP REQUIRED)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 

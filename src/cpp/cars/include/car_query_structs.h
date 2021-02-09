@@ -20,6 +20,7 @@ public:
         z = (double **) malloc(sizeof(double*) * num_cars);
 
         for (int i = 0; i < num_cars; i++) {
+            t[i] = (int64_t *) malloc(sizeof(int64_t) * num_ticks);
             x[i] = (double *) malloc(sizeof(double) * num_ticks);
             y[i] = (double *) malloc(sizeof(double) * num_ticks);
             z[i] = (double *) malloc(sizeof(double) * num_ticks);

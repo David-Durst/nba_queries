@@ -12,20 +12,23 @@ void load_data_csv(vector<string> car_file_paths, car_col_store& car_moments, in
     std::vector<std::string> col_names = {"t", "x", "y", "z"};
     format.column_names(col_names);
 
-    int64_t file_index = 0;
-    for (const auto & car_file_path : car_file_paths) {
-        csv::CSVReader reader(car_file_path, format);
-        int64_t cur_file_index = 0;
+#pragma omp parallel for
+    for (int64_t file_index = 0; file_index < car_file_paths.size(); file_index++) {
+        csv::CSVReader reader(car_file_paths[file_index], format);
+        int64_t row_index = 0;
         for (const auto & row : reader) {
-            if (cur_file_index < skip_first_n_rows) {
-                cur_file_index++;
+            if (row_index < skip_first_n_rows) {
+                row_index++;
                 continue;
             }
-            car_moments.t[file_index][cur_file_index] = row["t"].get<int64_t>();
-            car_moments.x[file_index][cur_file_index] = row["x"].get<double>();
-            car_moments.x[file_index][cur_file_index] = row["y"].get<double>();
-            car_moments.x[file_index][cur_file_index] = row["z"].get<double>();
+            if (row_index >= car_moments.num_ticks) {
+                break;
+            }
+            car_moments.t[file_index][row_index] = row["t"].get<int64_t>();
+            car_moments.x[file_index][row_index] = row["x"].get<double>();
+            car_moments.x[file_index][row_index] = row["y"].get<double>();
+            car_moments.x[file_index][row_index] = row["z"].get<double>();
+            row_index++;
         }
-        file_index++;
     }
 }
