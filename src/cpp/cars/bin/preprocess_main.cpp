@@ -15,12 +15,13 @@
 using std::string;
 int main(int argc, char * argv[]) {
     int skip_first_n_rows = 10;
-    if (argc < 6) {
+    if (argc < 5) {
         std::cout << "please call this code at least 4 arguments: " << std::endl;
         std::cout << "1. path/to/cleaned_moments_file.csv " << std::endl;
         std::cout << "2. path/to/cleaned_moments_file.pb " << std::endl;
         std::cout << "3. number of ticks " << std::endl;
         std::cout << "4. path/to/moments_file1.csv optional/path/to/moments_file2.csv,... " << std::endl;
+        return 0;
     }
     string cleaned_moments_csv_file_path = argv[1], cleaned_moments_pb_file_path = argv[2];
     int64_t num_ticks = std::stoi(argv[3]);
