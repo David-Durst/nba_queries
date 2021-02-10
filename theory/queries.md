@@ -93,7 +93,7 @@ For the reference part of the taxonomy, I also state which entity is the referen
         3. data set changing - static
     2. concepts - possesion, defense sets
     3. problem - does this get thrown off by zone? I could detect zone first
-
+    
 
 ## Car Queries
 1. Query C1 - When a car gets stuck behind a bike, how early could've the car seen the bike and prepard to go around it?
@@ -110,7 +110,20 @@ For the reference part of the taxonomy, I also state which entity is the referen
     2. it seems like queries where the reference is static are better for my system. Since the reference is a static region, can index in space for it rather than just filtering in time
 3. Query C3 - find me the places where a car almost hit another entity
     1. could you hash by trajectory?
-    
+    2. does the approximate version of this reduce to matrix multiplication like patterns
+        1. let A be the matrix of trajectories for cars. Each column is a triple of a car's x/y/z
+        2. Let B be the matrix of trajectories for bikes. Each column is a triple of a bike's x/y/z
+        3. Let intersection be the operator of the form
+            intersection(A, B):
+                for each car in A:
+                    for each bike in B:
+                        for each time t:
+                            let v = vector produced by car_at_time_t+5 and car_at_time_t-5
+                            let u = vector produced by bike_at_time_t+5 and bike_at_time_t-5
+                            return if u and v intersect
+
+
+
 ## Going To Implement
 1. Query 4: Fouls per player when moving more than 5 MPH (roughly 1.5 ft/s)
     1. Place in Taxonomy:
