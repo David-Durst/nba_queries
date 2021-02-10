@@ -61,24 +61,3 @@ Three or more relation joins are done by composing binary joins.
 2. [Novel Approaches to the Indexing of Moving Object Trajectories - 2000 - Pfoser et al. (including Theodoridis)](https://dl.acm.org/doi/10.5555/645926.672019)
 3. [TrajStore - 2010 - Cudre-Mauroux et al. (including Madden)](https://dspace.mit.edu/bitstream/handle/1721.1/62803/Madden_Trajstore%20an.pdf?sequence%3D1)
 
-## Concepts
-1. possession - 
-    1. team - team has possession for a sequence of seconds such that: for each second the nearest player to the ball is on the current team
-    2. player - same, but considering each player rather team
-2. distance to basket - using a different coordinate system for each player, tracking distance to basket, could be good for sorting
-    1. Could I bin by time and distance to basket?
-3. player in game - track which players are in game. This will decrease seek times by 10x as only need to look at one player, not all players to find one's location
-4. spatial bins - works well for binning when all court has values at all time
-5. velocity
-6. fakes - times when the acceleration flips sign frequently
-7. pass - change of possession between two players of same team
-8. open - 
-    1. for shooting - velocity taking him toa  sport where no on else will be
-    2. for passing - velocity taking him to a sport where a trjaectory will exist from ball's possessor
-9. offensive set - layout in court (could encode this using bins)
-    1. does this need to include velocity? - https://hooptactics.net/premium/basketballbasics/bb5offenses.php suggests no
-    2. the academic research does, for 2-3 second plays, needed an encoding for the plays - https://dl.acm.org/doi/pdf/10.1145/3185596 
-10. defensive set - seems like just man or zone
-    1. this could be based on stickiness for a single man to detect man defenses - https://hooptactics.net/premium/basketballbasics/bb6defenses.php 
-    2. but you would need a different setup for zone defenses
-11. stick - how close does a player stick to his man over time? - does this get thrown off by zone defense?
