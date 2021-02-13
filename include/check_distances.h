@@ -47,7 +47,9 @@ const moment & get_nearest_defender(vector<moment>& moments, int ball_moment_at_
                             moment shooter_moment, float time_delta,
                             bool forward_in_time);
 /*  Compute the euclidean distance between two moments. */
-float compute_distance(moment m1, moment m2);
+static inline __attribute__((always_inline)) float compute_distance(moment m1, moment m2) {
+    return std::hypot(m1.x_loc-m2.x_loc, m1.y_loc-m2.y_loc);
+}
 
 struct shot_distance_bucket {
     int distance;

@@ -200,11 +200,6 @@ void print_shot_and_player_data_csv(std::ostream& os, const shot_and_player_data
        << value.shot_made;
 }
 
-/*  Compute the euclidean distance between two moments. */
-float compute_distance(moment m1, moment m2) {
-    return std::hypot(m1.x_loc-m2.x_loc, m1.y_loc-m2.y_loc);
-}
-
 bool operator==(shot_distance_bucket const& lhs, shot_distance_bucket const& rhs) {
     return
             lhs.distance == rhs.distance &&
