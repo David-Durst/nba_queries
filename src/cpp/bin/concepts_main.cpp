@@ -53,7 +53,7 @@ int main(int argc, char * argv[]) {
         std::cout << "6. path/to/output/samples/ " << std::endl;
     }
     string moments_file_path = argv[1], shots_file_path = argv[2], run_type = argv[3], extra_data_file_path = argv[4],
-            timing_file_path = argv[5], samples_dir_path = argv[5];
+            timing_file_path = argv[5], samples_dir_path = argv[6];
     int num_samples_and_iterations = (run_type.compare("debug") == 0) ? 1 : 5;
     std::fstream shots_file, timing_file, extra_data_file;
 

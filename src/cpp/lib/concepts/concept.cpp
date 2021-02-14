@@ -16,17 +16,13 @@ using std::string;
 void Concept::sample(const moment_col_store& moments, int64_t num_samples, bool sample_unmerged, string sample_file_path) {
     std::random_device random_device;
     std::mt19937 random_engine(random_device());
-    int64_t num_elements = 0;
     vector<cleaned_moment> samples;
+    int num_threads = omp_get_max_threads();
     if (sample_unmerged) {
-        for (int i = 0; i < MAX_THREADS; i++) {
-            num_elements += this->start_moment_index_unmerged[i].size();
-        }
-
-        std::uniform_int_distribution<long> thread_distribution(0, MAX_THREADS - 1);
+        std::uniform_int_distribution<long> thread_distribution(0, num_threads - 1);
         vector<std::uniform_int_distribution<long>> per_thread_distribution;
-        for (int i = 0; i < MAX_THREADS; i++) {
-            int64_t thread_max = this->start_moment_index_unmerged[i].size();
+        for (int i = 0; i < num_threads; i++) {
+            int64_t thread_max = start_moment_index_unmerged[i].size();
             per_thread_distribution.push_back(std::uniform_int_distribution<long>{0, thread_max});
         }
         // the first element of the pair is the thread, the second is the index in that thread's data structure
@@ -38,8 +34,8 @@ void Concept::sample(const moment_col_store& moments, int64_t num_samples, bool 
         }
 
         for (auto const & window_index : sampled_indices) {
-            for (int64_t cur_time = this->start_moment_index_unmerged[window_index.first][window_index.second];
-                 cur_time < this->start_moment_index_unmerged[window_index.first][window_index.second] + this->ticks_in_window; cur_time++) {
+            for (int64_t cur_time = start_moment_index_unmerged[window_index.first][window_index.second];
+                 cur_time < start_moment_index_unmerged[window_index.first][window_index.second] + ticks_in_window; cur_time++) {
                 cleaned_moment c;
                 c.ball.team_id = moments.team_id[0][cur_time];
                 c.ball.player_id = moments.player_id[0][cur_time];
@@ -73,8 +69,8 @@ void Concept::sample(const moment_col_store& moments, int64_t num_samples, bool 
         }
 
         for (auto const & window_index : sampled_indices) {
-            for (int64_t cur_time = this->start_moment_index[window_index];
-                 cur_time < this->start_moment_index[window_index] + this->ticks_in_window; cur_time++) {
+            for (int64_t cur_time = start_moment_index[window_index];
+                 cur_time < start_moment_index[window_index] + ticks_in_window; cur_time++) {
                 cleaned_moment c;
                 c.ball.team_id = moments.team_id[0][cur_time];
                 c.ball.player_id = moments.player_id[0][cur_time];
@@ -101,11 +97,13 @@ void Concept::sample(const moment_col_store& moments, int64_t num_samples, bool 
     }
 
 
+    std::cout << "writing samples to " << sample_file_path << std::endl;
     std::fstream sample_file;
     sample_file.open(sample_file_path, std::fstream::out | std::fstream::trunc);
     print_cleaned_moment_csv_header(sample_file);
     for (const auto & c : samples) {
         print_cleaned_moment_csv(sample_file, c);
+        sample_file << std::endl;
     }
     sample_file.close();
 }
