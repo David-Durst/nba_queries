@@ -22,6 +22,7 @@ player_col_store::player_col_store(vector<cleaned_moment> &moments, int player_i
 
 moment_col_store::moment_col_store(vector<cleaned_moment> &moments) {
     size = moments.size();
+#pragma omp parallel for
     for (int i = 0; i < 11; i++) {
         team_id[i] = (long int *) malloc(moments.size() * sizeof(long int));
         player_id[i] = (int *) malloc(moments.size() * sizeof(int));
@@ -35,7 +36,8 @@ moment_col_store::moment_col_store(vector<cleaned_moment> &moments) {
     game_id = (long int *) malloc(moments.size() * sizeof(long int));
     game_num = (int *) malloc (moments.size() * sizeof(int));
     events = (vector<event_moment_data> *) malloc(moments.size() * sizeof(vector<event_moment_data>));
-    for (int i = 0; i < moments.size(); i++) {
+#pragma omp parallel for
+    for (int64_t i = 0; i < moments.size(); i++) {
         cleaned_moment& m = moments[i];
 
         team_id[0][i] = m.ball.team_id;
