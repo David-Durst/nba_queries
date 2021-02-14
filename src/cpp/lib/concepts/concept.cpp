@@ -62,7 +62,7 @@ void Concept::sample(vector<cleaned_moment> samples, const moment_col_store& mom
         }
     }
     else {
-        std::uniform_int_distribution<long> distribution(0, this->start_moment_index.size() - 1);
+        std::uniform_int_distribution<long> distribution(0, num_windows - 1);
         set<int64_t> sampled_indices;
         while (sampled_indices.size() < num_samples) {
             sampled_indices.insert(distribution(random_engine));

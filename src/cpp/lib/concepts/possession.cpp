@@ -22,7 +22,8 @@ void Possession::compute(const moment_col_store &moments, const shot_col_store &
             double min_distance = 10000000.0;
             int min_index = 0;
             for (int i = 1; i < NUM_PLAYERS_AND_BALL; i++) {
-                double new_distance = hypot(moments.x_loc[0] - moments.x_loc[i], moments.y_loc[0] - moments.y_loc[i]);
+                double new_distance = hypot(moments.x_loc[0][cur_time] - moments.x_loc[i][cur_time],
+                                            moments.y_loc[0][cur_time] - moments.y_loc[i][cur_time]);
                 if (new_distance < min_distance) {
                     min_distance = new_distance;
                     min_index = i;
