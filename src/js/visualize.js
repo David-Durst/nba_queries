@@ -4,9 +4,30 @@ const background = new Image();
 background.src = "court_background.jpg";
 let canvas = null;
 let ctx = null;
+let data = null;
 
 function init() {
     canvas = document.querySelector("#myCanvas");
     ctx = canvas.getContext('2d');
     ctx.drawImage(background,0,0);
+}
+
+function getData(url) {
+    fetch(url)
+        .then(response =>
+            response.text(text =>
+                csvJSON(text))) }
+
+function csvJSON(csv){
+    const lines=csv.split("\n");
+    data = [];
+    const headers=lines[0].split(",");
+    for(let i=1; i < lines.length; i++){
+        let obj = {};
+        let currentline = lines[i].split(",");
+        for(let j=0; j < headers.length; j++){
+            obj[headers[j]] = currentline[j];
+        }
+        data.push(obj);
+    }
 }
