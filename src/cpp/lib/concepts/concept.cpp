@@ -103,7 +103,7 @@ void Concept::sample(const moment_col_store& moments, int64_t num_samples, bool 
 
     std::fstream sample_file;
     sample_file.open(sample_file_path, std::fstream::out | std::fstream::trunc);
-    print_cleaned_moment_csv_header(os);
+    print_cleaned_moment_csv_header(sample_file);
     for (const auto & c : samples) {
         print_cleaned_moment_csv(sample_file, c);
     }

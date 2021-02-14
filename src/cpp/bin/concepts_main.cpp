@@ -97,6 +97,7 @@ int main(int argc, char * argv[]) {
     });
     possession.compute(*moments_col, *shots_col);
     std::cout << "possession concept took " << min_time << "s" << std::endl;
+    possession.sample(*moments_col, 100, true, samples_dir_path + "/possession.csv");
 
     std::cout << "running stoppage concept" << std::endl;
     min_time = Halide::Tools::benchmark_with_cleanup(num_samples_and_iterations, num_samples_and_iterations, [&]() {
@@ -107,4 +108,5 @@ int main(int argc, char * argv[]) {
     });
     stoppage.compute(*moments_col, *shots_col);
     std::cout << "stoppage concept took " << min_time << "s" << std::endl;
+    stoppage.sample(*moments_col, 100, false, samples_dir_path + "/stoppage.csv");
 }

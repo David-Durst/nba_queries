@@ -3,8 +3,10 @@
 #include "col_stores.h"
 #include "clean_queries.h"
 #include <vector>
+#include <string>
 #define MAX_THREADS 1000
 using std::vector;
+using std::string;
 
 class Concept {
 public:
@@ -15,7 +17,7 @@ public:
     int64_t ticks_in_window = 25;
 
     virtual void compute(const moment_col_store& moments, const shot_col_store& shots) = 0;
-    void sample(vector<cleaned_moment> samples, const moment_col_store& moments, int64_t num_samples, bool sample_unmerged);
+    void sample(const moment_col_store& moments, int64_t num_samples, bool sample_unmerged, string sample_file_path);
 };
 
 class Possession : public Concept {
