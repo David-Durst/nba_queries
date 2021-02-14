@@ -35,16 +35,21 @@ moment_col_store::moment_col_store(vector<cleaned_moment> &moments) {
     game_id = (long int *) malloc(moments.size() * sizeof(long int));
     game_num = (int *) malloc (moments.size() * sizeof(int));
     events = (vector<event_moment_data> *) malloc(moments.size() * sizeof(vector<event_moment_data>));
-    vector<std::reference_wrapper<player_data>> data;
     for (int i = 0; i < moments.size(); i++) {
         cleaned_moment& m = moments[i];
-        get_all_player_data(data, m);
-        for (int j = 0; j < 11; j++) {
-            team_id[j][i] = data.at(j).get().team_id;
-            player_id[j][i] = data.at(j).get().player_id;
-            x_loc[j][i] = data.at(j).get().x_loc;
-            y_loc[j][i] = data.at(j).get().y_loc;
-            radius[j][i] = data.at(j).get().radius;
+
+        team_id[0][i] = m.ball.team_id;
+        player_id[0][i] = m.ball.player_id;
+        x_loc[0][i] = m.ball.x_loc;
+        y_loc[0][i] = m.ball.y_loc;
+        radius[0][i] = m.ball.radius;
+
+        for (int j = 1; j < NUM_PLAYERS_AND_BALL; j++) {
+            team_id[j][i] = m.players[j-1].team_id;
+            player_id[j][i] = m.players[j-1].player_id;
+            x_loc[j][i] = m.players[j-1].x_loc;
+            y_loc[j][i] = m.players[j-1].y_loc;
+            radius[j][i] = m.players[j-1].radius;
         }
         game_clock[i] = m.game_clock;
         shot_clock[i] = m.shot_clock;
