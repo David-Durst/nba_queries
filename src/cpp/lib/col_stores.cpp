@@ -23,21 +23,21 @@ player_col_store::player_col_store(vector<cleaned_moment> &moments, int player_i
 moment_col_store::moment_col_store(vector<cleaned_moment> &moments) {
     size = moments.size();
     for (int i = 0; i < 11; i++) {
-        team_id[i] = new long int[moments.size()];
-        player_id[i] = new int[moments.size()];
-        x_loc[i] = new double[moments.size()];
-        y_loc[i] = new double[moments.size()];
-        radius[i] = new double[moments.size()];
+        team_id[i] = (long int *) malloc(moments.size() * sizeof(long int));
+        player_id[i] = (int *) malloc(moments.size() * sizeof(int));
+        x_loc[i] = (double *) malloc(moments.size() * sizeof(double));
+        y_loc[i] = (double *) malloc(moments.size() * sizeof(double));
+        radius[i] = (double *) malloc(moments.size() * sizeof(double));
     }
-    game_clock = new clock_fixed_point[moments.size()];
-    shot_clock = new double[moments.size()];
-    quarter = new short int[moments.size()];
-    game_id = new long int[moments.size()];
-    game_num = new int[moments.size()];
-    events = new vector<event_moment_data>[moments.size()];
+    game_clock = (clock_fixed_point *) malloc(moments.size() * sizeof(clock_fixed_point));
+    shot_clock = (double *) malloc(moments.size() * sizeof(double));
+    quarter = (short int *) malloc(moments.size() * sizeof(short int));
+    game_id = (long int *) malloc(moments.size() * sizeof(long int));
+    game_num = (int *) malloc (moments.size() * sizeof(int));
+    events = (vector<event_moment_data> *) malloc(moments.size() * sizeof(vector<event_moment_data>));
     vector<std::reference_wrapper<player_data>> data;
     for (int i = 0; i < moments.size(); i++) {
-        cleaned_moment& m = moments.at(i);
+        cleaned_moment& m = moments[i];
         get_all_player_data(data, m);
         for (int j = 0; j < 11; j++) {
             team_id[j][i] = data.at(j).get().team_id;
