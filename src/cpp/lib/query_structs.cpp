@@ -152,6 +152,9 @@ void print_cleaned_moment_csv(std::ostream& os, const cleaned_moment& value) {
        << "," << value.quarter
        << "," << value.game_id
        << "," << value.game_num << ",";
+    if (value.events.empty()) {
+        os << "empty";
+    }
     for (auto const & e : value.events) {
         print_event_moment_data_csv(os, e);
         os << ";";
