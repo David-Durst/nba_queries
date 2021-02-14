@@ -126,6 +126,7 @@ struct cleaned_moment {
 bool operator==(cleaned_moment const & lhs, cleaned_moment const & rhs);
 std::ostream& operator<<(std::ostream& os, cleaned_moment const& value);
 void print_cleaned_moment_csv(std::ostream& os, const cleaned_moment& value);
+void print_cleaned_moment_csv_header(std::ostream& os);
 void get_all_player_data(vector<std::reference_wrapper<player_data>>& data, cleaned_moment& c);
 
 struct event {

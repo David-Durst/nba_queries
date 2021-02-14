@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
+#include <numeric>
+#include <iomanip>
 #include "query_structs.h"
 
 bool operator==(moment const& lhs, moment const& rhs) {
@@ -154,6 +156,19 @@ void print_cleaned_moment_csv(std::ostream& os, const cleaned_moment& value) {
         print_event_moment_data_csv(os, e);
         os << ";";
     }
+}
+
+void print_cleaned_moment_csv_header(std::ostream& os) {
+    os << std::fixed << std::setprecision(4);
+    os << "team_id_ball, player_id_ball, x_loc_ball, y_loc_ball, radius_ball";
+    for (int i = 0; i < 10; i++) {
+        os << ", team_id_" << i
+           << ", player_id_" << i
+           << ", x_loc_" << i
+           << ", y_loc_" << i
+           << ", radius_" << i;
+    }
+    os << ", game_clock, shot_clock, quarter, game_id, game_num, events" << std::endl;
 }
 
 void get_all_player_data(vector<std::reference_wrapper<player_data>>& data, cleaned_moment& c) {

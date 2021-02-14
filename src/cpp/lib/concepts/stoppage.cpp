@@ -14,10 +14,8 @@ using std::pair;
 
 void Stoppage::compute(const moment_col_store &moments, const shot_col_store &shots) {
     num_windows = moments.size / this->ticks_in_window;
-    std::allocator<bool> al_bool;
-    is_window_stoppage = al_bool.allocate(num_windows);
-    std::allocator<int64_t> al_int64;
-    start_moment_index = al_int64.allocate(num_windows);
+    is_window_stoppage = (bool *) malloc(num_windows * sizeof(bool));
+    start_moment_index = (int64_t *) malloc(num_windows * sizeof(int64_t));
 #pragma omp parallel for
     for (int64_t src_time = 0; src_time < moments.size - ticks_in_window; src_time += ticks_in_window) {
         int64_t cur_window = src_time / ticks_in_window;

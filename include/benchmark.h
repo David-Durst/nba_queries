@@ -96,6 +96,27 @@ inline double benchmark(uint64_t samples, uint64_t iterations, const std::functi
     return best / iterations;
 }
 
+
+inline double benchmark_with_cleanup(uint64_t samples, uint64_t iterations, const std::function<void()> &op,
+                                     const std::function<void()> &cleanup) {
+    double best = std::numeric_limits<double>::infinity();
+    for (uint64_t i = 0; i < samples; i++) {
+        double clean_time = 0.0;
+        auto start = benchmark_now();
+        for (uint64_t j = 0; j < iterations; j++) {
+            op();
+            auto clean_start = benchmark_now();
+            cleanup();
+            auto clean_end = benchmark_now();
+            clean_time += benchmark_duration_seconds(clean_start, clean_end);
+        }
+        auto end = benchmark_now();
+        double elapsed_seconds = benchmark_duration_seconds(start, end);
+        best = std::min(best, elapsed_seconds - clean_time);
+    }
+    return best / iterations;
+}
+
 // Benchmark the operation 'op': run the operation until at least min_time
 // has elapsed; the number of iterations is expanded as we
 // progress (based on initial runs of 'op') to minimize overhead. The time

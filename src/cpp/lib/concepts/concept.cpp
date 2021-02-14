@@ -6,14 +6,18 @@
 #include <random>
 #include <set>
 #include <utility>
+#include <string>
+#include <fstream>
 using std::vector;
 using std::set;
 using std::pair;
+using std::string;
 
-void Concept::sample(vector<cleaned_moment> samples, const moment_col_store& moments, int64_t num_samples, bool sample_unmerged) {
+void Concept::sample(const moment_col_store& moments, int64_t num_samples, bool sample_unmerged, string sample_file_path) {
     std::random_device random_device;
     std::mt19937 random_engine(random_device());
     int64_t num_elements = 0;
+    vector<cleaned_moment> samples;
     if (sample_unmerged) {
         for (int i = 0; i < MAX_THREADS; i++) {
             num_elements += this->start_moment_index_unmerged[i].size();
@@ -95,5 +99,14 @@ void Concept::sample(vector<cleaned_moment> samples, const moment_col_store& mom
             }
         }
     }
+
+
+    std::fstream sample_file;
+    sample_file.open(sample_file_path, std::fstream::out | std::fstream::trunc);
+    print_cleaned_moment_csv_header(os);
+    for (const auto & c : samples) {
+        print_cleaned_moment_csv(sample_file, c);
+    }
+    sample_file.close();
 }
 

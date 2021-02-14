@@ -72,16 +72,7 @@ int main(int argc, char * argv[]) {
     }
     std::cout << "writing output cleaned moments file: " << cleaned_moments_file_path << std::endl;
     cleaned_moments_file.open(cleaned_moments_file_path, std::ios::out | std::ofstream::trunc);
-    cleaned_moments_file << std::fixed << std::setprecision(4);
-    cleaned_moments_file << "team_id_ball, player_id_ball, x_loc_ball, y_loc_ball, radius_ball";
-    for (int i = 0; i < 10; i++) {
-        cleaned_moments_file << ", team_id_" << i
-                             << ", player_id_" << i
-                             << ", x_loc_" << i
-                             << ", y_loc_" << i
-                             << ", radius_" << i;
-    }
-    cleaned_moments_file << ", game_clock, shot_clock, quarter, game_id, game_num, events" << std::endl;
+    print_cleaned_moment_csv_header(cleaned_moments_file);
     for (const auto & c : cleaned_moments) {
         print_cleaned_moment_csv(cleaned_moments_file, c);
         cleaned_moments_file << std::endl;
