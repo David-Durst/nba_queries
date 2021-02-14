@@ -1,3 +1,4 @@
+mkdir -p ../samples
 docker run \
     --name durst_st_db_${USER} \
     --rm -dit \
