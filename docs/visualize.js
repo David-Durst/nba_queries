@@ -1,5 +1,7 @@
 const top_left_x = 122;
 const top_left_y = 61;
+let court_width = 0;
+let court_height = 0;
 const background = new Image();
 background.src = "court_background.jpg";
 let canvas = null;
@@ -14,6 +16,8 @@ function init() {
     canvas = document.querySelector("#myCanvas");
     ctx = canvas.getContext('2d');
     ctx.drawImage(background,0,0);
+    court_width = background.width - 2 * top_left_x;
+    court_height = background.height - 2 * top_left_y;
 }
 
 function gameClockAsText(game_clock_total_seconds) {
@@ -22,13 +26,21 @@ function gameClockAsText(game_clock_total_seconds) {
     return mins.toFixed(0) + ":" + seconds.toFixed(2)
 }
 
+function scaleX(x) {
+    // add 5 as adjustment for fonts
+    return top_left_x + (x / 94.0 * court_width) + 3;
+}
+
+function scaleY(y) {
+    return top_left_y + (y / 50.0 * court_height) + 3;
+}
+
 function drawTimeStep(sample, t, draw_entire_series) {
     const t_data = sample.points[t];
     const in_window = t >= sample.window_start && t < sample.window_start + sample.window_length;
     let player_text = "x";
     ctx.fillStyle = "black";
-    ctx.fillText("b", top_left_x + t_data.ball.x_loc * 10,
-        top_left_y + t_data.ball.y_loc * 10);
+    ctx.fillText("b", scaleX(t_data.ball.x_loc), scaleY(t_data.ball.y_loc));
     for (let j = 0; j < 10; j++) {
         if (t_data.players[j].team_id === sample.team0) {
             if (in_window) {
@@ -50,9 +62,12 @@ function drawTimeStep(sample, t, draw_entire_series) {
         if (!draw_entire_series) {
             player_text = j;
         }
-        ctx.fillText(player_text, top_left_x + t_data.players[j].x_loc * 10,
-            top_left_y + t_data.players[j].y_loc * 10);
+        ctx.fillText(player_text, scaleX(t_data.players[j].x_loc),
+            scaleY(t_data.players[j].y_loc));
     }
+    document.querySelector("#ball-height").innerHTML = "" + t_data.ball.radius;
+    document.querySelector("#ball-x").innerHTML = "" + t_data.ball.x_loc;
+    document.querySelector("#ball-y").innerHTML = "" + t_data.ball.y_loc;
 }
 
 function redrawCanvas(draw_entire_series) {
