@@ -49,7 +49,7 @@ public:
                label_as_html("possessor_team", to_string(possessor_team_unmerged[thread_num][per_thread_index]));
     }
     string get_concept_html(const moment_col_store& moments, int64_t cur_window) {
-        return label_as_html("possessor_id", to_string(possessor_ids[cur_window])) + "," +
+        return label_as_html("possessor_id", to_string(possessor_ids[cur_window])) + ";" +
             label_as_html("possessor_team", to_string(possessor_team[cur_window]));
     }
     void compute(const moment_col_store &moments, const shot_col_store &shots);
