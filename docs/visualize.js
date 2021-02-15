@@ -56,7 +56,8 @@ function drawTimeStep(sample, t, draw_entire_series) {
 }
 
 function redrawCanvas(draw_entire_series) {
-    const sample = data[document.querySelector("#win-selector").value];
+    const sample = data[document.querySelector("#sample-selector").value];
+    document.querySelector("#cur-sample").innerHTML = document.querySelector("#sample-selector").value;
     ctx.drawImage(background,0,0);
     document.querySelector("#gameid").innerHTML = sample.points[0].game_id;
     document.querySelector("#quarter").innerHTML = sample.points[0].quarter;
@@ -109,7 +110,8 @@ function makePlayer(row, index) {
 }
 
 function csvJSON(csv){
-    document.querySelector("#win-selector").value = 0;
+    document.querySelector("#sample-selector").value = 0;
+    document.querySelector("#cur-sample").innerHTML = "" + 0;
     const lines=csv.split("\n");
     data = [];
     let cur_sample_size = 0;
@@ -152,4 +154,5 @@ function csvJSON(csv){
         }
         data.push(sample);
     }
+    document.querySelector("#sample-selector").max = data.length - 1;
 }

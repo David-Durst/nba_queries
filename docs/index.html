@@ -72,11 +72,11 @@
                     <span id="concept-specific"></span>
                 </div>
 
-                <div>
-                    <span class="label">Window to display:</span>
-                </div>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" id="win-selector">
+                <div class="slidecontainer mb-3">
+                    <span class="label">Current Sample:</span>
+                    <span id="cur-sample">NaN</span>
+                    <input type="range" min="0" max="99" value="0" class="slider"
+                           id="sample-selector" oninput="redrawCanvas(true);">
                 </div>
             </div>
         </div>
