@@ -77,6 +77,7 @@ void Concept::sample(const moment_col_store& moments, int64_t num_samples, bool 
             SampleWindow sw;
             sw.sample_length = 0;
             sw.window_length = ticks_in_window;
+            sw.window_html = get_concept_html_unmerged(moments, window_index.first, window_index.second);
             for (int64_t cur_time = start_moment_index_unmerged[window_index.first][window_index.second] - buffer_ticks_for_sample;
                  cur_time < start_moment_index_unmerged[window_index.first][window_index.second] + ticks_in_window + buffer_ticks_for_sample;
                  cur_time++) {
@@ -90,6 +91,7 @@ void Concept::sample(const moment_col_store& moments, int64_t num_samples, bool 
                 }
                 add_sample_tick(moments, sw.moments_in_sample, cur_time);
             }
+            samples.push_back(sw);
         }
     }
     else {
@@ -106,6 +108,7 @@ void Concept::sample(const moment_col_store& moments, int64_t num_samples, bool 
             SampleWindow sw;
             sw.sample_length = 0;
             sw.window_length = ticks_in_window;
+            sw.window_html = get_concept_html(moments, window_index);
             for (int64_t cur_time = start_moment_index[window_index];
                  cur_time < start_moment_index[window_index] + ticks_in_window; cur_time++) {
                 // skip bad entries
@@ -118,6 +121,7 @@ void Concept::sample(const moment_col_store& moments, int64_t num_samples, bool 
                 }
                 add_sample_tick(moments, sw.moments_in_sample, cur_time);
             }
+            samples.push_back(sw);
         }
     }
 
