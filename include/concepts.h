@@ -40,16 +40,21 @@ public:
 
 class Possession : public Concept {
 public:
+    vector<int> possessor_indices_unmerged[MAX_THREADS];
     vector<int64_t> possessor_ids_unmerged[MAX_THREADS];
     vector<int64_t> possessor_team_unmerged[MAX_THREADS];
+    int * possessor_indices;
     int64_t * possessor_ids;
     int64_t * possessor_team;
+    double max_distance = 5.0;
     string get_concept_html_unmerged(const moment_col_store& moments, int64_t thread_num, int64_t per_thread_index) {
-        return label_as_html("possessor_id", to_string(possessor_ids_unmerged[thread_num][per_thread_index])) + "," +
-               label_as_html("possessor_team", to_string(possessor_team_unmerged[thread_num][per_thread_index]));
+        return label_as_html("possessor_index", to_string(possessor_indices_unmerged[thread_num][per_thread_index])) + "," +
+            label_as_html("possessor_id", to_string(possessor_ids_unmerged[thread_num][per_thread_index])) + "," +
+            label_as_html("possessor_team", to_string(possessor_team_unmerged[thread_num][per_thread_index]));
     }
     string get_concept_html(const moment_col_store& moments, int64_t cur_window) {
-        return label_as_html("possessor_id", to_string(possessor_ids[cur_window])) + ";" +
+        return label_as_html("possessor_index", to_string(possessor_ids[cur_window])) + ";" +
+            label_as_html("possessor_id", to_string(possessor_ids[cur_window])) + ";" +
             label_as_html("possessor_team", to_string(possessor_team[cur_window]));
     }
     void compute(const moment_col_store &moments, const shot_col_store &shots);

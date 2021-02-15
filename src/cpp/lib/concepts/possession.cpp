@@ -16,7 +16,7 @@ void Possession::compute(const moment_col_store &moments, const shot_col_store &
 #pragma omp parallel for
     for (int64_t src_time = 0; src_time < moments.size - this->ticks_in_window; src_time += this->ticks_in_window) {
         int thread_num = omp_get_thread_num();
-        // including ball but it will never be nearest
+        // ball ticked when nobody is nearest
         int num_ticks_player_nearest[] = {0,0,0,0,0,0,0,0,0,0,0};
         for (int64_t cur_time = src_time; cur_time < src_time + ticks_in_window; cur_time++) {
             double min_distance = 10000000.0;
@@ -29,7 +29,12 @@ void Possession::compute(const moment_col_store &moments, const shot_col_store &
                     min_index = i;
                 }
             }
-            num_ticks_player_nearest[min_index]++;
+            if (min_distance > max_distance) {
+                num_ticks_player_nearest[min_index]++;
+            }
+            else {
+                num_ticks_player_nearest[min_index]++;
+            }
         }
         int max_index = 0;
         for (int i = 1; i < NUM_PLAYERS_AND_BALL; i++) {
@@ -38,6 +43,7 @@ void Possession::compute(const moment_col_store &moments, const shot_col_store &
             }
         }
         this->start_moment_index_unmerged[thread_num].push_back(src_time);
+        this->possessor_indices_unmerged[thread_num].push_back(max_index - 1);
         this->possessor_ids_unmerged[thread_num].push_back(moments.player_id[max_index][src_time]);
         this->possessor_team_unmerged[thread_num].push_back(moments.team_id[max_index][src_time]);
     }

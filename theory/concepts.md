@@ -3,16 +3,22 @@
 ### State of Game
 1. Player Possession -
     1. informal definition - which player has the ball
-    2. formal defintion - \forall time windows w of n ticks, player_id_for_player(i) s.t. i = argmin_i distance(w, ball, players[i])
+    2. formal defintion - \forall time windows w of n ticks, player_id_for_player(mode \forall t in w nearest_within_4_feet_or_ball(t, ball, players))
         1. restate formal definition - the player with the minimum distance to the ball during the time window
+    3. correction - don't count ticks where nearest player is more than 4 feet away. If the mode is for no player to be closer than 4 feet, this is a pass or a shot
 1. Team Possession -
     1. informal definition - which team has the ball
     2. formal definition - \forall time windows w of n ticks, player_possession(w).team
         1. restate formal definition - the team of the player with the ball
 1. Stoppage in play -
     1. informal definition - players aren't standing totally still (which would indicate garbage data) and are moving continuously (no more than 1 foot in 1/25 of a second)
-    2. formal definition - \forall time windows w of n ticks, (forall t in w. forall player i. 1 > hypot(player[t][i].x - player[t-1][i].x, player[t][i].y != player[t-][i].y) > 0)
+    2. formal definition - \forall time windows w of n ticks, (exists t in w. 
+            exists player i. hypot(player[t][i].x - player[t-1][i].x, player[t][i].y != player[t-][i].y) >= 1)
+            OR
+            forall player i. hypot(player[t][i].x - player[t-1][i].x, player[t][i].y != player[t-][i].y) < 0.001)
         1. restate formal definition - there's at least 1 tick in the window where 1 player stands totally still or jumps a large amount
+    3. correction - a couple players can stand totally still while others are moving. This isn't a stoppage.
+    So need all players to be still for a stoppage. Also a stoppage if anyone teleports.
 
 ### 1-2 Player Action (Action)
 1. Turnover -

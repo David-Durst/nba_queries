@@ -22,6 +22,8 @@ void Stoppage::compute(const moment_col_store &moments, const shot_col_store &sh
         double x_last_tick[NUM_PLAYERS_AND_BALL];
         double y_last_tick[NUM_PLAYERS_AND_BALL];
         bool stoppage_found = false;
+        bool teleport_found = false;
+        int num_non_moving = 0;
         for (int i = 0; i < NUM_PLAYERS_AND_BALL; i++) {
             x_last_tick[i] = moments.x_loc[i][src_time];
             y_last_tick[i] = moments.y_loc[i][src_time];
@@ -30,12 +32,16 @@ void Stoppage::compute(const moment_col_store &moments, const shot_col_store &sh
             for (int i = 0; i < NUM_PLAYERS_AND_BALL; i++) {
                 double distance = hypot(moments.x_loc[i][cur_time] - moments.x_loc[i][cur_time-1],
                                         moments.y_loc[i][cur_time] - moments.y_loc[i][cur_time-1]);
-                if (distance <= min_movement_per_tick || distance >= max_movement_per_tick) {
-                    stoppage_found = true;
+                if (distance >= max_movement_per_tick) {
+                    teleport_found = true;
                     break;
                 }
+                if (distance < 0.001) {
+                    num_non_moving++;
+                }
             }
-            if (stoppage_found) {
+            if (teleport_found || num_non_moving == 11) {
+                stoppage_found = true;
                 break;
             }
         }
