@@ -1,11 +1,14 @@
 const top_left_x = 122;
 const top_left_y = 61;
-const window_size = 25;
 const background = new Image();
 background.src = "court_background.jpg";
 let canvas = null;
 let ctx = null;
 let data = null;
+const dark_blue = "#04bec4"
+const light_blue = "#c2fff3"
+const dark_red = "#d10000"
+const light_red = "#ff8f8f"
 
 function init() {
     canvas = document.querySelector("#myCanvas");
@@ -19,17 +22,29 @@ function gameClockAsText(game_clock_total_seconds) {
     return mins.toFixed(0) + ":" + seconds.toFixed(2)
 }
 
-function drawTimeStep(win, t_data, draw_entire_series) {
+function drawTimeStep(sample, t, draw_entire_series) {
+    const t_data = sample.points[t];
+    const in_window = t >= sample.window_start && t < sample.window_start + sample.window_length;
     let player_text = "x";
     ctx.fillStyle = "black";
     ctx.fillText("b", top_left_x + t_data.ball.x_loc * 10,
         top_left_y + t_data.ball.y_loc * 10);
     for (let j = 0; j < 10; j++) {
-        if (t_data.players[j].team_id == win.team0) {
-            ctx.fillStyle = "red";
+        if (t_data.players[j].team_id === sample.team0) {
+            if (in_window) {
+                ctx.fillStyle = dark_red;
+            }
+            else {
+                ctx.fillStyle = light_red;
+            }
             player_text = "x";
         } else {
-            ctx.fillStyle = "blue";
+            if (in_window) {
+                ctx.fillStyle = dark_blue;
+            }
+            else {
+                ctx.fillStyle = dark_blue;
+            }
             player_text = "o";
         }
         if (!draw_entire_series) {
@@ -41,27 +56,37 @@ function drawTimeStep(win, t_data, draw_entire_series) {
 }
 
 function redrawCanvas(draw_entire_series) {
-    const win = data[document.querySelector("#win-selector").value];
+    const sample = data[document.querySelector("#win-selector").value];
     ctx.drawImage(background,0,0);
-    document.querySelector("#gameid").innerHTML = win.points[0].game_id;
-    document.querySelector("#quarter").innerHTML = win.points[0].quarter;
-    document.querySelector("#start-time").innerHTML = gameClockAsText(win.points[0].game_clock);
-    document.querySelector("#end-time").innerHTML = gameClockAsText(win.points[window_size - 1].game_clock);
-    document.querySelector("#start-shot-clock").innerHTML = win.points[0].shot_clock;
-    document.querySelector("#end-shot-clock").innerHTML = win.points[window_size - 1].shot_clock;
-    document.querySelector("#red-team").innerHTML = win.team0;
-    document.querySelector("#blue-team").innerHTML = win.team1;
+    document.querySelector("#gameid").innerHTML = sample.points[0].game_id;
+    document.querySelector("#quarter").innerHTML = sample.points[0].quarter;
+    document.querySelector("#start-time").innerHTML = gameClockAsText(sample.points[sample.window_start].game_clock);
+    document.querySelector("#end-time").innerHTML = gameClockAsText(sample.points[sample.window_start + sample.window_length - 1].game_clock);
+    document.querySelector("#start-shot-clock").innerHTML = sample.points[sample.window_start].shot_clock;
+    document.querySelector("#end-shot-clock").innerHTML = sample.points[sample.window_start + sample.window_length - 1].shot_clock;
+    document.querySelector("#red-team").innerHTML = sample.team0;
+    document.querySelector("#blue-team").innerHTML = sample.team1;
+    document.querySelector("#concept-specific").innerHTML = sample.window_html;
     ctx.font = "30px Arial"
     if (draw_entire_series) {
-        for (let i = 0; i < window_size; i++) {
-            drawTimeStep(win, win.points[i], draw_entire_series);
+        for (let i = 0; i < sample.sampleSize; i++) {
+            drawTimeStep(sample, i, draw_entire_series);
         }
+        document.querySelector("#time-selector").max = sample.sample_length - 1;
         document.querySelector("#cur-time-step").innerHTML = "all"
     }
     else {
         const t = document.querySelector("#time-selector").value;
-        document.querySelector("#cur-time-step").innerHTML = t;
-        drawTimeStep(win, win.points[t], draw_entire_series);
+        if (t < sample.window_start) {
+            document.querySelector("#cur-time-step").innerHTML = "window - " + (sample.window_start - t);
+        }
+        else if (t >= sample.window_start + sample.window_length) {
+            document.querySelector("#cur-time-step").innerHTML = "window + " + (t - sample.window_start + sample.window_length - 1);
+        }
+        else {
+            document.querySelector("#cur-time-step").innerHTML = "" + (sample.window_start - t);
+        }
+        drawTimeStep(sample, t, draw_entire_series);
     }
 }
 
@@ -87,11 +112,24 @@ function csvJSON(csv){
     document.querySelector("#win-selector").value = 0;
     const lines=csv.split("\n");
     data = [];
-    for(let w = 1; w < lines.length; w += window_size){
-        let win = {team0: 0, team1: 0, points: []};
-        for (let i = w; i < lines.length && i < w + window_size; i++) {
+    let cur_sample_size = 0;
+    for(let s = 1; s < lines.length; s += cur_sample_size){
+        // skip empty lines
+        if (lines[s].trim() === "") {
+            continue;
+        }
+        let sample = {team0: 0, team1: 0, sample_length: 0, window_length: 0,
+            window_start: 0, window_html: 0, points: []};
+        let current_line = lines[s].split(",");
+        // parse start of window
+        sample.sample_length = parseInt(current_line[1]);
+        cur_sample_size = sample.sample_length + 1;
+        sample.window_length = parseInt(current_line[2]);
+        sample.window_start = parseInt(current_line[3]);
+        sample.window_html = current_line[4];
+        for (let i = s+1; i < lines.length && i < s+1 + sample.sample_length; i++) {
             let obj = {};
-            let current_line = lines[i].split(",");
+            current_line = lines[i].split(",");
             obj.ball = makePlayer(current_line, 0);
             obj.players = [];
             for(let j = 0; j < 10; j++){
@@ -102,16 +140,16 @@ function csvJSON(csv){
             obj.quarter = parseInt(current_line[57]);
             obj.game_id = parseInt(current_line[58]);
             obj.game_num = parseInt(current_line[59]);
-            win.points.push(obj);
+            sample.points.push(obj);
         }
         // figure out two teams ids
-        win.team0 = win.points[0].players[0].team_id;
+        sample.team0 = sample.points[0].players[0].team_id;
         for (let i = 1; i < 10; i++) {
-            if (win.points[0].players[i].team_id != win.team0) {
-                win.team1 = win.points[0].players[i].team_id;
+            if (sample.points[0].players[i].team_id !== sample.team0) {
+                sample.team1 = sample.points[0].players[i].team_id;
                 break;
             }
         }
-        data.push(win);
+        data.push(sample);
     }
 }

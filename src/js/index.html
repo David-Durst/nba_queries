@@ -22,8 +22,9 @@
             <div name="controls">
                 <span class="label">concept:</span>
                 <select id="data-url">
-                    <option value="possession.csv">possession</option>
-                    <option value="stoppage.csv">stoppage</option>
+                    <option value="data/possession.csv">possession</option>
+                    <option value="data/is_stoppage.csv">is stoppage</option>
+                    <option value="data/is_not_stoppage.csv">is not stoppage</option>
                 </select>
 
                 <button type="button" class="btn btn-outline-success mb-3" onclick="getData();">Get Data</button>
@@ -68,6 +69,7 @@
 
                 <div class="mb-3">
                     <span class="label">Concept Specific Details:</span>
+                    <span id="concept-specific"></span>
                 </div>
 
                 <div>
