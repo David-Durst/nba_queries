@@ -13,10 +13,47 @@ using std::set;
 using std::pair;
 using std::string;
 
+void print_sample_window_csv(std::ostream& os, const SampleWindow& sw) {
+    os << START_SAMPLE_WINDOW_TOKEN << "," << sw.sample_length
+        << "," << sw.window_length
+        << "," << sw.window_start
+        << "," << sw.window_html
+        << std::endl;
+    for (const auto & c : sw.moments_in_sample) {
+        print_cleaned_moment_csv(os, c);
+        os << std::endl;
+    }
+}
+
+void add_sample_tick(const moment_col_store &moments, vector<cleaned_moment> &samples, int64_t cur_time) {
+    cleaned_moment c;
+    c.ball.team_id = moments.team_id[0][cur_time];
+    c.ball.player_id = moments.player_id[0][cur_time];
+    c.ball.x_loc = moments.x_loc[0][cur_time];
+    c.ball.y_loc = moments.y_loc[0][cur_time];
+    c.ball.radius = moments.radius[0][cur_time];
+
+    for (int i = 1; i < NUM_PLAYERS_AND_BALL; i++) {
+        c.players[i - 1].team_id = moments.team_id[i][cur_time];
+        c.players[i - 1].player_id = moments.player_id[i][cur_time];
+        c.players[i - 1].x_loc = moments.x_loc[i][cur_time];
+        c.players[i - 1].y_loc = moments.y_loc[i][cur_time];
+        c.players[i - 1].radius = moments.radius[i][cur_time];
+    }
+
+    c.game_clock = moments.game_clock[cur_time];
+    c.shot_clock = moments.shot_clock[cur_time];
+    c.quarter = moments.quarter[cur_time];
+    c.game_id = moments.game_id[cur_time];
+    c.game_num = moments.game_num[cur_time];
+
+    samples.push_back(c);
+}
+
 void Concept::sample(const moment_col_store& moments, int64_t num_samples, bool sample_unmerged, string sample_file_path) {
     std::random_device random_device;
     std::mt19937 random_engine(random_device());
-    vector<cleaned_moment> samples;
+    vector<SampleWindow> samples;
     int num_threads = omp_get_max_threads();
     if (sample_unmerged) {
         std::uniform_int_distribution<long> thread_distribution(0, num_threads - 1);
@@ -34,30 +71,21 @@ void Concept::sample(const moment_col_store& moments, int64_t num_samples, bool 
         }
 
         for (auto const & window_index : sampled_indices) {
-            for (int64_t cur_time = start_moment_index_unmerged[window_index.first][window_index.second];
-                 cur_time < start_moment_index_unmerged[window_index.first][window_index.second] + ticks_in_window; cur_time++) {
-                cleaned_moment c;
-                c.ball.team_id = moments.team_id[0][cur_time];
-                c.ball.player_id = moments.player_id[0][cur_time];
-                c.ball.x_loc = moments.x_loc[0][cur_time];
-                c.ball.y_loc = moments.y_loc[0][cur_time];
-                c.ball.radius = moments.radius[0][cur_time];
-
-                for (int i = 1; i < NUM_PLAYERS_AND_BALL; i++) {
-                    c.players[i - 1].team_id = moments.team_id[i][cur_time];
-                    c.players[i - 1].player_id = moments.player_id[i][cur_time];
-                    c.players[i - 1].x_loc = moments.x_loc[i][cur_time];
-                    c.players[i - 1].y_loc = moments.y_loc[i][cur_time];
-                    c.players[i - 1].radius = moments.radius[i][cur_time];
+            SampleWindow sw;
+            sw.sample_length = 0;
+            sw.window_length = ticks_in_window;
+            for (int64_t cur_time = start_moment_index_unmerged[window_index.first][window_index.second] - buffer_ticks_for_sample;
+                 cur_time < start_moment_index_unmerged[window_index.first][window_index.second] + ticks_in_window + buffer_ticks_for_sample;
+                 cur_time++) {
+                // skip bad entries
+                if (cur_time < 0 || cur_time >= moments.size) {
+                    continue;
                 }
-
-                c.game_clock = moments.game_clock[cur_time];
-                c.shot_clock = moments.shot_clock[cur_time];
-                c.quarter = moments.quarter[cur_time];
-                c.game_id = moments.game_id[cur_time];
-                c.game_num = moments.game_num[cur_time];
-
-                samples.push_back(c);
+                sw.sample_length++;
+                if (cur_time == start_moment_index_unmerged[window_index.first][window_index.second]) {
+                    sw.window_start = sw.sample_length;
+                }
+                add_sample_tick(moments, sw.moments_in_sample, cur_time);
             }
         }
     }
@@ -69,29 +97,20 @@ void Concept::sample(const moment_col_store& moments, int64_t num_samples, bool 
         }
 
         for (auto const & window_index : sampled_indices) {
+            SampleWindow sw;
+            sw.sample_length = 0;
+            sw.window_length = ticks_in_window;
             for (int64_t cur_time = start_moment_index[window_index];
                  cur_time < start_moment_index[window_index] + ticks_in_window; cur_time++) {
-                cleaned_moment c;
-                c.ball.team_id = moments.team_id[0][cur_time];
-                c.ball.player_id = moments.player_id[0][cur_time];
-                c.ball.x_loc = moments.x_loc[0][cur_time];
-                c.ball.y_loc = moments.y_loc[0][cur_time];
-                c.ball.radius = moments.radius[0][cur_time];
-
-                for (int i = 1; i < NUM_PLAYERS_AND_BALL; i++) {
-                    c.players[i-1].team_id = moments.team_id[i][cur_time];
-                    c.players[i-1].player_id = moments.player_id[i][cur_time];
-                    c.players[i-1].x_loc = moments.x_loc[i][cur_time];
-                    c.players[i-1].y_loc = moments.y_loc[i][cur_time];
-                    c.players[i-1].radius = moments.radius[i][cur_time];
+                // skip bad entries
+                if (cur_time < 0 || cur_time >= moments.size) {
+                    continue;
                 }
-
-                c.game_clock = moments.game_clock[cur_time];
-                c.shot_clock = moments.shot_clock[cur_time];
-                c.quarter = moments.quarter[cur_time];
-                c.game_id = moments.game_id[cur_time];
-                c.game_num = moments.game_num[cur_time];
-                samples.push_back(c);
+                sw.sample_length++;
+                if (cur_time == start_moment_index[window_index]) {
+                    sw.window_start = sw.sample_length;
+                }
+                add_sample_tick(moments, sw.moments_in_sample, cur_time);
             }
         }
     }
@@ -101,10 +120,10 @@ void Concept::sample(const moment_col_store& moments, int64_t num_samples, bool 
     std::fstream sample_file;
     sample_file.open(sample_file_path, std::fstream::out | std::fstream::trunc);
     print_cleaned_moment_csv_header(sample_file);
-    for (const auto & c : samples) {
-        print_cleaned_moment_csv(sample_file, c);
-        sample_file << std::endl;
+    for (const auto & w : samples) {
+        print_sample_window_csv(sample_file, w);
     }
     sample_file.close();
 }
+
 

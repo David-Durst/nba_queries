@@ -5,8 +5,18 @@
 #include <vector>
 #include <string>
 #define MAX_THREADS 1000
+#define START_SAMPLE_WINDOW_TOKEN "SW_START_TOKEN"
 using std::vector;
 using std::string;
+
+struct SampleWindow {
+    // a sample contains data before and after the window for visualization
+    int64_t sample_length;
+    int64_t window_length;
+    int64_t window_start;
+    string window_html;
+    vector<cleaned_moment> moments_in_sample;
+};
 
 class Concept {
 public:
@@ -15,6 +25,7 @@ public:
     int64_t * start_moment_index;
     int64_t num_windows;
     int64_t ticks_in_window = 25;
+    int64_t buffer_ticks_for_sample = 25;
 
     virtual void compute(const moment_col_store& moments, const shot_col_store& shots) = 0;
     void sample(const moment_col_store& moments, int64_t num_samples, bool sample_unmerged, string sample_file_path);
