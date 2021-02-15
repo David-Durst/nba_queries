@@ -13,6 +13,7 @@
 #include <omp.h>
 #include <unistd.h>
 #include <csignal>
+#include <functional>
 #include "check_distances.h"
 #include "find_trajectories.h"
 #include "clean_queries.h"
@@ -27,6 +28,8 @@
 #include <valgrind/callgrind.h>
 #endif
 using std::string;
+using std::placeholders::_1;
+using std::placeholders::_2;
 
 struct results {
     double possession_time;
@@ -97,7 +100,9 @@ int main(int argc, char * argv[]) {
     });
     possession.compute(*moments_col, *shots_col);
     std::cout << "possession concept took " << min_time << "s" << std::endl;
-    possession.sample(*moments_col, 100, true, samples_dir_path + "/possession.csv");
+
+    possession.sample(*moments_col, 100, true, samples_dir_path + "/possession.csv",
+                      std::bind(&Possession::allow_all, possession, _1, _2));
 
     std::cout << "running stoppage concept" << std::endl;
     min_time = Halide::Tools::benchmark_with_cleanup(num_samples_and_iterations, num_samples_and_iterations, [&]() {
@@ -108,5 +113,8 @@ int main(int argc, char * argv[]) {
     });
     stoppage.compute(*moments_col, *shots_col);
     std::cout << "stoppage concept took " << min_time << "s" << std::endl;
-    stoppage.sample(*moments_col, 100, false, samples_dir_path + "/stoppage.csv");
+    stoppage.sample(*moments_col, 100, false, samples_dir_path + "/is_stoppage.csv",
+                    std::bind(&Stoppage::get_stoppages, stoppage, _1, _2));
+    stoppage.sample(*moments_col, 100, false, samples_dir_path + "/is_not_stoppage.csv",
+                    std::bind(&Stoppage::get_non_stoppages, stoppage, _1, _2));
 }

@@ -28,7 +28,8 @@ public:
     int64_t buffer_ticks_for_sample = 25;
 
     virtual void compute(const moment_col_store& moments, const shot_col_store& shots) = 0;
-    void sample(const moment_col_store& moments, int64_t num_samples, bool sample_unmerged, string sample_file_path);
+    void sample(const moment_col_store& moments, int64_t num_samples, bool sample_unmerged, string sample_file_path,
+                const std::function<bool(const moment_col_store&, int64_t)> &filter);
 };
 
 class Possession : public Concept {
@@ -38,6 +39,9 @@ public:
     int64_t * possessor_ids;
     int64_t * possessor_team;
     void compute(const moment_col_store &moments, const shot_col_store &shots);
+    bool allow_all(const moment_col_store& moments, int64_t cur_time) const {
+        return true;
+    }
 };
 
 class Stoppage : public Concept {
@@ -46,6 +50,13 @@ public:
     double min_movement_per_tick = 0;
     double max_movement_per_tick = 1.0;
     void compute(const moment_col_store &moments, const shot_col_store &shots);
+    bool get_stoppages(const moment_col_store& moments, int64_t cur_time) const {
+        return is_window_stoppage[cur_time];
+    }
+
+    bool get_non_stoppages(const moment_col_store& moments, int64_t cur_time) const {
+        return is_window_stoppage[cur_time];
+    }
 };
 
 
