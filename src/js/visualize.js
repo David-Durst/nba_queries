@@ -69,7 +69,7 @@ function redrawCanvas(draw_entire_series) {
     document.querySelector("#concept-specific").innerHTML = sample.window_html;
     ctx.font = "30px Arial"
     if (draw_entire_series) {
-        for (let i = 0; i < sample.sampleSize; i++) {
+        for (let i = 0; i < sample.sample_length; i++) {
             drawTimeStep(sample, i, draw_entire_series);
         }
         document.querySelector("#time-selector").max = sample.sample_length - 1;
