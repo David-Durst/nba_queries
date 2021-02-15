@@ -33,11 +33,10 @@ public:
     virtual string get_concept_html(const moment_col_store& moments, int64_t cur_time) = 0;
     void sample(const moment_col_store& moments, int64_t num_samples, bool sample_unmerged, string sample_file_path,
                 const std::function<bool(const moment_col_store&, int64_t)> &filter);
+    string label_as_html(string label_name, string label_value) {
+        return "<span class=\"label\">" + label_name + " </span> " + label_value;
+    }
 };
-
-string label_as_html(string label_name, string label_value) {
-    return "<span class=\"label\">" + label_name + " </span> " + label_value;
-}
 
 class Possession : public Concept {
 public:
