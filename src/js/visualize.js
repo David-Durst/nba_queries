@@ -13,9 +13,46 @@ function init() {
     ctx.drawImage(background,0,0);
 }
 
+function gameClockAsText(game_clock_total_seconds) {
+    const mins = game_clock_total_seconds / 60;
+    const seconds = game_clock_total_seconds % 60;
+    return mins.toFixed(0) + ":" + seconds.toFixed(2)
+}
+
+function redrawCanvas() {
+    const win = data[document.querySelector("#win-selector").value];
+    ctx.drawImage(background,0,0);
+    document.querySelector("#gameid").innerHTML = win.points[0].game_id;
+    document.querySelector("#quarter").innerHTML = win.points[0].quarter;
+    document.querySelector("#start-time").innerHTML = gameClockAsText(win.points[0].game_clock);
+    document.querySelector("#end-time").innerHTML = gameClockAsText(win.points[window_size - 1].game_clock);
+    document.querySelector("#start-shot-clock").innerHTML = win.points[0].shot_clock;
+    document.querySelector("#end-shot-clock").innerHTML = win.points[window_size - 1].shot_clock;
+    document.querySelector("#red-team").innerHTML = win.team0;
+    document.querySelector("#blue-team").innerHTML = win.team1;
+    ctx.font = "20px Arial"
+    let player_text = "x";
+    for (let i = 0; i < window_size; i++) {
+        ctx.fillStyle = "black";
+        ctx.fillText("b", top_left_x + win.points[i].ball.x_loc * 10,
+            top_left_y + win.points[i].ball.y_loc * 10);
+        for (let j = 0; j < 10; j++) {
+            if (win.points[i].players[j].team_id == win.team0) {
+                ctx.fillStyle = "red";
+                player_text = "x";
+            }
+            else {
+                ctx.fillStyle = "blue";
+                player_text = "o";
+            }
+            ctx.fillText(player_text, top_left_x + win.points[i].players[j].x_loc * 10,
+                top_left_y + win.points[i].players[j].y_loc * 10);
+        }
+    }
+}
+
 function getData() {
     const url = document.querySelector("#data-url").value;
-    console.log(url);
     fetch(url)
         .then(response =>
             response.text().then(text =>
@@ -33,6 +70,7 @@ function makePlayer(row, index) {
 }
 
 function csvJSON(csv){
+    document.querySelector("#win-selector").value = 0;
     const lines=csv.split("\n");
     data = [];
     for(let w = 1; w < lines.length; w += window_size){

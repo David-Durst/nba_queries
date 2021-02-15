@@ -28,17 +28,19 @@
 
                 <button type="button" class="btn btn-outline-success mb-3" onclick="getData();">Get Data</button>
 
+                <button type="button" class="btn btn-outline-success mb-3" onclick="redrawCanvas();">Draw</button>
+
+                gameid: <span id="gameid">NaN</span>
+                quarter: <span id="quarter">NaN</span>
+                start window time: <span id="start-time">NaN</span>
+                end window time: <span id="end-time">NaN</span>
+                start shot clock: <span id="start-shot-clock">NaN</span>
+                end shot clock: <span id="end-shot-clock">NaN</span>
+                red team: <span id="red-team">NaN</span>
+                blue team: <span id="blue-team">NaN</span>
+
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="frame in window">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button">Set</button>
-                    </div>
-                </div>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="example window">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button">Set</button>
-                    </div>
+                    <input type="text" class="form-control" id="win-selector" placeholder="window to draw">
                 </div>
             </div>
         </div>
