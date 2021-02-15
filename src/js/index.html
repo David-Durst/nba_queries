@@ -20,6 +20,14 @@
         <div class="col-12">
             <div name="controls">
                 <button type="button" class="btn btn-outline-success mb-3">play</button>
+
+                <select id="data-url">
+                    <option value="possession.csv">possession</option>
+                    <option value="stoppage.csv">stoppage</option>
+                </select>
+
+                <button type="button" class="btn btn-outline-success mb-3" onclick="getData();">Get Data</button>
+
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" placeholder="frame in window">
                     <div class="input-group-append">

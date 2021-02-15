@@ -12,11 +12,14 @@ function init() {
     ctx.drawImage(background,0,0);
 }
 
-function getData(url) {
+function getData() {
+    const url = document.querySelector("#data-url").value;
+    console.log(url);
     fetch(url)
         .then(response =>
-            response.text(text =>
-                csvJSON(text))) }
+            response.text().then(text =>
+                csvJSON(text)))
+}
 
 function csvJSON(csv){
     const lines=csv.split("\n");
@@ -30,4 +33,6 @@ function csvJSON(csv){
         }
         data.push(obj);
     }
+    console.log("data length: " + data.length);
+    console.log("lines length: " + lines.length);
 }
