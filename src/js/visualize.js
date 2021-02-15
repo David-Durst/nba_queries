@@ -19,7 +19,28 @@ function gameClockAsText(game_clock_total_seconds) {
     return mins.toFixed(0) + ":" + seconds.toFixed(2)
 }
 
-function redrawCanvas() {
+function drawTimeStep(win, t_data, draw_entire_series) {
+    let player_text = "x";
+    ctx.fillStyle = "black";
+    ctx.fillText("b", top_left_x + t_data.ball.x_loc * 10,
+        top_left_y + t_data.ball.y_loc * 10);
+    for (let j = 0; j < 10; j++) {
+        if (t_data.players[j].team_id == win.team0) {
+            ctx.fillStyle = "red";
+            player_text = "x";
+        } else {
+            ctx.fillStyle = "blue";
+            player_text = "o";
+        }
+        if (!draw_entire_series) {
+            player_text = j;
+        }
+        ctx.fillText(player_text, top_left_x + t_data.players[j].x_loc * 10,
+            top_left_y + t_data.players[j].y_loc * 10);
+    }
+}
+
+function redrawCanvas(draw_entire_series) {
     const win = data[document.querySelector("#win-selector").value];
     ctx.drawImage(background,0,0);
     document.querySelector("#gameid").innerHTML = win.points[0].game_id;
@@ -30,24 +51,17 @@ function redrawCanvas() {
     document.querySelector("#end-shot-clock").innerHTML = win.points[window_size - 1].shot_clock;
     document.querySelector("#red-team").innerHTML = win.team0;
     document.querySelector("#blue-team").innerHTML = win.team1;
-    ctx.font = "20px Arial"
-    let player_text = "x";
-    for (let i = 0; i < window_size; i++) {
-        ctx.fillStyle = "black";
-        ctx.fillText("b", top_left_x + win.points[i].ball.x_loc * 10,
-            top_left_y + win.points[i].ball.y_loc * 10);
-        for (let j = 0; j < 10; j++) {
-            if (win.points[i].players[j].team_id == win.team0) {
-                ctx.fillStyle = "red";
-                player_text = "x";
-            }
-            else {
-                ctx.fillStyle = "blue";
-                player_text = "o";
-            }
-            ctx.fillText(player_text, top_left_x + win.points[i].players[j].x_loc * 10,
-                top_left_y + win.points[i].players[j].y_loc * 10);
+    ctx.font = "30px Arial"
+    if (draw_entire_series) {
+        for (let i = 0; i < window_size; i++) {
+            drawTimeStep(win, win.points[i], draw_entire_series);
         }
+        document.querySelector("#cur-time-step").innerHTML = "all"
+    }
+    else {
+        const t = document.querySelector("#time-selector").value;
+        document.querySelector("#cur-time-step").innerHTML = t;
+        drawTimeStep(win, win.points[t], draw_entire_series);
     }
 }
 

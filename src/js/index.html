@@ -5,6 +5,7 @@
     <title>NBA Queries Visualizer</title>
     <link rel="stylesheet" href="bootstrap.min.css">
     <link rel="stylesheet" href="custom.css">
+    <link rel="stylesheet" href="slider.css">
     <script src="visualize.js"></script>
 </head>
 <body onload="init();">
@@ -19,8 +20,7 @@
     <div class="row">
         <div class="col-12">
             <div name="controls">
-                <button type="button" class="btn btn-outline-success mb-3">play</button>
-
+                <span class="label">concept:</span>
                 <select id="data-url">
                     <option value="possession.csv">possession</option>
                     <option value="stoppage.csv">stoppage</option>
@@ -28,9 +28,18 @@
 
                 <button type="button" class="btn btn-outline-success mb-3" onclick="getData();">Get Data</button>
 
-                <button type="button" class="btn btn-outline-success mb-3" onclick="redrawCanvas();">Draw</button>
+                <button type="button" class="btn btn-outline-success mb-3" onclick="redrawCanvas(true);">Draw</button>
+
+                <div class="slidecontainer mb-3">
+                    <span class="label">current time step:</span>
+                    <span id="cur-time-step">NaN</span>
+                    <input type="range" min="0" max="24" value="0" class="slider"
+                           id="time-selector" oninput="redrawCanvas(false);">
+                </div>
+
 
                 <div class="mb-3">
+                    <span class="label">Window General Details:</span>
                     <span class="entry first-entry">
                         <span class="label">gameid:</span> <span id="gameid">NaN</span>
                     </span>
@@ -61,8 +70,11 @@
                     <span class="label">Concept Specific Details:</span>
                 </div>
 
+                <div>
+                    <span class="label">Window to display:</span>
+                </div>
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" id="win-selector" placeholder="window to draw">
+                    <input type="text" class="form-control" id="win-selector">
                 </div>
             </div>
         </div>
