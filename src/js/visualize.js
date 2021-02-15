@@ -43,7 +43,7 @@ function drawTimeStep(sample, t, draw_entire_series) {
                 ctx.fillStyle = dark_blue;
             }
             else {
-                ctx.fillStyle = dark_blue;
+                ctx.fillStyle = light_blue;
             }
             player_text = "o";
         }
@@ -81,10 +81,10 @@ function redrawCanvas(draw_entire_series) {
             document.querySelector("#cur-time-step").innerHTML = "window - " + (sample.window_start - t);
         }
         else if (t >= sample.window_start + sample.window_length) {
-            document.querySelector("#cur-time-step").innerHTML = "window + " + (t - sample.window_start + sample.window_length - 1);
+            document.querySelector("#cur-time-step").innerHTML = "window + " + (t - sample.window_start - sample.window_length + 1);
         }
         else {
-            document.querySelector("#cur-time-step").innerHTML = "" + (sample.window_start - t);
+            document.querySelector("#cur-time-step").innerHTML = "" + (t - sample.window_start);
         }
         drawTimeStep(sample, t, draw_entire_series);
     }
