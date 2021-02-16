@@ -65,11 +65,17 @@ void Concept::sample(const moment_col_store& moments, int64_t num_samples, bool 
         }
         // the first element of the pair is the thread, the second is the index in that thread's data structure
         set<pair<int, int64_t>> sampled_indices;
+        int64_t num_samples_tried = 0;
         while (sampled_indices.size() < num_samples) {
             int thread_num = thread_distribution(random_engine);
             int64_t per_thread_index = per_thread_distribution[thread_num](random_engine);
             if (filter(moments, true, thread_num, per_thread_index, start_moment_index_unmerged[thread_num][per_thread_index])) {
                 sampled_indices.insert(pair<int, int64_t>{thread_num, per_thread_index});
+            }
+            num_samples_tried++;
+            if (num_samples_tried > 100000) {
+                std::cout << "tried 100000 samples and didn't get "  << num_samples << " so stopping with " << sampled_indices.size() << " elements" << std::endl;
+                break;
             }
         }
 
@@ -97,10 +103,16 @@ void Concept::sample(const moment_col_store& moments, int64_t num_samples, bool 
     else {
         std::uniform_int_distribution<long> distribution(0, num_windows - 1);
         set<int64_t> sampled_indices;
+        int64_t num_samples_tried = 0;
         while (sampled_indices.size() < num_samples) {
             int64_t index = distribution(random_engine);
             if (filter(moments, false, index, 0, start_moment_index[index])) {
                 sampled_indices.insert(index);
+            }
+            num_samples_tried++;
+            if (num_samples_tried > 100000) {
+                std::cout << "tried 100000 samples and didn't get "  << num_samples << " so stopping with " << sampled_indices.size() << " elements" << std::endl;
+                break;
             }
         }
 
