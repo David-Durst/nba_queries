@@ -33,7 +33,8 @@
 
                 <button type="button" class="btn btn-outline-success mb-3" onclick="getData();">Get Data</button>
 
-                <button type="button" class="btn btn-outline-success mb-3" onclick="redrawCanvas(true);">Draw</button>
+                <button type="button" class="btn btn-outline-success mb-3" onclick="redrawCanvas(true, false);">Draw Just Window</button>
+                <button type="button" class="btn btn-outline-success mb-3" onclick="redrawCanvas(true, true);">Draw Entire Sample</button>
 
                 <div class="slidecontainer mb-3">
                     <span class="label">current time step:</span>
@@ -45,7 +46,7 @@
                     <span class="label">ball y:</span>
                     <span id="ball-y">NaN</span>
                     <input type="range" min="0" max="24" value="0" class="slider"
-                           id="time-selector" oninput="redrawCanvas(false);">
+                           id="time-selector" oninput="redrawCanvas(false, true);">
                 </div>
 
 
@@ -86,7 +87,7 @@
                     <span class="label">Current Sample:</span>
                     <span id="cur-sample">NaN</span>
                     <input type="range" min="0" max="99" value="0" class="slider"
-                           id="sample-selector" oninput="redrawCanvas(true);">
+                           id="sample-selector" oninput="redrawCanvas(true, false);">
                 </div>
             </div>
         </div>

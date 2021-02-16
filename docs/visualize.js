@@ -7,10 +7,12 @@ background.src = "court_background.jpg";
 let canvas = null;
 let ctx = null;
 let data = null;
-const dark_blue = "#04bec4"
-const light_blue = "#c2fff3"
-const dark_red = "#d10000"
-const light_red = "#ff8f8f"
+const black = "rgba(0,0,0,1.0)";
+const gray = "rgba(159,159,159,1.0)";
+const dark_blue = "rgba(4,190,196,1.0)";
+const light_blue = "rgba(194,255,243,1.0)";
+const dark_red = "rgba(209,0,0,1.0)";
+const light_red = "rgba(255,143,143,1.0)";
 
 function init() {
     canvas = document.querySelector("#myCanvas");
@@ -35,11 +37,19 @@ function scaleY(y) {
     return top_left_y + (y / 50.0 * court_height) + 3;
 }
 
-function drawTimeStep(sample, t, draw_entire_series) {
+function drawTimeStep(sample, t, draw_entire_series, draw_entire_sample) {
     const t_data = sample.points[t];
     const in_window = t >= sample.window_start && t < sample.window_start + sample.window_length;
+    if (!in_window && !draw_entire_sample) {
+        return;
+    }
     let player_text = "x";
-    ctx.fillStyle = "black";
+    if (in_window) {
+        ctx.fillStyle = black;
+    }
+    else {
+        ctx.fillStyle = gray;
+    }
     ctx.fillText("b", scaleX(t_data.ball.x_loc), scaleY(t_data.ball.y_loc));
     for (let j = 0; j < 10; j++) {
         if (t_data.players[j].team_id === sample.team0) {
@@ -70,7 +80,7 @@ function drawTimeStep(sample, t, draw_entire_series) {
     document.querySelector("#ball-y").innerHTML = "" + t_data.ball.y_loc;
 }
 
-function redrawCanvas(draw_entire_series) {
+function redrawCanvas(draw_entire_series, draw_entire_sample) {
     const sample = data[document.querySelector("#sample-selector").value];
     document.querySelector("#cur-sample").innerHTML = document.querySelector("#sample-selector").value;
     ctx.drawImage(background,0,0);
@@ -86,7 +96,7 @@ function redrawCanvas(draw_entire_series) {
     ctx.font = "30px Arial"
     if (draw_entire_series) {
         for (let i = 0; i < sample.sample_length; i++) {
-            drawTimeStep(sample, i, draw_entire_series);
+            drawTimeStep(sample, i, draw_entire_series, draw_entire_sample);
         }
         document.querySelector("#time-selector").max = sample.sample_length - 1;
         document.querySelector("#cur-time-step").innerHTML = "all"
@@ -102,7 +112,7 @@ function redrawCanvas(draw_entire_series) {
         else {
             document.querySelector("#cur-time-step").innerHTML = "" + (t - sample.window_start);
         }
-        drawTimeStep(sample, t, draw_entire_series);
+        drawTimeStep(sample, t, draw_entire_series, draw_entire_sample);
     }
 }
 
