@@ -51,7 +51,7 @@ void add_sample_tick(const moment_col_store &moments, vector<cleaned_moment> &sa
 }
 
 void Concept::sample(const moment_col_store& moments, int64_t num_samples, bool sample_unmerged, string sample_file_path,
-                     const std::function<bool(const moment_col_store&, int64_t)> &filter) {
+                     const std::function<bool(const moment_col_store&, bool, int64_t, int64_t, int64_t)> &filter) {
     std::random_device random_device;
     std::mt19937 random_engine(random_device());
     vector<SampleWindow> samples;
@@ -68,7 +68,7 @@ void Concept::sample(const moment_col_store& moments, int64_t num_samples, bool 
         while (sampled_indices.size() < num_samples) {
             int thread_num = thread_distribution(random_engine);
             int64_t per_thread_index = per_thread_distribution[thread_num](random_engine);
-            if (filter(moments, start_moment_index_unmerged[thread_num][per_thread_index])) {
+            if (filter(moments, true, thread_num, per_thread_index, start_moment_index_unmerged[thread_num][per_thread_index])) {
                 sampled_indices.insert(pair<int, int64_t>{thread_num, per_thread_index});
             }
         }
@@ -99,7 +99,7 @@ void Concept::sample(const moment_col_store& moments, int64_t num_samples, bool 
         set<int64_t> sampled_indices;
         while (sampled_indices.size() < num_samples) {
             int64_t index = distribution(random_engine);
-            if (filter(moments, start_moment_index[index])) {
+            if (filter(moments, false, index, 0, start_moment_index[index])) {
                 sampled_indices.insert(index);
             }
         }

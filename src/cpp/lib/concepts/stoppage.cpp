@@ -36,7 +36,7 @@ void Stoppage::compute(const moment_col_store &moments, const shot_col_store &sh
                     teleport_found = true;
                     break;
                 }
-                if (distance < 0.001) {
+                if (distance < min_movement_per_tick) {
                     num_non_moving++;
                 }
             }

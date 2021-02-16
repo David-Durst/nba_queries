@@ -6,6 +6,10 @@
     2. formal defintion - \forall time windows w of n ticks, player_id_for_player(mode \forall t in w nearest_within_4_feet_or_ball(t, ball, players))
         1. restate formal definition - the player with the minimum distance to the ball during the time window
     3. correction - don't count ticks where nearest player is more than 4 feet away. If the mode is for no player to be closer than 4 feet, this is a pass or a shot
+    4. assumption - 
+        1. pick 4 for distance since largest wingspans are 8 feet and reach is half of wingspan at max 
+        2. since players don't have height (only ball), assume they are 7 feet tall and arms at 5/6 way up
+        3. since players can go arbitrarily low to ground, only count z when ball in air 
 1. Team Possession -
     1. informal definition - which team has the ball
     2. formal definition - \forall time windows w of n ticks, player_possession(w).team
