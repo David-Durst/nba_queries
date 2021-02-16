@@ -21,12 +21,12 @@
     2. formal definition - \forall time windows w of n ticks, 
             (exists t in w.exists player i. hypot(player[t][i].x - player[t-1][i].x, player[t][i].y - player[t-1][i].y) >= 1)
             OR
-            (3 <= sum count t s.t. forall player i. (hypot(player[t][i].x - player[t-1][i].x, player[t][i].y - player[t-1][i].y) < 0.001))
+            (exists j, j+4 in w sum count t s.t. forall player i. forall k in 1..4.  (hypot(player[t][j+k].x - player[t-1][j+k-1].x, player[t][j+k].y - player[t-1][j+k-1].y) < 0.001))
         1. restate formal definition - there's at least 3 ticks in the window where 1 player stands totally still or 1 where the player jumps a large amount
     3. correction - 
         1. a couple players can stand totally still while others are moving. This isn't a stoppage.
            So need all players to be still for a stoppage. Also a stoppage if anyone teleports.
-        2. can have a stutter for one tick, so require that still for 3 ticks
+        2. can have stutters in fine data, so require 5 straight ticks of no movement
 
 ### 1-2 Player Action (Action)
 1. Turnover -

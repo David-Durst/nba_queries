@@ -52,10 +52,13 @@ void Stoppage::compute(const moment_col_store &moments, const shot_col_store &sh
             }
             if (num_non_moving == 11) {
                 still_frames++;
-                if (still_frames == 3) {
+                if (still_frames == 5) {
                     stoppage_found = true;
                     break;
                 }
+            }
+            else {
+                still_frames = 0;
             }
         }
         start_moment_index[cur_window] = src_time;
