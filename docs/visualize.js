@@ -50,7 +50,14 @@ function drawTimeStep(sample, t, draw_entire_series, draw_entire_sample) {
     else {
         ctx.fillStyle = gray;
     }
+    // make ball bigger if it's being shot
+    if (t_data.ball.radius > 7.0) {
+        ctx.font = "50px Arial"
+    }
     ctx.fillText("b", scaleX(t_data.ball.x_loc), scaleY(t_data.ball.y_loc));
+    if (t_data.ball.radius > 7.0) {
+        ctx.font = "30px Arial"
+    }
     for (let j = 0; j < 10; j++) {
         if (t_data.players[j].team_id === sample.team0) {
             if (in_window) {
