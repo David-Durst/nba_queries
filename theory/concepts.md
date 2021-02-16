@@ -1,5 +1,7 @@
 # Concepts
 ## Concepts for Analytics
+1. Adjusted window time from second to 1/2 second since I noticed that passes and shots take about half a second.
+
 ### State of Game
 1. Player Possession -
     1. informal definition - which player has the ball
