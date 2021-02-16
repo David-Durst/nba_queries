@@ -18,7 +18,7 @@ void Stoppage::compute(const moment_col_store &moments, const shot_col_store &sh
     stoppage_is_teleport = (bool *) malloc(num_windows * sizeof(bool));
     example_problem_player_index = (int *) malloc(num_windows * sizeof(int));
     start_moment_index = (int64_t *) malloc(num_windows * sizeof(int64_t));
-//#pragma omp parallel for
+#pragma omp parallel for
     for (int64_t src_time = 0; src_time < moments.size - ticks_in_window; src_time += ticks_in_window) {
         int64_t cur_window = src_time / ticks_in_window;
         double x_last_tick[NUM_PLAYERS_AND_BALL];
