@@ -75,6 +75,8 @@ public:
 class Stoppage : public Concept {
 public:
     bool * is_window_stoppage;
+    bool * stoppage_is_teleport;
+    int * example_problem_player_index;
     double min_movement_per_tick = 0.001;
     // lebron can throw 40 mph https://www.businessinsider.com/espn-lebron-throws-passes-faster-tom-brady-2013-5
     // this is 58 ft/s, so make it 75 ft/s is a problem, or 3 ft per 25th of a second
@@ -84,8 +86,11 @@ public:
         return "get_concept_html_unmerged not defined for stoppage";
     }
     string get_concept_html(const moment_col_store& moments, int64_t cur_window) {
+        string stoppage_is_teleport_str = stoppage_is_teleport[cur_window] ? "true" : "false";
         if (is_window_stoppage[cur_window]) {
-            return label_as_html("is_window_stoppage", "true");
+            return label_as_html("is_window_stoppage", "true") + ";" +
+                label_as_html("stoppage_is_teleport", stoppage_is_teleport_str) + ";" +
+                label_as_html("example_problem_player_index", to_string(example_problem_player_index[cur_window]));
         }
         else {
             return label_as_html("is_window_stoppage", "false");
