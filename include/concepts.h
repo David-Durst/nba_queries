@@ -26,7 +26,7 @@ public:
     int64_t * start_moment_index;
     int64_t num_windows;
     int64_t ticks_in_window = 12;
-    int64_t buffer_ticks_for_sample = 12;
+    int64_t buffer_ticks_for_sample = 50;
 
     virtual void compute(const moment_col_store& moments, const shot_col_store& shots) = 0;
     virtual string get_concept_html_unmerged(const moment_col_store& moments, int64_t thread_num, int64_t per_thread_index) = 0;
