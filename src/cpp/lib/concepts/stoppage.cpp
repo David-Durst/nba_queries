@@ -18,7 +18,7 @@ void Stoppage::compute(const moment_col_store &moments, const shot_col_store &sh
     stoppage_is_teleport = (bool *) malloc(num_windows * sizeof(bool));
     example_problem_player_index = (int *) malloc(num_windows * sizeof(int));
     start_moment_index = (int64_t *) malloc(num_windows * sizeof(int64_t));
-#pragma omp parallel for
+//#pragma omp parallel for
     for (int64_t src_time = 0; src_time < moments.size - ticks_in_window; src_time += ticks_in_window) {
         int64_t cur_window = src_time / ticks_in_window;
         double x_last_tick[NUM_PLAYERS_AND_BALL];
@@ -26,6 +26,7 @@ void Stoppage::compute(const moment_col_store &moments, const shot_col_store &sh
         bool stoppage_found = false;
         bool teleport_found = false;
         int num_non_moving = 0;
+        int still_frames = 0;
         int example_problem_player = 0;
         for (int i = 0; i < NUM_PLAYERS_AND_BALL; i++) {
             x_last_tick[i] = moments.x_loc[i][src_time];
@@ -45,14 +46,21 @@ void Stoppage::compute(const moment_col_store &moments, const shot_col_store &sh
                     example_problem_player = i;
                 }
             }
-            if (teleport_found || num_non_moving == 11) {
+            if (teleport_found) {
                 stoppage_found = true;
                 break;
+            }
+            if (num_non_moving == 11) {
+                still_frames++;
+                if (still_frames == 3) {
+                    stoppage_found = true;
+                    break;
+                }
             }
         }
         start_moment_index[cur_window] = src_time;
         is_window_stoppage[cur_window] = stoppage_found;
         stoppage_is_teleport[cur_window] = teleport_found;
-        example_problem_player_index[cur_window] = example_problem_player;
+        example_problem_player_index[cur_window] = example_problem_player - 1;
     }
 }

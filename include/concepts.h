@@ -80,7 +80,8 @@ public:
     double min_movement_per_tick = 0.001;
     // lebron can throw 40 mph https://www.businessinsider.com/espn-lebron-throws-passes-faster-tom-brady-2013-5
     // this is 58 ft/s, so make it 75 ft/s is a problem, or 3 ft per 25th of a second
-    double max_movement_per_tick = 3.0;
+    // make it 10 for handling overhead
+    double max_movement_per_tick = 10.0;
     void compute(const moment_col_store &moments, const shot_col_store &shots);
     string get_concept_html_unmerged(const moment_col_store& moments, int64_t thread_num, int64_t per_thread_index) {
         return "get_concept_html_unmerged not defined for stoppage";
