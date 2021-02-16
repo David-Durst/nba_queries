@@ -46,7 +46,7 @@ public:
     int * possessor_indices;
     int64_t * possessor_ids;
     int64_t * possessor_team;
-    double max_distance = 5.0;
+    double max_distance = 4.0;
     double arm_height = 0.8*7;
     string get_concept_html_unmerged(const moment_col_store& moments, int64_t thread_num, int64_t per_thread_index) {
         return label_as_html("possessor_index", to_string(possessor_indices_unmerged[thread_num][per_thread_index])) + ";" +

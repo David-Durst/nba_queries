@@ -32,7 +32,7 @@ void Possession::compute(const moment_col_store &moments, const shot_col_store &
                     new_distance = std::hypot(moments.x_loc[0][cur_time] - moments.x_loc[i][cur_time],
                                              moments.y_loc[0][cur_time] - moments.y_loc[i][cur_time]);
                 }
-                if (new_distance < min_distance) {
+                if (new_distance < min_distance && new_distance < max_distance) {
                     min_distance = new_distance;
                     min_index = i;
                 }
