@@ -73,8 +73,8 @@ void Concept::sample(const moment_col_store& moments, int64_t num_samples, bool 
                 sampled_indices.insert(pair<int, int64_t>{thread_num, per_thread_index});
             }
             num_samples_tried++;
-            if (num_samples_tried > 100000) {
-                std::cout << "tried 100000 samples and didn't get "  << num_samples << " so stopping with " << sampled_indices.size() << " elements" << std::endl;
+            if (num_samples_tried > 1000000) {
+                std::cout << "tried 1000000 samples and didn't get "  << num_samples << " so stopping with " << sampled_indices.size() << " elements" << std::endl;
                 break;
             }
         }
@@ -110,8 +110,8 @@ void Concept::sample(const moment_col_store& moments, int64_t num_samples, bool 
                 sampled_indices.insert(index);
             }
             num_samples_tried++;
-            if (num_samples_tried > 100000) {
-                std::cout << "tried 100000 samples and didn't get "  << num_samples << " so stopping with " << sampled_indices.size() << " elements" << std::endl;
+            if (num_samples_tried > 1000000) {
+                std::cout << "tried 1000000 samples and didn't get "  << num_samples << " so stopping with " << sampled_indices.size() << " elements" << std::endl;
                 break;
             }
         }
